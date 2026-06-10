@@ -2,1417 +2,670 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>กีฬาสี 2569 — โรงเรียนบ้านห้วยผึ้ง</title>
-<style>
-  :root {
-    --red:    #E53935;
-    --red-bg: #FFEBEE;
-    --red-dark: #B71C1C;
-    --yellow:    #F9A825;
-    --yellow-bg: #FFFDE7;
-    --yellow-dark: #E65100;
-    --blue:    #1E88E5;
-    --blue-bg: #E3F2FD;
-    --blue-dark: #0D47A1;
-    --pink:    #D81B60;
-    --pink-bg: #FCE4EC;
-    --pink-dark: #880E4F;
-
-    --primary: #1A4D8F;
-    --primary-light: #E8F0FB;
-    --surface: #FFFFFF;
-    --surface2: #F5F7FA;
-    --border: #E2E8F0;
-    --text: #1A202C;
-    --text2: #4A5568;
-    --text3: #718096;
-    --radius: 10px;
-    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
-    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
-  }
-
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'Sarabun', 'Noto Sans Thai', sans-serif;
-    background: #EEF2F8;
-    color: var(--text);
-    min-height: 100vh;
-    font-size: 16px;
-    line-height: 1.6;
-  }
-
-  /* ========= HEADER ========= */
-  header {
-    background: var(--primary);
-    color: white;
-    padding: 0;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: var(--shadow-md);
-  }
-
-  .header-inner {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 14px 20px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-
-  .header-logo {
-    width: 48px;
-    height: 48px;
-    background: rgba(255,255,255,0.15);
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 26px;
-    flex-shrink: 0;
-  }
-
-  .header-title { flex: 1; }
-  .header-title h1 { font-size: 18px; font-weight: 700; line-height: 1.3; }
-  .header-title p  { font-size: 13px; opacity: 0.8; margin-top: 2px; }
-
-  .color-dots {
-    display: flex;
-    gap: 6px;
-  }
-  .color-dot {
-    width: 14px; height: 14px;
-    border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.5);
-  }
-
-  /* ========= MAIN ========= */
-  main {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 24px 16px;
-  }
-
-  /* ========= NAV TABS ========= */
-  .nav-tabs {
-    display: flex;
-    gap: 4px;
-    background: var(--surface);
-    padding: 6px;
-    border-radius: 12px;
-    margin-bottom: 24px;
-    box-shadow: var(--shadow);
-  }
-
-  .nav-tab {
-    flex: 1;
-    padding: 10px 8px;
-    border: none;
-    background: transparent;
-    border-radius: 8px;
-    font-size: 14px;
-    font-family: inherit;
-    cursor: pointer;
-    color: var(--text2);
-    font-weight: 500;
-    transition: all 0.18s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-  }
-
-  .nav-tab.active {
-    background: var(--primary);
-    color: white;
-    box-shadow: var(--shadow);
-  }
-
-  .nav-tab:not(.active):hover {
-    background: var(--surface2);
-    color: var(--primary);
-  }
-
-  /* ========= PANELS ========= */
-  .panel { display: none; }
-  .panel.active { display: block; }
-
-  /* ========= CARD ========= */
-  .card {
-    background: var(--surface);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    padding: 20px;
-    margin-bottom: 16px;
-  }
-
-  .card-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--primary);
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  /* ========= SELECTOR ========= */
-  .selector-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 16px;
-  }
-
-  .field label {
-    display: block;
-    font-size: 13px;
-    color: var(--text2);
-    margin-bottom: 6px;
-    font-weight: 600;
-  }
-
-  select, input {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    font-size: 15px;
-    font-family: inherit;
-    background: var(--surface);
-    color: var(--text);
-    cursor: pointer;
-    transition: border-color 0.15s;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    padding-right: 32px;
-  }
-
-  select:focus, input:focus {
-    outline: none;
-    border-color: var(--primary);
-  }
-
-  select:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  /* ========= BTN ========= */
-  .btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 8px;
-    font-size: 15px;
-    font-family: inherit;
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.15s;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .btn-primary {
-    background: var(--primary);
-    color: white;
-  }
-
-  .btn-primary:hover:not(:disabled) { background: #153F7A; }
-  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  .btn-success {
-    background: #2E7D32;
-    color: white;
-  }
-
-  .btn-success:hover:not(:disabled) { background: #1B5E20; }
-  .btn-success:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  .btn-outline {
-    background: transparent;
-    color: var(--primary);
-    border: 1.5px solid var(--primary);
-  }
-
-  .btn-outline:hover { background: var(--primary-light); }
-
-  .btn-sm {
-    padding: 6px 14px;
-    font-size: 13px;
-  }
-
-  /* ========= LOADING ========= */
-  .loading {
-    text-align: center;
-    padding: 40px;
-    color: var(--text3);
-    font-size: 14px;
-  }
-
-  .spinner {
-    display: inline-block;
-    width: 28px; height: 28px;
-    border: 3px solid var(--border);
-    border-top-color: var(--primary);
-    border-radius: 50%;
-    animation: spin 0.7s linear infinite;
-    margin-bottom: 12px;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* ========= STUDENT LIST ========= */
-  .student-list-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 16px;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .student-count {
-    font-size: 13px;
-    color: var(--text3);
-    background: var(--surface2);
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-weight: 600;
-  }
-
-  .student-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  .student-table th {
-    background: var(--primary-light);
-    color: var(--primary);
-    font-size: 13px;
-    font-weight: 700;
-    padding: 10px 12px;
-    text-align: left;
-  }
-
-  .student-table th:first-child { border-radius: 8px 0 0 8px; }
-  .student-table th:last-child  { border-radius: 0 8px 8px 0; }
-
-  .student-table td {
-    padding: 10px 12px;
-    border-bottom: 1px solid var(--border);
-    font-size: 15px;
-    vertical-align: middle;
-  }
-
-  .student-table tr:last-child td { border-bottom: none; }
-  .student-table tr:hover td { background: var(--surface2); }
-
-  .student-number {
-    color: var(--text3);
-    font-size: 13px;
-    font-weight: 600;
-    width: 40px;
-  }
-
-  /* ========= COLOR BUTTONS ========= */
-  .color-btns {
-    display: flex;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-
-  .color-btn {
-    width: 34px; height: 34px;
-    border-radius: 50%;
-    border: 2.5px solid transparent;
-    cursor: pointer;
-    transition: all 0.15s;
-    font-size: 0;
-    flex-shrink: 0;
-    position: relative;
-  }
-
-  .color-btn:hover { transform: scale(1.15); }
-
-  .color-btn.selected {
-    border-color: var(--text);
-    transform: scale(1.2);
-    box-shadow: 0 0 0 3px rgba(0,0,0,0.15);
-  }
-
-  .color-btn.selected::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: rgba(255,255,255,0.3);
-    border-radius: 50%;
-  }
-
-  .color-btn.c-red   { background: var(--red); }
-  .color-btn.c-yellow{ background: var(--yellow); }
-  .color-btn.c-blue  { background: var(--blue); }
-  .color-btn.c-pink  { background: var(--pink); }
-  .color-btn.c-none  {
-    background: white;
-    border: 2px solid var(--border) !important;
-    font-size: 11px;
-    color: var(--text3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  /* ========= COLOR BADGE ========= */
-  .color-badge {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 700;
-    line-height: 1.5;
-  }
-
-  .badge-red    { background: var(--red-bg);    color: var(--red-dark);    }
-  .badge-yellow { background: var(--yellow-bg); color: var(--yellow-dark); }
-  .badge-blue   { background: var(--blue-bg);   color: var(--blue-dark);   }
-  .badge-pink   { background: var(--pink-bg);   color: var(--pink-dark);   }
-  .badge-none   { background: var(--surface2);  color: var(--text3);       }
-
-  /* ========= TOAST ========= */
-  #toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: #1A202C;
-    color: white;
-    padding: 12px 24px;
-    border-radius: 10px;
-    font-size: 14px;
-    font-weight: 600;
-    z-index: 999;
-    transition: transform 0.3s;
-    white-space: nowrap;
-    box-shadow: var(--shadow-md);
-    pointer-events: none;
-  }
-
-  #toast.show { transform: translateX(-50%) translateY(0); }
-  #toast.success { background: #2E7D32; }
-  #toast.error   { background: #C62828; }
-
-  /* ========= SETUP PANEL ========= */
-  .setup-input {
-    font-size: 13px;
-    padding: 10px 14px;
-  }
-
-  .setup-box {
-    background: var(--primary-light);
-    border: 1.5px solid #BFD4F5;
-    border-radius: var(--radius);
-    padding: 16px 20px;
-    margin-bottom: 16px;
-  }
-
-  .setup-box p {
-    font-size: 14px;
-    color: var(--primary);
-    margin-bottom: 8px;
-  }
-
-  /* ========= STATS ========= */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    margin-bottom: 16px;
-  }
-
-  .stat-card {
-    border-radius: var(--radius);
-    padding: 14px;
-    text-align: center;
-  }
-
-  .stat-card .stat-num {
-    font-size: 28px;
-    font-weight: 800;
-    line-height: 1.1;
-  }
-
-  .stat-card .stat-label {
-    font-size: 12px;
-    margin-top: 4px;
-    font-weight: 600;
-    opacity: 0.8;
-  }
-
-  .stat-red    { background: var(--red-bg);    color: var(--red-dark); }
-  .stat-yellow { background: var(--yellow-bg); color: var(--yellow-dark); }
-  .stat-blue   { background: var(--blue-bg);   color: var(--blue-dark); }
-  .stat-pink   { background: var(--pink-bg);   color: var(--pink-dark); }
-
-  /* ========= PRINT ========= */
-  .print-options {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 16px;
-  }
-
-  .print-type-card {
-    border: 2px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px;
-    cursor: pointer;
-    transition: all 0.15s;
-    text-align: center;
-  }
-
-  .print-type-card:hover, .print-type-card.active {
-    border-color: var(--primary);
-    background: var(--primary-light);
-  }
-
-  .print-type-card .icon { font-size: 28px; margin-bottom: 8px; }
-  .print-type-card .title { font-size: 15px; font-weight: 700; color: var(--text); }
-  .print-type-card .desc  { font-size: 12px; color: var(--text3); margin-top: 4px; }
-
-  /* ========= PRINT PREVIEW ========= */
-  #printArea {
-    display: none;
-    font-family: 'Sarabun', sans-serif;
-    font-size: 13px;
-    color: #000;
-  }
-
-  @media print {
-    @page { size: A4 landscape; margin: 8mm 6mm; }
-
-    body > *:not(#printArea) { display: none !important; }
-    #printArea { display: block !important; margin: 0; padding: 0; }
-
-    .print-page { page-break-after: always; padding: 0; }
-    .print-page:last-child { page-break-after: avoid; }
-
-    .print-header {
-      text-align: center;
-      margin-bottom: 5px;
-      border-bottom: 1.5px solid #000;
-      padding-bottom: 4px;
-    }
-    .print-header h2 { font-size: 13px; margin-bottom: 1px; }
-    .print-header p  { font-size: 10px; color: #333; }
-
-    .attendance-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 11px;
-      table-layout: fixed;
-    }
-
-    .attendance-table th, .attendance-table td {
-      border: 0.5px solid #000;
-      padding: 3px 3px;
-      text-align: center;
-      white-space: nowrap;
-      overflow: hidden;
-      height: 20px;
-      line-height: 1.3;
-    }
-
-    .attendance-table th { background: #E8E8E8; font-weight: 700; font-size: 10px; }
-
-    .attendance-table .col-no     { width: 22px; }
-    .attendance-table .col-id     { width: 46px; }
-    .attendance-table .col-prefix { width: 46px; }
-    .attendance-table .col-name   { width: 70px; text-align: left; }
-    .attendance-table .col-last   { width: 76px; text-align: left; }
-    .attendance-table .col-color  { width: 30px; }
-    .attendance-table .col-check  { width: 14px; padding: 3px 1px; }
-  }
-
-  /* ========= EMPTY STATE ========= */
-  .empty-state {
-    text-align: center;
-    padding: 48px 20px;
-    color: var(--text3);
-  }
-
-  .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
-  .empty-state p { font-size: 14px; }
-
-  /* ========= FILTER BAR ========= */
-  .filter-bar {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 16px;
-    align-items: center;
-  }
-
-  .filter-pill {
-    padding: 5px 14px;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 600;
-    border: 1.5px solid transparent;
-    cursor: pointer;
-    transition: all 0.15s;
-  }
-
-  .filter-pill.all {
-    background: var(--primary);
-    color: white;
-  }
-
-  .filter-pill.all-inactive {
-    background: var(--surface2);
-    color: var(--text2);
-    border-color: var(--border);
-  }
-
-  .filter-pill.fp-red    { background: var(--red-bg);    color: var(--red-dark);    border-color: var(--red);    }
-  .filter-pill.fp-yellow { background: var(--yellow-bg); color: var(--yellow-dark); border-color: var(--yellow); }
-  .filter-pill.fp-blue   { background: var(--blue-bg);   color: var(--blue-dark);   border-color: var(--blue);   }
-  .filter-pill.fp-pink   { background: var(--pink-bg);   color: var(--pink-dark);   border-color: var(--pink);   }
-
-  @media (max-width: 600px) {
-    .selector-grid, .print-options { grid-template-columns: 1fr; }
-    .stats-grid { grid-template-columns: repeat(2, 1fr); }
-    .header-title h1 { font-size: 15px; }
-  }
-</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#1A4D8F">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>กีฬาสี 2569 — บ้านห้วยผึ้ง</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red:#E53935; --red-bg:#FFEBEE; --red-dark:#B71C1C;
+  --yellow:#F9A825; --yellow-bg:#FFFDE7; --yellow-dark:#7B4F00;
+  --blue:#1E88E5; --blue-bg:#E3F2FD; --blue-dark:#0D47A1;
+  --pink:#D81B60; --pink-bg:#FCE4EC; --pink-dark:#880E4F;
+  --primary:#1A4D8F; --primary2:#153F7A; --primary-light:#E8F0FB;
+  --surface:#fff; --surface2:#F5F7FA; --border:#E2E8F0;
+  --text:#1A202C; --text2:#4A5568; --text3:#718096;
+  --r:12px; --bottom-nav:64px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Sarabun','Noto Sans Thai',sans-serif;background:var(--surface2);color:var(--text);font-size:16px;display:flex;flex-direction:column}
+
+/* HEADER */
+header{background:var(--primary);color:#fff;padding:12px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,0.2)}
+.h-logo{font-size:28px;line-height:1}
+.h-title h1{font-size:16px;font-weight:700;line-height:1.3}
+.h-title p{font-size:12px;opacity:.75;margin-top:1px}
+.h-dots{display:flex;gap:5px;margin-left:auto}
+.h-dot{width:12px;height:12px;border-radius:50%;border:2px solid rgba(255,255,255,.4)}
+
+/* SCROLL AREA */
+#app{flex:1;overflow-y:auto;overflow-x:hidden;padding-bottom:calc(var(--bottom-nav) + 8px)}
+
+/* PANELS */
+.panel{display:none;padding:12px}
+.panel.active{display:block}
+
+/* BOTTOM NAV */
+nav{position:fixed;bottom:0;left:0;right:0;height:var(--bottom-nav);background:var(--surface);border-top:1px solid var(--border);display:flex;z-index:100;box-shadow:0 -2px 12px rgba(0,0,0,.08)}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;border:none;background:transparent;color:var(--text3);font-family:inherit;font-size:11px;font-weight:600;cursor:pointer;transition:color .15s;padding:8px 4px}
+.nav-btn .ico{font-size:22px;line-height:1}
+.nav-btn.active{color:var(--primary)}
+.nav-btn.active .ico-bar{position:absolute;top:0;left:50%;transform:translateX(-50%);width:32px;height:3px;background:var(--primary);border-radius:0 0 3px 3px}
+
+/* CARD */
+.card{background:var(--surface);border-radius:var(--r);padding:16px;margin-bottom:12px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.card-title{font-size:15px;font-weight:700;color:var(--primary);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+
+/* FIELD */
+.field{margin-bottom:10px}
+.field label{display:block;font-size:13px;color:var(--text2);margin-bottom:5px;font-weight:600}
+select{width:100%;padding:12px 36px 12px 14px;border:1.5px solid var(--border);border-radius:10px;font-size:16px;font-family:inherit;background:var(--surface);color:var(--text);appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2.5'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;cursor:pointer}
+select:focus{outline:none;border-color:var(--primary)}
+select:disabled{opacity:.45;cursor:not-allowed}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 20px;border:none;border-radius:10px;font-size:15px;font-family:inherit;font-weight:700;cursor:pointer;transition:all .15s;width:100%}
+.btn-primary{background:var(--primary);color:#fff}
+.btn-primary:active{background:var(--primary2)}
+.btn-success{background:#2E7D32;color:#fff}
+.btn-success:active{background:#1B5E20}
+.btn-outline{background:transparent;color:var(--primary);border:2px solid var(--primary)}
+.btn-sm{padding:10px 16px;font-size:14px;width:auto}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+
+/* LOADING */
+.loading{text-align:center;padding:48px 20px;color:var(--text3);font-size:14px}
+.spinner{display:inline-block;width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite;margin-bottom:12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* EMPTY */
+.empty{text-align:center;padding:56px 20px;color:var(--text3)}
+.empty .ico{font-size:52px;margin-bottom:12px}
+.empty p{font-size:14px}
+
+/* STUDENT CARDS — mobile-first */
+.st-card{background:var(--surface);border-radius:var(--r);padding:14px 16px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);display:flex;align-items:center;gap:12px}
+.st-num{width:28px;height:28px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--text3);flex-shrink:0}
+.st-info{flex:1;min-width:0}
+.st-name{font-size:15px;font-weight:700;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st-sub{font-size:12px;color:var(--text3);margin-top:1px}
+.st-colors{display:flex;gap:8px;flex-shrink:0;align-items:center}
+
+/* COLOR BUTTONS — ใหญ่ขึ้น กดง่ายบนมือถือ */
+.cbtn{width:38px;height:38px;border-radius:50%;border:3px solid transparent;cursor:pointer;transition:transform .12s;flex-shrink:0;position:relative;-webkit-appearance:none}
+.cbtn:active{transform:scale(.9)}
+.cbtn.sel{border-color:#1A202C;transform:scale(1.15)}
+.cbtn.sel::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff}
+.cbtn.c-red{background:var(--red)}
+.cbtn.c-yellow{background:var(--yellow)}
+.cbtn.c-blue{background:var(--blue)}
+.cbtn.c-pink{background:var(--pink)}
+.cbtn.c-none{background:#fff;border:2px solid var(--border)!important;font-size:14px;color:var(--text3);display:flex;align-items:center;justify-content:center}
+.cbtn.c-none.sel{border-color:var(--text3)!important}
+.cbtn.c-none.sel::after{color:var(--text3)}
+
+/* COLOR BADGE */
+.badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700}
+.badge-red{background:var(--red-bg);color:var(--red-dark)}
+.badge-yellow{background:var(--yellow-bg);color:var(--yellow-dark)}
+.badge-blue{background:var(--blue-bg);color:var(--blue-dark)}
+.badge-pink{background:var(--pink-bg);color:var(--pink-dark)}
+.badge-none{background:var(--surface2);color:var(--text3)}
+
+/* FILTER PILLS */
+.pills{display:flex;gap:6px;flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;margin-bottom:12px;scrollbar-width:none}
+.pills::-webkit-scrollbar{display:none}
+.pill{padding:6px 14px;border-radius:20px;font-size:13px;font-weight:600;border:1.5px solid transparent;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.pill-all{background:var(--primary);color:#fff;border-color:var(--primary)}
+.pill-inactive{background:var(--surface2);color:var(--text2);border-color:var(--border)}
+.pill-red{background:var(--red-bg);color:var(--red-dark);border-color:var(--red)}
+.pill-yellow{background:var(--yellow-bg);color:var(--yellow-dark);border-color:var(--yellow)}
+.pill-blue{background:var(--blue-bg);color:var(--blue-dark);border-color:var(--blue)}
+.pill-pink{background:var(--pink-bg);color:var(--pink-dark);border-color:var(--pink)}
+
+/* ROOM HEADER BAR */
+.room-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.room-bar .title{font-size:17px;font-weight:800;color:var(--primary)}
+.room-bar .count{background:var(--primary-light);color:var(--primary);padding:4px 12px;border-radius:20px;font-size:13px;font-weight:700}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.stat{border-radius:var(--r);padding:16px;text-align:center}
+.stat .n{font-size:32px;font-weight:800;line-height:1}
+.stat .lbl{font-size:13px;font-weight:600;margin-top:4px;opacity:.85}
+.stat-red{background:var(--red-bg);color:var(--red-dark)}
+.stat-yellow{background:var(--yellow-bg);color:var(--yellow-dark)}
+.stat-blue{background:var(--blue-bg);color:var(--blue-dark)}
+.stat-pink{background:var(--pink-bg);color:var(--pink-dark)}
+
+/* PRINT OPTIONS */
+.ptype-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.ptype{border:2px solid var(--border);border-radius:var(--r);padding:16px 12px;cursor:pointer;text-align:center;transition:all .15s}
+.ptype.active{border-color:var(--primary);background:var(--primary-light)}
+.ptype .ico{font-size:28px;margin-bottom:6px}
+.ptype .t{font-size:14px;font-weight:700}
+.ptype .d{font-size:11px;color:var(--text3);margin-top:3px}
+
+/* SUMMARY ROOM GROUP */
+.sum-group{margin-bottom:6px}
+.sum-room-label{font-size:12px;font-weight:700;color:var(--text2);margin-bottom:3px}
+.sum-names{font-size:13px;color:var(--text);line-height:1.8}
+
+/* SAVE BAR — sticky bottom above nav */
+.save-bar{position:sticky;bottom:calc(var(--bottom-nav) + 8px);background:var(--surface);border-top:1px solid var(--border);padding:10px 12px;margin:0 -12px;display:flex;gap:8px;align-items:center;z-index:50}
+.save-bar .status{font-size:13px;color:var(--text3);flex:1}
+
+/* TOAST */
+#toast{position:fixed;bottom:calc(var(--bottom-nav) + 16px);left:50%;transform:translateX(-50%) translateY(60px);background:#1A202C;color:#fff;padding:12px 20px;border-radius:10px;font-size:14px;font-weight:600;z-index:999;transition:transform .25s;white-space:nowrap;pointer-events:none}
+#toast.show{transform:translateX(-50%) translateY(0)}
+#toast.success{background:#2E7D32}
+#toast.error{background:#C62828}
+
+/* PRINT */
+#printArea{display:none}
+@media print{
+  @page{size:A4 landscape;margin:8mm 6mm}
+  body>*:not(#printArea){display:none!important}
+  #printArea{display:block!important}
+  .print-page{page-break-after:always;padding:0}
+  .print-page:last-child{page-break-after:avoid}
+  .print-header{text-align:center;margin-bottom:5px;border-bottom:1.5px solid #000;padding-bottom:4px}
+  .print-header h2{font-size:13px;margin-bottom:1px}
+  .print-header p{font-size:10px;color:#333}
+  .attendance-table{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed}
+  .attendance-table th,.attendance-table td{border:.5px solid #000;padding:3px;text-align:center;white-space:nowrap;overflow:hidden;height:20px;line-height:1.3}
+  .attendance-table th{background:#E8E8E8;font-weight:700;font-size:10px}
+  .attendance-table .col-no{width:22px}
+  .attendance-table .col-id{width:46px}
+  .attendance-table .col-prefix{width:46px}
+  .attendance-table .col-name{width:70px;text-align:left}
+  .attendance-table .col-last{width:76px;text-align:left}
+  .attendance-table .col-color{width:30px}
+  .attendance-table .col-check{width:14px;padding:3px 1px}
+}
+</style>
 </head>
 <body>
 
 <header>
-  <div class="header-inner">
-    <div class="header-logo">🏆</div>
-    <div class="header-title">
-      <h1>กีฬาสี ปีการศึกษา 2569</h1>
-      <p>โรงเรียนบ้านห้วยผึ้ง</p>
-    </div>
-    <div class="color-dots">
-      <div class="color-dot" style="background: #E53935;"></div>
-      <div class="color-dot" style="background: #F9A825;"></div>
-      <div class="color-dot" style="background: #1E88E5;"></div>
-      <div class="color-dot" style="background: #D81B60;"></div>
-    </div>
+  <div class="h-logo">🏆</div>
+  <div class="h-title">
+    <h1>กีฬาสี ปีการศึกษา 2569</h1>
+    <p>โรงเรียนบ้านห้วยผึ้ง</p>
+  </div>
+  <div class="h-dots">
+    <div class="h-dot" style="background:#E53935"></div>
+    <div class="h-dot" style="background:#F9A825"></div>
+    <div class="h-dot" style="background:#1E88E5"></div>
+    <div class="h-dot" style="background:#D81B60"></div>
   </div>
 </header>
 
-<main>
+<div id="app">
 
-  <!-- NAV TABS -->
-  <div class="nav-tabs">
-    <button class="nav-tab active" onclick="switchTab('assign')" id="tab-assign">
-      🎨 แบ่งสีนักเรียน
-    </button>
-    <button class="nav-tab" onclick="switchTab('summary')" id="tab-summary">
-      📊 สรุปสี
-    </button>
-    <button class="nav-tab" onclick="switchTab('print')" id="tab-print">
-      🖨️ พิมพ์รายชื่อ
-    </button>
-    <button class="nav-tab" onclick="switchTab('setup')" id="tab-setup" style="display:none">
-      ⚙️ ตั้งค่า
-    </button>
-  </div>
-
-  <!-- ===== PANEL: ASSIGN ===== -->
+  <!-- ASSIGN -->
   <div class="panel active" id="panel-assign">
     <div class="card">
       <div class="card-title">🏫 เลือกห้องเรียน</div>
-      <div class="selector-grid">
+      <div class="field">
+        <label>ระดับการศึกษา</label>
+        <select id="sel-educLevel" onchange="filterLevels()">
+          <option value="">— เลือก —</option>
+          <option value="primary">ประถมศึกษา (ป.1–ป.6)</option>
+          <option value="secondary">มัธยมศึกษา (ม.1–ม.6)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>ชั้นเรียน</label>
+        <select id="sel-level" disabled onchange="loadRooms()">
+          <option value="">— เลือกระดับก่อน —</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>ห้อง</label>
+        <select id="sel-room" disabled>
+          <option value="">— เลือกชั้นก่อน —</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" onclick="loadStudents()" style="margin-top:4px">
+        📋 โหลดรายชื่อ
+      </button>
+    </div>
+    <div id="assign-content">
+      <div class="empty"><div class="ico">📚</div><p>เลือกห้องแล้วกด "โหลดรายชื่อ"</p></div>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="panel" id="panel-summary">
+    <div class="stats-grid">
+      <div class="stat stat-red"><div class="n" id="stat-red">—</div><div class="lbl">🔴 สีแดง</div></div>
+      <div class="stat stat-yellow"><div class="n" id="stat-yellow">—</div><div class="lbl">🟡 สีเหลือง</div></div>
+      <div class="stat stat-blue"><div class="n" id="stat-blue">—</div><div class="lbl">🔵 สีฟ้า</div></div>
+      <div class="stat stat-pink"><div class="n" id="stat-pink">—</div><div class="lbl">🩷 สีชมพู</div></div>
+    </div>
+    <button class="btn btn-outline btn-sm" onclick="loadSummary()" style="margin-bottom:12px">🔄 โหลดข้อมูล</button>
+    <div id="summary-content">
+      <div class="empty"><div class="ico">📊</div><p>กด "โหลดข้อมูล" เพื่อดูสรุป</p></div>
+    </div>
+  </div>
+
+  <!-- PRINT -->
+  <div class="panel" id="panel-print">
+    <div class="card">
+      <div class="card-title">🖨️ รูปแบบการพิมพ์</div>
+      <div class="ptype-grid">
+        <div class="ptype active" id="ptype-room" onclick="selectPrintType('room')">
+          <div class="ico">🏫</div>
+          <div class="t">รายห้อง</div>
+          <div class="d">แสดงทุกสีในห้อง</div>
+        </div>
+        <div class="ptype" id="ptype-color" onclick="selectPrintType('color')">
+          <div class="ico">🎨</div>
+          <div class="t">รายสี</div>
+          <div class="d">แยกตามสีกีฬา</div>
+        </div>
+      </div>
+
+      <div id="print-room-opts">
         <div class="field">
-          <label>ระดับการศึกษา</label>
-          <select id="sel-educLevel" onchange="filterLevels()">
+          <label>ระดับ</label>
+          <select id="print-educLevel" onchange="filterPrintLevels()">
             <option value="">— เลือก —</option>
-            <option value="primary">ประถมศึกษา (ป.1–ป.6)</option>
-            <option value="secondary">มัธยมศึกษา (ม.1–ม.6)</option>
+            <option value="primary">ประถมศึกษา</option>
+            <option value="secondary">มัธยมศึกษา</option>
+            <option value="all">ทั้งหมด</option>
           </select>
         </div>
         <div class="field">
-          <label>ชั้นเรียน</label>
-          <select id="sel-level" disabled onchange="loadRooms()">
-            <option value="">— เลือกระดับก่อน —</option>
+          <label>ชั้น</label>
+          <select id="print-level" disabled onchange="loadPrintRooms()">
+            <option value="">— —</option>
           </select>
         </div>
         <div class="field">
           <label>ห้อง</label>
-          <select id="sel-room" disabled>
-            <option value="">— เลือกชั้นก่อน —</option>
+          <select id="print-room" disabled>
+            <option value="">— —</option>
+            <option value="all">ทุกห้อง</option>
           </select>
         </div>
-        <div class="field" style="display:flex; align-items:flex-end;">
-          <button class="btn btn-primary" style="width:100%" onclick="loadStudents()">
-            📋 โหลดรายชื่อ
-          </button>
-        </div>
       </div>
-    </div>
 
-    <!-- Student List -->
-    <div id="assign-content">
-      <div class="empty-state">
-        <div class="icon">📚</div>
-        <p>เลือกห้องเรียนแล้วกด "โหลดรายชื่อ"</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== PANEL: SUMMARY ===== -->
-  <div class="panel" id="panel-summary">
-    <div class="card">
-      <div class="card-title">📊 ภาพรวมการแบ่งสี</div>
-
-      <div class="stats-grid" id="stats-grid">
-        <div class="stat-card stat-red">
-          <div class="stat-num" id="stat-red">—</div>
-          <div class="stat-label">🔴 สีแดง</div>
-        </div>
-        <div class="stat-card stat-yellow">
-          <div class="stat-num" id="stat-yellow">—</div>
-          <div class="stat-label">🟡 สีเหลือง</div>
-        </div>
-        <div class="stat-card stat-blue">
-          <div class="stat-num" id="stat-blue">—</div>
-          <div class="stat-label">🔵 สีฟ้า</div>
-        </div>
-        <div class="stat-card stat-pink">
-          <div class="stat-num" id="stat-pink">—</div>
-          <div class="stat-label">🩷 สีชมพู</div>
+      <div id="print-color-opts" style="display:none">
+        <div class="field">
+          <label>สีกีฬา</label>
+          <select id="print-color-sel">
+            <option value="all">ทุกสี</option>
+            <option value="red">🔴 สีแดง</option>
+            <option value="yellow">🟡 สีเหลือง</option>
+            <option value="blue">🔵 สีฟ้า</option>
+            <option value="pink">🩷 สีชมพู</option>
+          </select>
         </div>
       </div>
 
-      <button class="btn btn-outline btn-sm" onclick="loadSummary()">🔄 รีเฟรชข้อมูล</button>
-    </div>
-
-    <div id="summary-content">
-      <div class="empty-state">
-        <div class="icon">📊</div>
-        <p>กด "รีเฟรชข้อมูล" เพื่อดูสรุป</p>
-      </div>
+      <button class="btn btn-primary" onclick="doPrint()" style="margin-top:4px">🖨️ พิมพ์เลย</button>
     </div>
   </div>
 
-  <!-- ===== PANEL: PRINT ===== -->
-  <div class="panel" id="panel-print">
-    <div class="card">
-      <div class="card-title">🖨️ เลือกรูปแบบการพิมพ์</div>
+  <!-- SETUP (hidden) -->
+  <div class="panel" id="panel-setup"></div>
 
-      <div class="print-options">
-        <div class="print-type-card active" id="ptype-room" onclick="selectPrintType('room')">
-          <div class="icon">🏫</div>
-          <div class="title">รายห้องเรียน</div>
-          <div class="desc">แสดงนักเรียนทุกสีในห้องเดียวกัน</div>
-        </div>
-        <div class="print-type-card" id="ptype-color" onclick="selectPrintType('color')">
-          <div class="icon">🎨</div>
-          <div class="title">รายสี</div>
-          <div class="desc">แยกตามสีกีฬา แบ่งชั้น/ห้อง</div>
-        </div>
-      </div>
+</div>
 
-      <div id="print-room-opts" style="margin-bottom:16px;">
-        <div class="selector-grid">
-          <div class="field">
-            <label>ระดับ</label>
-            <select id="print-educLevel" onchange="filterPrintLevels()">
-              <option value="">— เลือก —</option>
-              <option value="primary">ประถมศึกษา</option>
-              <option value="secondary">มัธยมศึกษา</option>
-              <option value="all">ทั้งหมด</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>ชั้น</label>
-            <select id="print-level" disabled onchange="loadPrintRooms()">
-              <option value="">— —</option>
-            </select>
-          </div>
-          <div class="field">
-            <label>ห้อง</label>
-            <select id="print-room" disabled>
-              <option value="">— —</option>
-              <option value="all">ทุกห้อง</option>
-            </select>
-          </div>
-          <div class="field" style="display:flex;align-items:flex-end;">
-            <button class="btn btn-primary" style="width:100%" onclick="doPrint()">🖨️ พิมพ์เลย</button>
-          </div>
-        </div>
-      </div>
+<!-- BOTTOM NAV -->
+<nav>
+  <button class="nav-btn active" onclick="switchTab('assign')" id="tab-assign">
+    <span class="ico">🎨</span>แบ่งสี
+  </button>
+  <button class="nav-btn" onclick="switchTab('summary')" id="tab-summary">
+    <span class="ico">📊</span>สรุป
+  </button>
+  <button class="nav-btn" onclick="switchTab('print')" id="tab-print">
+    <span class="ico">🖨️</span>พิมพ์
+  </button>
+</nav>
 
-      <div id="print-color-opts" style="display:none; margin-bottom:16px;">
-        <div class="selector-grid">
-          <div class="field">
-            <label>สีกีฬา</label>
-            <select id="print-color-sel">
-              <option value="all">ทุกสี</option>
-              <option value="red">🔴 สีแดง</option>
-              <option value="yellow">🟡 สีเหลือง</option>
-              <option value="blue">🔵 สีฟ้า</option>
-              <option value="pink">🩷 สีชมพู</option>
-            </select>
-          </div>
-          <div class="field" style="display:flex;align-items:flex-end;">
-            <button class="btn btn-primary" style="width:100%" onclick="doPrint()">🖨️ พิมพ์เลย</button>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ===== PANEL: SETUP ===== -->
-  <div class="panel" id="panel-setup">
-    <div class="card">
-      <div class="card-title">⚙️ การเชื่อมต่อ Google Sheet</div>
-
-      <div class="setup-box">
-        <p>📌 วางลิงก์ Google Apps Script Web App ที่นี่ (ดูคู่มือ Code.gs)</p>
-        <input type="url" id="script-url-input" class="setup-input"
-          placeholder="https://script.google.com/macros/s/...../exec"
-          value="">
-        <div style="margin-top: 10px; display:flex; gap:8px; flex-wrap:wrap;">
-          <button class="btn btn-primary btn-sm" onclick="saveScriptUrl()">💾 บันทึก URL</button>
-          <button class="btn btn-outline btn-sm" onclick="testConnection()">🔗 ทดสอบการเชื่อมต่อ</button>
-        </div>
-        <p id="connection-status" style="margin-top: 10px; font-size: 13px; color: var(--text3);"></p>
-      </div>
-
-      <div style="font-size: 14px; color: var(--text2); line-height: 2;">
-        <strong>คู่มือตั้งค่าครั้งแรก</strong><br>
-        1. เปิด Google Sheet ใหม่ (หรือเปิดที่มีอยู่)<br>
-        2. เมนู Extensions → Apps Script<br>
-        3. วางโค้ดจากไฟล์ <code>Code.gs</code> ทั้งหมด<br>
-        4. รัน <strong>setupSheets()</strong> 1 ครั้ง (จะสร้าง Sheet ให้อัตโนมัติ)<br>
-        5. Deploy → New deployment → Web app<br>
-        &nbsp;&nbsp;&nbsp;• Execute as: <strong>Me</strong><br>
-        &nbsp;&nbsp;&nbsp;• Who has access: <strong>Anyone</strong><br>
-        6. คัดลอก URL มาวางที่ช่องด้านบน<br>
-        7. กรอกรายชื่อนักเรียนในชีต <strong>"นักเรียน"</strong><br>
-        &nbsp;&nbsp;&nbsp;คอลัม: รหัส | เลขที่ | ระดับชั้น | ห้อง | ชื่อ | นามสกุล
-      </div>
-    </div>
-  </div>
-
-</main>
-
-<!-- PRINT AREA -->
 <div id="printArea"></div>
-
-<!-- TOAST -->
 <div id="toast"></div>
 
 <script>
-// ==========================================
-// CONFIG
-// ==========================================
-const COLOR_LABELS = {
-  red:    '🔴 สีแดง',
-  yellow: '🟡 สีเหลือง',
-  blue:   '🔵 สีฟ้า',
-  pink:   '🩷 สีชมพู',
-  '':     '— ยังไม่ได้แบ่ง'
-};
+const COLOR_LABELS={red:'🔴 สีแดง',yellow:'🟡 สีเหลือง',blue:'🔵 สีฟ้า',pink:'🩷 สีชมพู','':'— ยังไม่ได้แบ่ง'};
+const PRIMARY_LEVELS=['ป.1','ป.2','ป.3','ป.4','ป.5','ป.6'];
+const SECONDARY_LEVELS=['ม.1','ม.2','ม.3','ม.4','ม.5','ม.6'];
+let SCRIPT_URL='https://script.google.com/macros/s/AKfycbxNPRRtYsXUz14o2VapkRGUbyUpbbJc24GztEHlOJ--nwUHF9_FLIZm0F80dv9kMZvS/exec';
+let allLevels={};
+let printType='room';
 
-const PRIMARY_LEVELS   = ['ป.1','ป.2','ป.3','ป.4','ป.5','ป.6'];
-const SECONDARY_LEVELS = ['ม.1','ม.2','ม.3','ม.4','ม.5','ม.6'];
+window.onload=()=>{ fetchLevels(); };
 
-let SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxNPRRtYsXUz14o2VapkRGUbyUpbbJc24GztEHlOJ--nwUHF9_FLIZm0F80dv9kMZvS/exec';
-let allLevels  = {};      // { "ป.1": ["1","2"], ... }
-let printType  = 'room';
-
-// On load
-window.onload = () => {
-  const saved = localStorage.getItem('bhp_script_url');
-  if (saved) {
-    document.getElementById('script-url-input').value = saved;
-    fetchLevels();
-  }
-};
-
-// ==========================================
-// UTIL
-// ==========================================
-function showToast(msg, type = '') {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'show ' + type;
-  setTimeout(() => t.className = '', 3000);
+function showToast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='show '+type;
+  setTimeout(()=>t.className='',3000);
 }
 
-function switchTab(tab) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
-  document.getElementById('panel-' + tab).classList.add('active');
-  document.getElementById('tab-' + tab).classList.add('active');
+function switchTab(tab){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.getElementById('app').scrollTo(0,0);
 }
 
-function colorBadge(c) {
-  const map = { red:'badge-red', yellow:'badge-yellow', blue:'badge-blue', pink:'badge-pink', '':'badge-none' };
-  const lbl = { red:'แดง', yellow:'เหลือง', blue:'ฟ้า', pink:'ชมพู', '':'ยังไม่แบ่ง' };
-  return `<span class="color-badge ${map[c]||'badge-none'}">${lbl[c]||'—'}</span>`;
+function colorBadge(c){
+  const m={red:'badge-red',yellow:'badge-yellow',blue:'badge-blue',pink:'badge-pink','':'badge-none'};
+  const l={red:'แดง',yellow:'เหลือง',blue:'ฟ้า',pink:'ชมพู','':'ยังไม่แบ่ง'};
+  return `<span class="badge ${m[c]||'badge-none'}">${l[c]||'—'}</span>`;
 }
 
-// ==========================================
-// SETUP
-// ==========================================
-function saveScriptUrl() {
-  const url = document.getElementById('script-url-input').value.trim();
-  if (!url) { showToast('กรุณาใส่ URL', 'error'); return; }
-  SCRIPT_URL = url;
-  localStorage.setItem('bhp_script_url', url);
-  showToast('💾 บันทึก URL แล้ว', 'success');
-  fetchLevels();
+async function fetchLevels(){
+  if(!SCRIPT_URL)return;
+  try{
+    const res=await fetch(`${SCRIPT_URL}?action=getLevels`);
+    const data=await res.json();
+    if(data.levels)allLevels=data.levels;
+  }catch(e){console.warn(e)}
 }
 
-async function testConnection() {
-  const url = document.getElementById('script-url-input').value.trim();
-  if (!url) { showToast('กรุณาใส่ URL ก่อน', 'error'); return; }
-  const el = document.getElementById('connection-status');
-  el.textContent = '⏳ กำลังทดสอบ...';
-  try {
-    const res = await fetch(`${url}?action=getLevels`);
-    const data = await res.json();
-    if (data.levels) {
-      el.textContent = `✅ เชื่อมต่อสำเร็จ — พบ ${Object.keys(data.levels).length} ชั้นเรียน`;
-      el.style.color = '#2E7D32';
-    } else {
-      el.textContent = '❌ ' + (data.error || 'ไม่พบข้อมูล');
-      el.style.color = '#C62828';
-    }
-  } catch(e) {
-    el.textContent = '❌ เชื่อมต่อไม่ได้ — ' + e.message;
-    el.style.color = '#C62828';
-  }
-}
-
-// ==========================================
-// FETCH LEVELS (from Script)
-// ==========================================
-async function fetchLevels() {
-  if (!SCRIPT_URL) return;
-  try {
-    const res = await fetch(`${SCRIPT_URL}?action=getLevels`);
-    const data = await res.json();
-    if (data.levels) allLevels = data.levels;
-  } catch(e) {
-    console.warn('fetchLevels error', e);
-  }
-}
-
-// ==========================================
-// ASSIGN TAB
-// ==========================================
-function filterLevels() {
-  const edu = document.getElementById('sel-educLevel').value;
-  const sel = document.getElementById('sel-level');
-  sel.innerHTML = '<option value="">— เลือก —</option>';
-  sel.disabled = true;
-  document.getElementById('sel-room').innerHTML = '<option value="">— —</option>';
-  document.getElementById('sel-room').disabled = true;
-
-  if (!edu) return;
-  const set = edu === 'primary' ? PRIMARY_LEVELS : SECONDARY_LEVELS;
-  let found = false;
-
-  // Try from allLevels (live from Sheet)
-  Object.keys(allLevels).forEach(lv => {
-    if (set.includes(lv)) {
-      sel.innerHTML += `<option value="${lv}">${lv}</option>`;
-      found = true;
-    }
+function filterLevels(){
+  const edu=document.getElementById('sel-educLevel').value;
+  const sel=document.getElementById('sel-level');
+  sel.innerHTML='<option value="">— เลือก —</option>';
+  sel.disabled=true;
+  document.getElementById('sel-room').innerHTML='<option value="">— —</option>';
+  document.getElementById('sel-room').disabled=true;
+  if(!edu)return;
+  const set=edu==='primary'?PRIMARY_LEVELS:SECONDARY_LEVELS;
+  let found=false;
+  Object.keys(allLevels).forEach(lv=>{
+    if(set.includes(lv)){sel.innerHTML+=`<option value="${lv}">${lv}</option>`;found=true;}
   });
-
-  // Fallback: show all in set if no data yet
-  if (!found) {
-    set.forEach(lv => sel.innerHTML += `<option value="${lv}">${lv}</option>`);
-  }
-
-  sel.disabled = false;
+  if(!found)set.forEach(lv=>sel.innerHTML+=`<option value="${lv}">${lv}</option>`);
+  sel.disabled=false;
 }
 
-function loadRooms() {
-  const level = document.getElementById('sel-level').value;
-  const sel   = document.getElementById('sel-room');
-  sel.innerHTML = '<option value="">— เลือก —</option>';
-  sel.disabled  = true;
-  if (!level) return;
-
-  const rooms = allLevels[level] || ['1','2','3'];
-  rooms.forEach(r => sel.innerHTML += `<option value="${r}">ห้อง ${r}</option>`);
-  sel.disabled = false;
+function loadRooms(){
+  const level=document.getElementById('sel-level').value;
+  const sel=document.getElementById('sel-room');
+  sel.innerHTML='<option value="">— เลือก —</option>';
+  sel.disabled=true;
+  if(!level)return;
+  const rooms=allLevels[level]||['1','2','3'];
+  rooms.forEach(r=>sel.innerHTML+=`<option value="${r}">ห้อง ${r}</option>`);
+  sel.disabled=false;
 }
 
-async function loadStudents() {
-  const level = document.getElementById('sel-level').value;
-  const room  = document.getElementById('sel-room').value;
-  if (!level || !room) { showToast('กรุณาเลือกชั้นและห้องก่อน', 'error'); return; }
-  if (!SCRIPT_URL) { showToast('กรุณาตั้งค่า URL ใน "ตั้งค่า" ก่อน', 'error'); return; }
-
-  const wrap = document.getElementById('assign-content');
-  wrap.innerHTML = `<div class="loading"><div class="spinner"></div><br>กำลังโหลดรายชื่อ...</div>`;
-
-  try {
-    const res  = await fetch(`${SCRIPT_URL}?action=getStudents&level=${encodeURIComponent(level)}&room=${encodeURIComponent(room)}`);
-    const data = await res.json();
-
-    if (data.error) { wrap.innerHTML = `<div class="loading">❌ ${data.error}</div>`; return; }
-    renderStudentList(wrap, data.students, level, room);
-  } catch(e) {
-    wrap.innerHTML = `<div class="loading">❌ โหลดข้อมูลไม่สำเร็จ<br><small>${e.message}</small></div>`;
+async function loadStudents(){
+  const level=document.getElementById('sel-level').value;
+  const room=document.getElementById('sel-room').value;
+  if(!level||!room){showToast('เลือกชั้นและห้องก่อน','error');return;}
+  const wrap=document.getElementById('assign-content');
+  wrap.innerHTML=`<div class="loading"><div class="spinner"></div><br>กำลังโหลด...</div>`;
+  try{
+    const res=await fetch(`${SCRIPT_URL}?action=getStudents&level=${encodeURIComponent(level)}&room=${encodeURIComponent(room)}`);
+    const data=await res.json();
+    if(data.error){wrap.innerHTML=`<div class="loading">❌ ${data.error}</div>`;return;}
+    renderStudentList(wrap,data.students,level,room);
+  }catch(e){
+    wrap.innerHTML=`<div class="loading">❌ โหลดไม่สำเร็จ<br><small>${e.message}</small></div>`;
   }
 }
 
-function renderStudentList(wrap, students, level, room) {
-  if (!students.length) {
-    wrap.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><p>ไม่พบรายชื่อนักเรียนใน ${level}/${room}</p></div>`;
+function renderStudentList(wrap,students,level,room){
+  if(!students.length){
+    wrap.innerHTML=`<div class="empty"><div class="ico">🔍</div><p>ไม่พบนักเรียนใน ${level}/${room}</p></div>`;
     return;
   }
+  const stMap={};
+  students.forEach(s=>stMap[s.rowIndex]=s);
+  window._currentStudents=stMap;
 
-  // ใช้ rowIndex เป็น key เพื่อให้ saveColors อัปเดตถูกแถว
-  const stMap = {};
-  students.forEach(s => stMap[s.rowIndex] = s);
-  window._currentStudents = stMap;
-  window._currentLevel = level;
-  window._currentRoom  = room;
-
-  const rows = students.map(s => `
-    <tr id="row-${s.rowIndex}">
-      <td class="student-number">${s.number}</td>
-      <td style="color:var(--text3);font-size:13px;">${s.id}</td>
-      <td style="font-size:14px;">${s.prefix}</td>
-      <td>${s.firstName}</td>
-      <td>${s.lastName}</td>
-      <td>
-        <div class="color-btns">
-          ${['red','yellow','blue','pink'].map(c => `
-            <button class="color-btn c-${c} ${s.color===c?'selected':''}"
-              onclick="setColor(${s.rowIndex},'${c}')"
-              title="${COLOR_LABELS[c]}"></button>
-          `).join('')}
-          <button class="color-btn c-none ${s.color===''?'selected':''}"
-            onclick="setColor(${s.rowIndex},'')" title="ยังไม่แบ่ง">—</button>
-        </div>
-      </td>
-      <td id="badge-${s.rowIndex}">${colorBadge(s.color)}</td>
-    </tr>
+  const cards=students.map(s=>`
+    <div class="st-card" id="row-${s.rowIndex}">
+      <div class="st-num">${s.number}</div>
+      <div class="st-info">
+        <div class="st-name">${s.prefix}${s.firstName} ${s.lastName}</div>
+        <div class="st-sub">${s.id} &nbsp;|&nbsp; <span id="badge-${s.rowIndex}">${colorBadge(s.color).replace('class="badge','class="badge').replace('</span>','</span>')}</span></div>
+      </div>
+      <div class="st-colors">
+        ${['red','yellow','blue','pink'].map(c=>`
+          <button class="cbtn c-${c} ${s.color===c?'sel':''}" onclick="setColor(${s.rowIndex},'${c}')" title="${COLOR_LABELS[c]}"></button>
+        `).join('')}
+        <button class="cbtn c-none ${s.color===''?'sel':''}" onclick="setColor(${s.rowIndex},'')" title="ยังไม่แบ่ง">—</button>
+      </div>
+    </div>
   `).join('');
 
-  wrap.innerHTML = `
-    <div class="card">
-      <div class="student-list-header">
-        <div class="card-title" style="margin:0">📋 ${level} ห้อง ${room}</div>
-        <span class="student-count">${students.length} คน</span>
+  wrap.innerHTML=`
+    <div style="padding:0 0 4px">
+      <div class="room-bar">
+        <div class="title">📋 ${level} ห้อง ${room}</div>
+        <div class="count">${students.length} คน</div>
       </div>
-
-      <div class="filter-bar">
-        <span style="font-size:13px; color:var(--text3); flex-shrink:0">กรองสี:</span>
-        <span class="filter-pill all" onclick="filterColor('all',this)">ทั้งหมด</span>
-        <span class="filter-pill fp-red"    onclick="filterColor('red',this)">🔴 แดง</span>
-        <span class="filter-pill fp-yellow" onclick="filterColor('yellow',this)">🟡 เหลือง</span>
-        <span class="filter-pill fp-blue"   onclick="filterColor('blue',this)">🔵 ฟ้า</span>
-        <span class="filter-pill fp-pink"   onclick="filterColor('pink',this)">🩷 ชมพู</span>
-        <span class="filter-pill all-inactive" onclick="filterColor('none',this)">— ยังไม่แบ่ง</span>
+      <div class="pills">
+        <span class="pill pill-all" onclick="filterColor('all',this)">ทั้งหมด</span>
+        <span class="pill pill-red" onclick="filterColor('red',this)">🔴 แดง</span>
+        <span class="pill pill-yellow" onclick="filterColor('yellow',this)">🟡 เหลือง</span>
+        <span class="pill pill-blue" onclick="filterColor('blue',this)">🔵 ฟ้า</span>
+        <span class="pill pill-pink" onclick="filterColor('pink',this)">🩷 ชมพู</span>
+        <span class="pill pill-inactive" onclick="filterColor('none',this)">— ยังไม่แบ่ง</span>
       </div>
-
-      <div style="overflow-x:auto;">
-        <table class="student-table">
-          <thead>
-            <tr>
-              <th>เลขที่</th>
-              <th>เลขประจำตัว</th>
-              <th>คำนำหน้า</th>
-              <th>ชื่อ</th>
-              <th>สกุล</th>
-              <th>เลือกสี</th>
-              <th>สีที่ได้</th>
-            </tr>
-          </thead>
-          <tbody id="student-tbody">${rows}</tbody>
-        </table>
-      </div>
-
-      <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-        <button class="btn btn-success" onclick="saveColors()">
-          💾 บันทึกสี → Google Sheet
-        </button>
-        <button class="btn btn-outline btn-sm" onclick="assignRandom()">
-          🎲 สุ่มสีที่เหลือ
-        </button>
-        <span id="save-status" style="font-size:13px; color:var(--text3);"></span>
+      <div id="student-list">${cards}</div>
+      <div class="save-bar">
+        <button class="btn btn-success btn-sm" onclick="saveColors()">💾 บันทึก → Sheet</button>
+        <button class="btn btn-outline btn-sm" onclick="assignRandom()">🎲 สุ่มที่เหลือ</button>
+        <span class="status" id="save-status"></span>
       </div>
     </div>
   `;
 }
 
-function setColor(rowIndex, color) {
-  if (!window._currentStudents) return;
-  window._currentStudents[rowIndex].color = color;
-
-  const row = document.getElementById('row-' + rowIndex);
-  row.querySelectorAll('.color-btn').forEach(b => b.classList.remove('selected'));
-  const btns = row.querySelectorAll('.color-btn');
-  const idx  = ['red','yellow','blue','pink',''].indexOf(color);
-  if (idx >= 0 && btns[idx]) btns[idx].classList.add('selected');
-
-  document.getElementById('badge-' + rowIndex).innerHTML = colorBadge(color);
+function setColor(rowIndex,color){
+  if(!window._currentStudents)return;
+  window._currentStudents[rowIndex].color=color;
+  const card=document.getElementById('row-'+rowIndex);
+  card.querySelectorAll('.cbtn').forEach(b=>b.classList.remove('sel'));
+  const btns=card.querySelectorAll('.cbtn');
+  const idx=['red','yellow','blue','pink',''].indexOf(color);
+  if(idx>=0&&btns[idx])btns[idx].classList.add('sel');
+  document.getElementById('badge-'+rowIndex).outerHTML=`<span id="badge-${rowIndex}">${colorBadge(color)}</span>`;
 }
 
-function filterColor(color, el) {
-  // Update pill styles
-  document.querySelectorAll('.filter-pill').forEach(p => {
-    if (p.classList.contains('all')) p.className = 'filter-pill all-inactive';
+function filterColor(color,el){
+  document.querySelectorAll('.pill').forEach(p=>{
+    const cls=p.className;
+    if(cls.includes('pill-all'))p.className='pill pill-inactive';
   });
-  if (color === 'all') {
-    el.className = 'filter-pill all';
-  } else {
-    el.style.opacity = '1';
-  }
-
-  const tbody = document.getElementById('student-tbody');
-  if (!tbody) return;
-  tbody.querySelectorAll('tr').forEach(row => {
-    const rowIndex = row.id.replace('row-', '');
-    const st = window._currentStudents && window._currentStudents[rowIndex];
-    if (!st) return;
-    const match = color === 'all'
-      || (color === 'none' && st.color === '')
-      || st.color === color;
-    row.style.display = match ? '' : 'none';
+  el.className=el.className.replace('pill-inactive','pill-all');
+  document.querySelectorAll('#student-list .st-card').forEach(card=>{
+    const rowIndex=card.id.replace('row-','');
+    const st=window._currentStudents&&window._currentStudents[rowIndex];
+    if(!st)return;
+    const match=color==='all'||(color==='none'&&st.color==='')||st.color===color;
+    card.style.display=match?'':'none';
   });
 }
 
-function assignRandom() {
-  const colors = ['red','yellow','blue','pink'];
-  if (!window._currentStudents) return;
-  Object.values(window._currentStudents).forEach(s => {
-    if (!s.color) {
-      const c = colors[Math.floor(Math.random() * colors.length)];
-      setColor(s.rowIndex, c);
+function assignRandom(){
+  const colors=['red','yellow','blue','pink'];
+  if(!window._currentStudents)return;
+  Object.values(window._currentStudents).forEach(s=>{
+    if(!s.color)setColor(s.rowIndex,colors[Math.floor(Math.random()*colors.length)]);
+  });
+  showToast('🎲 สุ่มสีเรียบร้อย');
+}
+
+async function saveColors(){
+  if(!window._currentStudents)return;
+  const students=Object.values(window._currentStudents);
+  const status=document.getElementById('save-status');
+  if(status)status.textContent='⏳ กำลังบันทึก...';
+  try{
+    const res=await fetch(SCRIPT_URL,{method:'POST',body:JSON.stringify({action:'saveColors',students})});
+    const data=await res.json();
+    if(data.success){
+      showToast(`✅ บันทึก ${data.saved} คน เรียบร้อย`,'success');
+      if(status)status.textContent=`✅ บันทึกแล้ว`;
+    }else{
+      showToast('❌ '+(data.error||'บันทึกไม่สำเร็จ'),'error');
+      if(status)status.textContent='';
     }
-  });
-  showToast('🎲 สุ่มสีที่ยังไม่ได้แบ่งเรียบร้อย');
-}
-
-async function saveColors() {
-  if (!window._currentStudents) return;
-  if (!SCRIPT_URL) { showToast('กรุณาตั้งค่า URL ก่อน', 'error'); return; }
-
-  const students = Object.values(window._currentStudents);
-  const status   = document.getElementById('save-status');
-  status.textContent = '⏳ กำลังบันทึก...';
-
-  try {
-    const res = await fetch(SCRIPT_URL, {
-      method: 'POST',
-      body: JSON.stringify({ action: 'saveColors', students }),
-    });
-    const data = await res.json();
-    if (data.success) {
-      showToast(`✅ บันทึก ${data.saved} คน เรียบร้อย`, 'success');
-      status.textContent = `✅ บันทึกแล้ว ${data.saved} คน`;
-    } else {
-      showToast('❌ ' + (data.error || 'บันทึกไม่สำเร็จ'), 'error');
-      status.textContent = '';
-    }
-  } catch(e) {
-    showToast('❌ เชื่อมต่อไม่ได้ — ' + e.message, 'error');
-    status.textContent = '';
+  }catch(e){
+    showToast('❌ เชื่อมต่อไม่ได้','error');
+    if(status)status.textContent='';
   }
 }
 
-// ==========================================
-// SUMMARY TAB
-// ==========================================
-async function loadSummary() {
-  if (!SCRIPT_URL) { showToast('กรุณาตั้งค่า URL ก่อน', 'error'); return; }
-  const wrap = document.getElementById('summary-content');
-  wrap.innerHTML = `<div class="loading"><div class="spinner"></div><br>กำลังโหลด...</div>`;
-
-  try {
+async function loadSummary(){
+  if(!SCRIPT_URL){showToast('ยังไม่ได้ตั้งค่า URL','error');return;}
+  const wrap=document.getElementById('summary-content');
+  wrap.innerHTML=`<div class="loading"><div class="spinner"></div><br>กำลังโหลด...</div>`;
+  try{
     await fetchLevels();
-    let all = [];
-
-    for (const level of Object.keys(allLevels)) {
-      for (const room of allLevels[level]) {
-        const res  = await fetch(`${SCRIPT_URL}?action=getStudents&level=${encodeURIComponent(level)}&room=${encodeURIComponent(room)}`);
-        const data = await res.json();
-        if (data.students) all = all.concat(data.students);
+    let all=[];
+    for(const level of Object.keys(allLevels)){
+      for(const room of allLevels[level]){
+        const res=await fetch(`${SCRIPT_URL}?action=getStudents&level=${encodeURIComponent(level)}&room=${encodeURIComponent(room)}`);
+        const data=await res.json();
+        if(data.students)all=all.concat(data.students);
       }
     }
+    const counts={red:0,yellow:0,blue:0,pink:0,'':0};
+    all.forEach(s=>{counts[s.color]=(counts[s.color]||0)+1;});
+    document.getElementById('stat-red').textContent=counts.red;
+    document.getElementById('stat-yellow').textContent=counts.yellow;
+    document.getElementById('stat-blue').textContent=counts.blue;
+    document.getElementById('stat-pink').textContent=counts.pink;
 
-    const counts = { red:0, yellow:0, blue:0, pink:0, '':0 };
-    all.forEach(s => { counts[s.color] = (counts[s.color]||0) + 1; });
-
-    document.getElementById('stat-red').textContent    = counts.red;
-    document.getElementById('stat-yellow').textContent = counts.yellow;
-    document.getElementById('stat-blue').textContent   = counts.blue;
-    document.getElementById('stat-pink').textContent   = counts.pink;
-
-    // Group by color → level/room
-    const byColor = { red:[], yellow:[], blue:[], pink:[] };
-    all.forEach(s => { if (byColor[s.color]) byColor[s.color].push(s); });
-
-    const colorMeta = [
-      { key:'red',    label:'🔴 สีแดง',    cls:'badge-red'    },
-      { key:'yellow', label:'🟡 สีเหลือง', cls:'badge-yellow' },
-      { key:'blue',   label:'🔵 สีฟ้า',    cls:'badge-blue'   },
-      { key:'pink',   label:'🩷 สีชมพู',   cls:'badge-pink'   },
+    const colorMeta=[
+      {key:'red',label:'🔴 สีแดง',cls:'stat-red'},
+      {key:'yellow',label:'🟡 สีเหลือง',cls:'stat-yellow'},
+      {key:'blue',label:'🔵 สีฟ้า',cls:'stat-blue'},
+      {key:'pink',label:'🩷 สีชมพู',cls:'stat-pink'},
     ];
+    const byColor={red:[],yellow:[],blue:[],pink:[]};
+    all.forEach(s=>{if(byColor[s.color])byColor[s.color].push(s);});
 
-    let html = colorMeta.map(cm => {
-      const sts = byColor[cm.key];
-      // Group by level+room
-      const rooms = {};
-      sts.forEach(s => {
-        const k = s.level + '/ห้อง' + s.room;
-        if (!rooms[k]) rooms[k] = [];
-        rooms[k].push(s);
-      });
-
-      const roomHtml = Object.entries(rooms).sort(([a],[b]) => a.localeCompare(b)).map(([k,ss]) => `
-        <div style="margin-bottom:8px;">
-          <div style="font-size:12px; font-weight:700; color:var(--text2); margin-bottom:4px;">${k} (${ss.length} คน)</div>
-          <div style="font-size:14px; line-height:2; color:var(--text);">
-            ${ss.map(s => `${s.number}. ${s.firstName} ${s.lastName}`).join(' &nbsp;•&nbsp; ')}
-          </div>
+    let html=colorMeta.map(cm=>{
+      const sts=byColor[cm.key];
+      const rooms={};
+      sts.forEach(s=>{const k=s.level+'/ห้อง'+s.room;if(!rooms[k])rooms[k]=[];rooms[k].push(s);});
+      const roomHtml=Object.entries(rooms).sort(([a],[b])=>a.localeCompare(b)).map(([k,ss])=>`
+        <div class="sum-group">
+          <div class="sum-room-label">${k} (${ss.length} คน)</div>
+          <div class="sum-names">${ss.map(s=>`${s.number}. ${s.prefix}${s.firstName} ${s.lastName}`).join(' • ')}</div>
         </div>
       `).join('');
-
-      return `
-        <div class="card">
-          <div class="card-title">
-            <span class="color-badge ${cm.cls}" style="font-size:14px; padding: 4px 14px;">${cm.label}</span>
-            <span class="student-count">${sts.length} คน</span>
-          </div>
-          ${roomHtml || '<div style="color:var(--text3);font-size:14px;">ยังไม่มีนักเรียน</div>'}
-        </div>
-      `;
+      return `<div class="card">
+        <div class="card-title"><span class="badge badge-${cm.key}" style="font-size:14px;padding:4px 14px">${cm.label}</span><span style="font-size:13px;color:var(--text3);margin-left:auto">${sts.length} คน</span></div>
+        ${roomHtml||'<div style="color:var(--text3);font-size:14px">ยังไม่มีนักเรียน</div>'}
+      </div>`;
     }).join('');
 
-    const unassigned = counts[''];
-    if (unassigned > 0) {
-      html += `<div class="card" style="border:1.5px dashed var(--border);">
-        <div class="card-title" style="color:var(--text3);">⚠️ ยังไม่ได้แบ่งสี</div>
-        <p style="font-size:14px; color:var(--text3);">${unassigned} คน ยังไม่มีสีกีฬา</p>
+    if(counts['']>0){
+      html+=`<div class="card" style="border:1.5px dashed var(--border)">
+        <div class="card-title" style="color:var(--text3)">⚠️ ยังไม่ได้แบ่งสี</div>
+        <p style="font-size:14px;color:var(--text3)">${counts['']} คน</p>
       </div>`;
     }
-
-    wrap.innerHTML = html;
-  } catch(e) {
-    wrap.innerHTML = `<div class="loading">❌ ${e.message}</div>`;
+    wrap.innerHTML=html;
+  }catch(e){
+    wrap.innerHTML=`<div class="loading">❌ ${e.message}</div>`;
   }
 }
 
-// ==========================================
-// PRINT
-// ==========================================
-function selectPrintType(type) {
-  printType = type;
-  document.getElementById('ptype-room').classList.toggle('active', type === 'room');
-  document.getElementById('ptype-color').classList.toggle('active', type === 'color');
-  document.getElementById('print-room-opts').style.display  = type === 'room'  ? '' : 'none';
-  document.getElementById('print-color-opts').style.display = type === 'color' ? '' : 'none';
+function selectPrintType(type){
+  printType=type;
+  document.getElementById('ptype-room').classList.toggle('active',type==='room');
+  document.getElementById('ptype-color').classList.toggle('active',type==='color');
+  document.getElementById('print-room-opts').style.display=type==='room'?'':'none';
+  document.getElementById('print-color-opts').style.display=type==='color'?'':'none';
 }
 
-function filterPrintLevels() {
-  const edu = document.getElementById('print-educLevel').value;
-  const sel = document.getElementById('print-level');
-  sel.innerHTML = '<option value="">— เลือก —</option>';
-  sel.disabled  = true;
-  document.getElementById('print-room').innerHTML = '<option value="">— —</option><option value="all">ทุกห้อง</option>';
-  document.getElementById('print-room').disabled = true;
-
-  if (edu === 'all') {
-    sel.innerHTML += '<option value="all">ทุกชั้น</option>';
-    sel.disabled = false;
-    document.getElementById('print-room').disabled = false;
-    return;
-  }
-  if (!edu) return;
-
-  const set = edu === 'primary' ? PRIMARY_LEVELS : SECONDARY_LEVELS;
-  set.forEach(lv => {
-    if (allLevels[lv] || true) sel.innerHTML += `<option value="${lv}">${lv}</option>`;
-  });
-  sel.disabled = false;
+function filterPrintLevels(){
+  const edu=document.getElementById('print-educLevel').value;
+  const sel=document.getElementById('print-level');
+  sel.innerHTML='<option value="">— เลือก —</option>';
+  sel.disabled=true;
+  document.getElementById('print-room').innerHTML='<option value="">— —</option><option value="all">ทุกห้อง</option>';
+  document.getElementById('print-room').disabled=true;
+  if(edu==='all'){sel.innerHTML+='<option value="all">ทุกชั้น</option>';sel.disabled=false;document.getElementById('print-room').disabled=false;return;}
+  if(!edu)return;
+  const set=edu==='primary'?PRIMARY_LEVELS:SECONDARY_LEVELS;
+  set.forEach(lv=>sel.innerHTML+=`<option value="${lv}">${lv}</option>`);
+  sel.disabled=false;
 }
 
-function loadPrintRooms() {
-  const level = document.getElementById('print-level').value;
-  const sel   = document.getElementById('print-room');
-  sel.innerHTML = '<option value="">— เลือก —</option><option value="all">ทุกห้อง</option>';
-  sel.disabled  = true;
-  if (!level || level === 'all') { sel.disabled = false; return; }
-  const rooms = allLevels[level] || [];
-  rooms.forEach(r => sel.innerHTML += `<option value="${r}">ห้อง ${r}</option>`);
-  sel.disabled = false;
+function loadPrintRooms(){
+  const level=document.getElementById('print-level').value;
+  const sel=document.getElementById('print-room');
+  sel.innerHTML='<option value="">— เลือก —</option><option value="all">ทุกห้อง</option>';
+  sel.disabled=true;
+  if(!level||level==='all'){sel.disabled=false;return;}
+  (allLevels[level]||[]).forEach(r=>sel.innerHTML+=`<option value="${r}">ห้อง ${r}</option>`);
+  sel.disabled=false;
 }
 
-async function doPrint() {
-  if (!SCRIPT_URL) { showToast('กรุณาตั้งค่า URL ก่อน', 'error'); return; }
-
-  showToast('⏳ กำลังเตรียมข้อมูล...');
-
-  let students = [];
-
-  if (printType === 'room') {
-    const level  = document.getElementById('print-level').value;
-    const room   = document.getElementById('print-room').value;
-    const levels = level === 'all' ? Object.keys(allLevels) : (level ? [level] : []);
-
-    for (const lv of levels) {
-      const rooms = room === 'all' ? (allLevels[lv] || []) : (room ? [room] : []);
-      for (const r of rooms) {
-        const res  = await fetch(`${SCRIPT_URL}?action=getStudents&level=${encodeURIComponent(lv)}&room=${encodeURIComponent(r)}`);
-        const data = await res.json();
-        if (data.students) students = students.concat(data.students);
+async function doPrint(){
+  if(!SCRIPT_URL){showToast('ยังไม่ได้ตั้งค่า URL','error');return;}
+  showToast('⏳ กำลังเตรียม...');
+  let students=[];
+  if(printType==='room'){
+    const level=document.getElementById('print-level').value;
+    const room=document.getElementById('print-room').value;
+    const levels=level==='all'?Object.keys(allLevels):(level?[level]:[]);
+    for(const lv of levels){
+      const rooms=room==='all'?(allLevels[lv]||[]):(room?[room]:[]);
+      for(const r of rooms){
+        const res=await fetch(`${SCRIPT_URL}?action=getStudents&level=${encodeURIComponent(lv)}&room=${encodeURIComponent(r)}`);
+        const data=await res.json();
+        if(data.students)students=students.concat(data.students);
       }
     }
-    buildPrintByRoom(students, level, room);
-  } else {
-    // By color — load all
-    for (const lv of Object.keys(allLevels)) {
-      for (const r of allLevels[lv]) {
-        const res  = await fetch(`${SCRIPT_URL}?action=getStudents&level=${encodeURIComponent(lv)}&room=${encodeURIComponent(r)}`);
-        const data = await res.json();
-        if (data.students) students = students.concat(data.students);
+    buildPrintByRoom(students);
+  }else{
+    for(const lv of Object.keys(allLevels)){
+      for(const r of allLevels[lv]){
+        const res=await fetch(`${SCRIPT_URL}?action=getStudents&level=${encodeURIComponent(lv)}&room=${encodeURIComponent(r)}`);
+        const data=await res.json();
+        if(data.students)students=students.concat(data.students);
       }
     }
     buildPrintByColor(students);
   }
-
-  setTimeout(() => window.print(), 400);
+  setTimeout(()=>window.print(),400);
 }
 
-function buildPrintByRoom(students, levelFilter, roomFilter) {
-  const groups = {};
-  students.forEach(s => {
-    const k = s.level + '|' + s.room;
-    if (!groups[k]) groups[k] = { level: s.level, room: s.room, list: [] };
-    groups[k].list.push(s);
-  });
-
-  const COLS = 15;
-
-  const pages = Object.values(groups).sort((a,b) => (a.level+a.room).localeCompare(b.level+b.room)).map(g => {
-    const rows = g.list.map(s => {
-      const checks = Array(COLS).fill('<td class="col-check"></td>').join('');
-      const colorTxt = {red:'แดง',yellow:'เหลือง',blue:'ฟ้า',pink:'ชมพู','':'-'}[s.color]||'-';
-      return `<tr>
-        <td class="col-no">${s.number}</td>
-        <td class="col-id">${s.id}</td>
-        <td class="col-prefix">${s.prefix}</td>
-        <td class="col-name">${s.firstName}</td>
-        <td class="col-last">${s.lastName}</td>
-        <td class="col-color">${colorTxt}</td>
-        ${checks}
-      </tr>`;
+function buildPrintByRoom(students){
+  const groups={};
+  students.forEach(s=>{const k=s.level+'|'+s.room;if(!groups[k])groups[k]={level:s.level,room:s.room,list:[]};groups[k].list.push(s);});
+  const COLS=15;
+  const pages=Object.values(groups).sort((a,b)=>(a.level+a.room).localeCompare(b.level+b.room)).map(g=>{
+    const rows=g.list.map(s=>{
+      const checks=Array(COLS).fill('<td class="col-check"></td>').join('');
+      const ct={red:'แดง',yellow:'เหลือง',blue:'ฟ้า',pink:'ชมพู','':'-'}[s.color]||'-';
+      return `<tr><td class="col-no">${s.number}</td><td class="col-id">${s.id}</td><td class="col-prefix">${s.prefix}</td><td class="col-name">${s.firstName}</td><td class="col-last">${s.lastName}</td><td class="col-color">${ct}</td>${checks}</tr>`;
     }).join('');
-
-    const checkHeaders = Array(COLS).fill(0).map((_,i) => `<th class="col-check">${i+1}</th>`).join('');
-
-    return `<div class="print-page">
-      <div class="print-header">
-        <h2>รายชื่อนักเรียน ${g.level} ห้อง ${g.room} — กีฬาสี ปีการศึกษา 2569</h2>
-        <p>โรงเรียนบ้านห้วยผึ้ง</p>
-      </div>
-      <table class="attendance-table">
-        <colgroup>
-          <col class="col-no"><col class="col-id"><col class="col-prefix">
-          <col class="col-name"><col class="col-last"><col class="col-color">
-          ${Array(COLS).fill('<col class="col-check">').join('')}
-        </colgroup>
-        <thead>
-          <tr>
-            <th class="col-no">เลขที่</th>
-            <th class="col-id">เลขประจำตัว</th>
-            <th class="col-prefix">คำนำหน้า</th>
-            <th class="col-name">ชื่อ</th>
-            <th class="col-last">สกุล</th>
-            <th class="col-color">สีกีฬา</th>
-            ${checkHeaders}
-          </tr>
-        </thead>
-        <tbody>${rows}</tbody>
-      </table>
-    </div>`;
+    const checkH=Array(COLS).fill(0).map((_,i)=>`<th class="col-check">${i+1}</th>`).join('');
+    return `<div class="print-page"><div class="print-header"><h2>รายชื่อนักเรียน ${g.level} ห้อง ${g.room} — กีฬาสี ปีการศึกษา 2569</h2><p>โรงเรียนบ้านห้วยผึ้ง</p></div><table class="attendance-table"><colgroup><col class="col-no"><col class="col-id"><col class="col-prefix"><col class="col-name"><col class="col-last"><col class="col-color">${Array(COLS).fill('<col class="col-check">').join('')}</colgroup><thead><tr><th class="col-no">เลขที่</th><th class="col-id">เลขประจำตัว</th><th class="col-prefix">คำนำหน้า</th><th class="col-name">ชื่อ</th><th class="col-last">สกุล</th><th class="col-color">สีกีฬา</th>${checkH}</tr></thead><tbody>${rows}</tbody></table></div>`;
   }).join('');
-
-  document.getElementById('printArea').innerHTML = pages;
+  document.getElementById('printArea').innerHTML=pages;
 }
 
-function buildPrintByColor(students) {
-  const colorFilter = document.getElementById('print-color-sel').value;
-  const COLORS = colorFilter === 'all' ? ['red','yellow','blue','pink'] : [colorFilter];
-  const COLS = 15;
-
-  const pages = COLORS.flatMap(color => {
-    const colorSts = students.filter(s => s.color === color);
-    const groups = {};
-    colorSts.forEach(s => {
-      const k = s.level + '|' + s.room;
-      if (!groups[k]) groups[k] = { level: s.level, room: s.room, list: [] };
-      groups[k].list.push(s);
-    });
-
-    return Object.values(groups).sort((a,b) => (a.level+a.room).localeCompare(b.level+b.room)).map(g => {
-      const rows = g.list.map(s => {
-        const checks = Array(COLS).fill('<td class="col-check"></td>').join('');
-        return `<tr>
-          <td class="col-no">${s.number}</td>
-          <td class="col-id">${s.id}</td>
-          <td class="col-prefix">${s.prefix}</td>
-          <td class="col-name">${s.firstName}</td>
-          <td class="col-last">${s.lastName}</td>
-          ${checks}
-        </tr>`;
+function buildPrintByColor(students){
+  const colorFilter=document.getElementById('print-color-sel').value;
+  const COLORS=colorFilter==='all'?['red','yellow','blue','pink']:[colorFilter];
+  const COLS=15;
+  const pages=COLORS.flatMap(color=>{
+    const colorSts=students.filter(s=>s.color===color);
+    const groups={};
+    colorSts.forEach(s=>{const k=s.level+'|'+s.room;if(!groups[k])groups[k]={level:s.level,room:s.room,list:[]};groups[k].list.push(s);});
+    return Object.values(groups).sort((a,b)=>(a.level+a.room).localeCompare(b.level+b.room)).map(g=>{
+      const rows=g.list.map(s=>{
+        const checks=Array(COLS).fill('<td class="col-check"></td>').join('');
+        return `<tr><td class="col-no">${s.number}</td><td class="col-id">${s.id}</td><td class="col-prefix">${s.prefix}</td><td class="col-name">${s.firstName}</td><td class="col-last">${s.lastName}</td>${checks}</tr>`;
       }).join('');
-
-      const checkHeaders = Array(COLS).fill(0).map((_,i) => `<th class="col-check">${i+1}</th>`).join('');
-
-      return `<div class="print-page">
-        <div class="print-header">
-          <h2>${COLOR_LABELS[color]} — ${g.level} ห้อง ${g.room}</h2>
-          <p>กีฬาสี ปีการศึกษา 2569 &nbsp;|&nbsp; โรงเรียนบ้านห้วยผึ้ง</p>
-        </div>
-        <table class="attendance-table">
-          <colgroup>
-            <col class="col-no"><col class="col-id"><col class="col-prefix">
-            <col class="col-name"><col class="col-last">
-            ${Array(COLS).fill('<col class="col-check">').join('')}
-          </colgroup>
-          <thead>
-            <tr>
-              <th class="col-no">เลขที่</th>
-              <th class="col-id">เลขประจำตัว</th>
-              <th class="col-prefix">คำนำหน้า</th>
-              <th class="col-name">ชื่อ</th>
-              <th class="col-last">สกุล</th>
-              ${checkHeaders}
-            </tr>
-          </thead>
-          <tbody>${rows}</tbody>
-        </table>
-      </div>`;
+      const checkH=Array(COLS).fill(0).map((_,i)=>`<th class="col-check">${i+1}</th>`).join('');
+      return `<div class="print-page"><div class="print-header"><h2>${COLOR_LABELS[color]} — ${g.level} ห้อง ${g.room}</h2><p>กีฬาสี ปีการศึกษา 2569 | โรงเรียนบ้านห้วยผึ้ง</p></div><table class="attendance-table"><colgroup><col class="col-no"><col class="col-id"><col class="col-prefix"><col class="col-name"><col class="col-last">${Array(COLS).fill('<col class="col-check">').join('')}</colgroup><thead><tr><th class="col-no">เลขที่</th><th class="col-id">เลขประจำตัว</th><th class="col-prefix">คำนำหน้า</th><th class="col-name">ชื่อ</th><th class="col-last">สกุล</th>${checkH}</tr></thead><tbody>${rows}</tbody></table></div>`;
     });
   });
-
-  document.getElementById('printArea').innerHTML = pages.join('');
+  document.getElementById('printArea').innerHTML=pages.join('');
 }
 </script>
 </body>
