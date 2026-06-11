@@ -84,7 +84,7 @@ select:disabled{opacity:.45;cursor:not-allowed}
 .st-sub{font-size:12px;color:var(--text3);margin-top:1px}
 .st-colors{display:flex;gap:8px;flex-shrink:0;align-items:center}
 
-/* COLOR BUTTONS — ใหญ่ขึ้น กดง่ายบนมือถือ */
+/* COLOR BUTTONS */
 .cbtn{width:38px;height:38px;border-radius:50%;border:3px solid transparent;cursor:pointer;transition:transform .12s;flex-shrink:0;position:relative;-webkit-appearance:none}
 .cbtn:active{transform:scale(.9)}
 .cbtn.sel{border-color:#1A202C;transform:scale(1.15)}
@@ -304,9 +304,6 @@ select:disabled{opacity:.45;cursor:not-allowed}
     </div>
   </div>
 
-  <!-- SETUP (hidden) -->
-  <div class="panel" id="panel-setup"></div>
-
 </div>
 
 <!-- BOTTOM NAV -->
@@ -332,7 +329,7 @@ select:disabled{opacity:.45;cursor:not-allowed}
 const COLOR_LABELS={red:'🔴 สีแดง',yellow:'🟡 สีเหลือง',blue:'🔵 สีฟ้า',pink:'🩷 สีชมพู','':'— ยังไม่ได้แบ่ง'};
 const PRIMARY_LEVELS=['ป.1','ป.2','ป.3','ป.4','ป.5','ป.6'];
 const SECONDARY_LEVELS=['ม.1','ม.2','ม.3','ม.4','ม.5','ม.6'];
-let SCRIPT_URL='https://script.google.com/macros/s/AKfycbxNPRRtYsXUz14o2VapkRGUbyUpbbJc24GztEHlOJ--nwUHF9_FLIZm0F80dv9kMZvS/exec';
+let SCRIPT_URL='https://script.google.com/macros/s/AKfycbxNPRRtYsXUz14o2VapkRGUbyUpbbJc24GztEHlOJ--nwUHF9_FLIZm0F80dv9kMZvS/exec'; // <-- อย่าลืมเปลี่ยนถ้าจำเป็น
 let allLevels={};
 let printType='room';
 
@@ -521,15 +518,13 @@ async function loadSummary(){
   const wrap=document.getElementById('summary-content');
   wrap.innerHTML=`<div class="loading"><div class="spinner"></div><br>กำลังโหลด...</div>`;
   try{
-    await fetchLevels();
-    let all=[];
-    for(const level of Object.keys(allLevels)){
-      for(const room of allLevels[level]){
-        const res=await fetch(`${SCRIPT_URL}?action=getStudents&level=${encodeURIComponent(level)}&room=${encodeURIComponent(room)}`);
-        const data=await res.json();
-        if(data.students)all=all.concat(data.students);
-      }
-    }
+    // โหลดครั้งเดียวจาก getAllStudents แทนการวนลูป
+    const res = await fetch(`${SCRIPT_URL}?action=getAllStudents`);
+    const data = await res.json();
+    
+    if(data.error) throw new Error(data.error);
+    const all = data.students || [];
+
     const counts={red:0,yellow:0,blue:0,pink:0,'':0};
     all.forEach(s=>{counts[s.color]=(counts[s.color]||0)+1;});
     document.getElementById('stat-red').textContent=counts.red;
@@ -608,35 +603,42 @@ function loadPrintRooms(){
 
 async function doPrint(){
   if(!SCRIPT_URL){showToast('ยังไม่ได้ตั้งค่า URL','error');return;}
-  showToast('⏳ กำลังเตรียม...');
-  let students=[];
-  if(printType==='room'){
-    const level=document.getElementById('print-level').value;
-    const room=document.getElementById('print-room').value;
-    const levels=level==='all'?Object.keys(allLevels):(level?[level]:[]);
-    for(const lv of levels){
-      const rooms=room==='all'?(allLevels[lv]||[]):(room?[room]:[]);
-      for(const r of rooms){
-        const res=await fetch(`${SCRIPT_URL}?action=getStudents&level=${encodeURIComponent(lv)}&room=${encodeURIComponent(r)}`);
-        const data=await res.json();
-        if(data.students)students=students.concat(data.students);
+  showToast('⏳ กำลังเตรียมพิมพ์...');
+  
+  try {
+    // โหลดครั้งเดียวจาก getAllStudents แทนการวนลูป
+    const res = await fetch(`${SCRIPT_URL}?action=getAllStudents`);
+    const data = await res.json();
+    if(data.error) throw new Error(data.error);
+    
+    let students = data.students || [];
+
+    if(printType==='room'){
+      const level=document.getElementById('print-level').value;
+      const room=document.getElementById('print-room').value;
+      
+      // กรองเฉพาะห้องที่เลือก
+      if(level !== 'all'){
+         students = students.filter(s => s.level === level);
+         if(room !== 'all'){
+            students = students.filter(s => s.room === room);
+         }
       }
+      buildPrintByRoom(students);
+    }else{
+      buildPrintByColor(students);
     }
-    buildPrintByRoom(students);
-  }else{
-    for(const lv of Object.keys(allLevels)){
-      for(const r of allLevels[lv]){
-        const res=await fetch(`${SCRIPT_URL}?action=getStudents&level=${encodeURIComponent(lv)}&room=${encodeURIComponent(r)}`);
-        const data=await res.json();
-        if(data.students)students=students.concat(data.students);
-      }
-    }
-    buildPrintByColor(students);
+    setTimeout(()=>window.print(),400);
+  } catch(e) {
+    showToast('❌ โหลดข้อมูลไม่สำเร็จ','error');
   }
-  setTimeout(()=>window.print(),400);
 }
 
 function buildPrintByRoom(students){
+  if(!students.length){
+     document.getElementById('printArea').innerHTML='<div style="padding:20px;text-align:center">ไม่มีข้อมูลนักเรียนสำหรับพิมพ์</div>';
+     return;
+  }
   const groups={};
   students.forEach(s=>{const k=s.level+'|'+s.room;if(!groups[k])groups[k]={level:s.level,room:s.room,list:[]};groups[k].list.push(s);});
   const COLS=15;
@@ -658,6 +660,8 @@ function buildPrintByColor(students){
   const COLS=15;
   const pages=COLORS.flatMap(color=>{
     const colorSts=students.filter(s=>s.color===color);
+    if(!colorSts.length) return []; // ข้ามถ้าสีนี้ไม่มีคน
+    
     const groups={};
     colorSts.forEach(s=>{const k=s.level+'|'+s.room;if(!groups[k])groups[k]={level:s.level,room:s.room,list:[]};groups[k].list.push(s);});
     return Object.values(groups).sort((a,b)=>(a.level+a.room).localeCompare(b.level+b.room)).map(g=>{
@@ -669,6 +673,11 @@ function buildPrintByColor(students){
       return `<div class="print-page"><div class="print-header"><h2>${COLOR_LABELS[color]} — ${g.level} ห้อง ${g.room}</h2><p>กีฬาสี ปีการศึกษา 2569 | โรงเรียนบ้านห้วยผึ้ง</p></div><table class="attendance-table"><colgroup><col class="col-no"><col class="col-id"><col class="col-prefix"><col class="col-name"><col class="col-last">${Array(COLS).fill('<col class="col-check">').join('')}</colgroup><thead><tr><th class="col-no">เลขที่</th><th class="col-id">เลขประจำตัว</th><th class="col-prefix">คำนำหน้า</th><th class="col-name">ชื่อ</th><th class="col-last">สกุล</th>${checkH}</tr></thead><tbody>${rows}</tbody></table></div>`;
     });
   });
+  
+  if(!pages.length){
+      document.getElementById('printArea').innerHTML='<div style="padding:20px;text-align:center">ไม่มีข้อมูลนักเรียนสำหรับพิมพ์</div>';
+      return;
+  }
   document.getElementById('printArea').innerHTML=pages.join('');
 }
 </script>
