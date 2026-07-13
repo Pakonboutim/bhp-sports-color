@@ -232,7 +232,16 @@ select:disabled{opacity:.45;cursor:not-allowed}
       <div class="stat stat-blue"><div class="n" id="stat-blue">—</div><div class="lbl">🔵 สีฟ้า</div></div>
       <div class="stat stat-pink"><div class="n" id="stat-pink">—</div><div class="lbl">🩷 สีชมพู</div></div>
     </div>
-    <button class="btn btn-outline btn-sm" onclick="loadSummary()" style="margin-bottom:12px">🔄 โหลดข้อมูล</button>
+    <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
+      <button class="btn btn-outline btn-sm" onclick="loadSummary()">🔄 โหลดข้อมูล</button>
+      <select id="summary-color-filter" onchange="filterSummaryColor()" style="flex:1;padding:10px 12px;font-size:14px" disabled>
+        <option value="">— เลือกสีที่ต้องการดู —</option>
+        <option value="red">🔴 สีแดง</option>
+        <option value="yellow">🟡 สีเหลือง</option>
+        <option value="blue">🔵 สีฟ้า</option>
+        <option value="pink">🩷 สีชมพู</option>
+      </select>
+    </div>
     <div id="summary-content">
       <div class="empty"><div class="ico" style="font-size:40px;color:var(--primary);">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
@@ -568,6 +577,68 @@ async function saveColors(){
   }
 }
 
+let _summaryData = null; // เก็บข้อมูลไว้ filter ทีหลัง
+
+function buildSummaryTable(color) {
+  if (!_summaryData) return;
+  const wrap = document.getElementById('summary-content');
+  if (!color) {
+    wrap.innerHTML = `<div class="empty"><div class="ico">👆</div><p>เลือกสีที่ต้องการดูจาก dropdown ด้านบน</p></div>`;
+    return;
+  }
+  const colorMeta = {
+    red:   {label:'🔴 สีแดง'},
+    yellow:{label:'🟡 สีเหลือง'},
+    blue:  {label:'🔵 สีฟ้า'},
+    pink:  {label:'🩷 สีชมพู'},
+  };
+  const cm = colorMeta[color];
+  const sts = _summaryData.byColor[color] || [];
+  const rooms = {};
+  sts.forEach(s => {
+    const k = s.level+'|'+s.room;
+    if (!rooms[k]) rooms[k] = {label: s.level+' ห้อง '+s.room, list: []};
+    rooms[k].list.push(s);
+  });
+  const tableRows = Object.entries(rooms).sort(([a],[b])=>a.localeCompare(b)).map(([k,g]) => {
+    const studentRows = g.list.map(s => `
+      <tr>
+        <td style="text-align:center;color:var(--text3);font-size:12px;width:32px;border-bottom:1px solid var(--border);padding:6px 4px">${s.number}</td>
+        <td style="font-size:13px;border-bottom:1px solid var(--border);padding:6px 8px">${s.prefix}${s.firstName} ${s.lastName}</td>
+        <td style="text-align:center;color:var(--text3);font-size:12px;width:80px;border-bottom:1px solid var(--border);padding:6px 4px">${s.id}</td>
+      </tr>`).join('');
+    return `<tr>
+      <td colspan="3" style="background:var(--surface2);font-size:12px;font-weight:700;color:var(--primary);padding:6px 10px;border-top:2px solid var(--border)">
+        ${g.label} &nbsp;·&nbsp; ${g.list.length} คน
+      </td>
+    </tr>${studentRows}`;
+  }).join('');
+
+  wrap.innerHTML = `<div class="card" style="padding:12px">
+    <div class="card-title" style="margin-bottom:10px">
+      <span class="badge badge-${color}" style="font-size:14px;padding:4px 14px">${cm.label}</span>
+      <span style="font-size:13px;color:var(--text3);margin-left:auto">${sts.length} คน</span>
+    </div>
+    ${sts.length ? `<div style="overflow-x:auto">
+      <table style="width:100%;border-collapse:collapse">
+        <thead>
+          <tr style="background:var(--primary-light)">
+            <th style="padding:6px 8px;font-size:12px;color:var(--primary);text-align:center;width:32px">เลขที่</th>
+            <th style="padding:6px 8px;font-size:12px;color:var(--primary);text-align:left">ชื่อ-สกุล</th>
+            <th style="padding:6px 8px;font-size:12px;color:var(--primary);text-align:center;width:80px">เลขประจำตัว</th>
+          </tr>
+        </thead>
+        <tbody>${tableRows}</tbody>
+      </table>
+    </div>` : '<div style="color:var(--text3);font-size:14px;padding:8px 0">ยังไม่มีนักเรียน</div>'}
+  </div>`;
+}
+
+function filterSummaryColor() {
+  const color = document.getElementById('summary-color-filter').value;
+  buildSummaryTable(color);
+}
+
 async function loadSummary(){
   if(!SCRIPT_URL){showToast('ยังไม่ได้ตั้งค่า URL','error');return;}
   const wrap=document.getElementById('summary-content');
@@ -585,71 +656,20 @@ async function loadSummary(){
     document.getElementById('stat-blue').textContent=counts.blue;
     document.getElementById('stat-pink').textContent=counts.pink;
 
-    const colorMeta=[
-      {key:'red',label:'🔴 สีแดง'},
-      {key:'yellow',label:'🟡 สีเหลือง'},
-      {key:'blue',label:'🔵 สีฟ้า'},
-      {key:'pink',label:'🩷 สีชมพู'},
-    ];
     const byColor={red:[],yellow:[],blue:[],pink:[]};
     all.forEach(s=>{if(byColor[s.color])byColor[s.color].push(s);});
+    _summaryData = {byColor, counts};
 
-    let html=colorMeta.map(cm=>{
-      const sts=byColor[cm.key];
-      // จัดกลุ่มตามชั้น/ห้อง
-      const rooms={};
-      sts.forEach(s=>{
-        const k=s.level+'|'+s.room;
-        if(!rooms[k])rooms[k]={label:s.level+' ห้อง '+s.room,list:[]};
-        rooms[k].list.push(s);
-      });
+    // เปิด dropdown
+    const sel = document.getElementById('summary-color-filter');
+    sel.disabled = false;
 
-      const tableRows=Object.entries(rooms).sort(([a],[b])=>a.localeCompare(b)).map(([k,g])=>{
-        const studentRows=g.list.map(s=>`
-          <tr>
-            <td style="text-align:center;color:var(--text3);font-size:12px;width:32px">${s.number}</td>
-            <td style="font-size:13px">${s.prefix}${s.firstName} ${s.lastName}</td>
-            <td style="text-align:center;color:var(--text3);font-size:12px;width:80px">${s.id}</td>
-          </tr>
-        `).join('');
-        return `
-          <tr>
-            <td colspan="3" style="background:var(--surface2);font-size:12px;font-weight:700;color:var(--primary);padding:5px 10px;border-top:2px solid var(--border)">
-              ${g.label} &nbsp;·&nbsp; ${g.list.length} คน
-            </td>
-          </tr>
-          ${studentRows}
-        `;
-      }).join('');
+    // แสดง empty state รอเลือกสี
+    wrap.innerHTML=`<div class="empty"><div class="ico">👆</div><p>เลือกสีที่ต้องการดูจาก dropdown ด้านบน</p></div>`;
 
-      return `<div class="card" style="padding:12px">
-        <div class="card-title" style="margin-bottom:10px">
-          <span class="badge badge-${cm.key}" style="font-size:14px;padding:4px 14px">${cm.label}</span>
-          <span style="font-size:13px;color:var(--text3);margin-left:auto">${sts.length} คน</span>
-        </div>
-        ${sts.length ? `
-        <div style="overflow-x:auto">
-          <table style="width:100%;border-collapse:collapse">
-            <thead>
-              <tr style="background:var(--primary-light)">
-                <th style="padding:6px 8px;font-size:12px;color:var(--primary);text-align:center;width:32px">เลขที่</th>
-                <th style="padding:6px 8px;font-size:12px;color:var(--primary);text-align:left">ชื่อ-สกุล</th>
-                <th style="padding:6px 8px;font-size:12px;color:var(--primary);text-align:center;width:80px">เลขประจำตัว</th>
-              </tr>
-            </thead>
-            <tbody>${tableRows}</tbody>
-          </table>
-        </div>` : '<div style="color:var(--text3);font-size:14px">ยังไม่มีนักเรียน</div>'}
-      </div>`;
-    }).join('');
+    // ถ้าเลือกสีไว้แล้ว render เลย
+    if(sel.value) buildSummaryTable(sel.value);
 
-    if(counts['']>0){
-      html+=`<div class="card" style="border:1.5px dashed var(--border)">
-        <div class="card-title" style="color:var(--text3)">⚠️ ยังไม่ได้แบ่งสี</div>
-        <p style="font-size:14px;color:var(--text3)">${counts['']} คน</p>
-      </div>`;
-    }
-    wrap.innerHTML=html;
   }catch(e){
     wrap.innerHTML=`<div class="loading">❌ ${e.message}</div>`;
   }
