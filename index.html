@@ -161,7 +161,7 @@ select:disabled{opacity:.45;cursor:not-allowed}
   body>*:not(#printArea){display:none!important}
   #printArea{display:block!important}
   .print-page{page-break-after:always;padding:0}
-  .print-page:last-child{page-break-after:avoid}
+  .print-page.last-page{page-break-after:avoid}
   .print-header{text-align:center;margin-bottom:5px;border-bottom:1.5px solid #000;padding-bottom:4px}
   .print-header h2{font-size:13px;margin-bottom:1px}
   .print-header p{font-size:10px;color:#333}
@@ -186,12 +186,7 @@ select:disabled{opacity:.45;cursor:not-allowed}
     <h1>กีฬาสี ปีการศึกษา 2569</h1>
     <p>โรงเรียนบ้านห้วยผึ้ง</p>
   </div>
-  <div class="h-dots">
-    <div class="h-dot" style="background:#E53935"></div>
-    <div class="h-dot" style="background:#F9A825"></div>
-    <div class="h-dot" style="background:#1E88E5"></div>
-    <div class="h-dot" style="background:#D81B60"></div>
-  </div>
+  <button id="admin-btn" onclick="toggleAdmin()" style="background:transparent;border:none;color:var(--text3);font-size:12px;font-family:inherit;font-weight:600;cursor:pointer;padding:6px 8px;border-radius:8px;flex-shrink:0">🔒 แอดมิน</button>
 </header>
 
 <div id="app">
@@ -249,16 +244,21 @@ select:disabled{opacity:.45;cursor:not-allowed}
   <div class="panel" id="panel-print">
     <div class="card">
       <div class="card-title">🖨️ รูปแบบการพิมพ์</div>
-      <div class="ptype-grid">
+      <div class="ptype-grid" style="grid-template-columns:1fr 1fr 1fr">
         <div class="ptype active" id="ptype-room" onclick="selectPrintType('room')">
           <div class="ico">🏫</div>
           <div class="t">รายห้อง</div>
-          <div class="d">แสดงทุกสีในห้อง</div>
+          <div class="d">ทุกสีในห้อง</div>
         </div>
         <div class="ptype" id="ptype-color" onclick="selectPrintType('color')">
           <div class="ico">🎨</div>
           <div class="t">รายสี</div>
-          <div class="d">แยกตามสีกีฬา</div>
+          <div class="d">แยกตามสี</div>
+        </div>
+        <div class="ptype" id="ptype-teacher" onclick="selectPrintType('teacher')">
+          <div class="ico">👩‍🏫</div>
+          <div class="t">ครูกีฬาสี</div>
+          <div class="d">รายชื่อครู</div>
         </div>
       </div>
 
@@ -300,7 +300,19 @@ select:disabled{opacity:.45;cursor:not-allowed}
         </div>
       </div>
 
+      <div id="print-teacher-opts" style="display:none">
+        <p style="font-size:13px;color:var(--text3);margin-bottom:8px">พิมพ์รายชื่อครูแยกตามสีกีฬาทั้ง 4 สี</p>
+      </div>
+
       <button class="btn btn-primary" onclick="doPrint()" style="margin-top:4px">🖨️ พิมพ์เลย</button>
+    </div>
+  </div>
+
+  <!-- TEACHERS -->
+  <div class="panel" id="panel-teacher">
+    <button class="btn btn-outline btn-sm" onclick="loadTeachers()" style="margin-bottom:12px">🔄 โหลดรายชื่อครู</button>
+    <div id="teacher-content">
+      <div class="empty"><div class="ico">👩‍🏫</div><p>กด "โหลดรายชื่อครู"</p></div>
     </div>
   </div>
 
@@ -319,6 +331,10 @@ select:disabled{opacity:.45;cursor:not-allowed}
     <span class="ico" style="font-size:18px;font-weight:800;color:inherit;font-style:normal;">≡</span>
     สรุป
   </button>
+  <button class="nav-btn" onclick="switchTab('teacher')" id="tab-teacher">
+    <span class="ico">👩‍🏫</span>
+    ครู
+  </button>
   <button class="nav-btn" onclick="switchTab('print')" id="tab-print">
     <span class="ico">🖨</span>
     พิมพ์
@@ -335,13 +351,49 @@ const SECONDARY_LEVELS=['ม.1','ม.2','ม.3','ม.4','ม.5','ม.6'];
 let SCRIPT_URL='https://script.google.com/macros/s/AKfycbzdL7hYms5FP-6rYi06ej6gLYh0uYeP-bRnY7_Ny4A3JHo6lprusylqRbmeZ2cH12FZ/exec';
 let allLevels={};
 let printType='room';
+let isAdmin=false;
+const ADMIN_PASS='pakon1404';
 
-window.onload=()=>{ fetchLevels(); };
+window.onload=()=>{ fetchLevels(); updateAdminUI(); };
 
 function showToast(msg,type=''){
   const t=document.getElementById('toast');
   t.textContent=msg; t.className='show '+type;
   setTimeout(()=>t.className='',3000);
+}
+
+function updateAdminUI(){
+  const btn=document.getElementById('admin-btn');
+  const bar=document.getElementById('admin-bar');
+  if(isAdmin){
+    if(btn){btn.textContent='🔓 แอดมิน';btn.style.color='#2E7D32';}
+    if(bar)bar.style.display='flex';
+  }else{
+    if(btn){btn.textContent='🔒 แอดมิน';btn.style.color='var(--text3)';}
+    if(bar)bar.style.display='none';
+  }
+  // ซ่อน/แสดงปุ่มสีทุกใบ
+  document.querySelectorAll('.st-colors').forEach(el=>{
+    el.style.display=isAdmin?'flex':'none';
+  });
+  // badge แสดงตลอด แค่ปุ่มสีซ่อน
+}
+
+function toggleAdmin(){
+  if(isAdmin){
+    isAdmin=false;
+    updateAdminUI();
+    showToast('ออกจากโหมดแอดมินแล้ว');
+    return;
+  }
+  const pass=prompt('รหัสผ่านแอดมิน:');
+  if(pass===ADMIN_PASS){
+    isAdmin=true;
+    updateAdminUI();
+    showToast('🔓 เข้าสู่โหมดแอดมิน','success');
+  }else if(pass!==null){
+    showToast('รหัสผ่านไม่ถูกต้อง','error');
+  }
 }
 
 function switchTab(tab){
@@ -425,9 +477,9 @@ function renderStudentList(wrap,students,level,room){
       <div class="st-num">${s.number}</div>
       <div class="st-info">
         <div class="st-name">${s.prefix}${s.firstName} ${s.lastName}</div>
-        <div class="st-sub">${s.id} &nbsp;|&nbsp; <span id="badge-${s.rowIndex}">${colorBadge(s.color).replace('class="badge','class="badge').replace('</span>','</span>')}</span></div>
+        <div class="st-sub">${s.id} &nbsp;|&nbsp; <span id="badge-${s.rowIndex}">${colorBadge(s.color)}</span></div>
       </div>
-      <div class="st-colors">
+      <div class="st-colors" style="display:${isAdmin?'flex':'none'}">
         ${['red','yellow','blue','pink'].map(c=>`
           <button class="cbtn c-${c} ${s.color===c?'sel':''}" onclick="setColor(${s.rowIndex},'${c}')" title="${COLOR_LABELS[c]}"></button>
         `).join('')}
@@ -451,7 +503,7 @@ function renderStudentList(wrap,students,level,room){
         <span class="pill pill-inactive" onclick="filterColor('none',this)">— ยังไม่แบ่ง</span>
       </div>
       <div id="student-list">${cards}</div>
-      <div class="save-bar">
+      <div class="save-bar" id="admin-bar" style="display:${isAdmin?'flex':'none'}">
         <button class="btn btn-success btn-sm" onclick="saveColors()">💾 บันทึก → Sheet</button>
         <button class="btn btn-outline btn-sm" onclick="assignRandom()">🎲 สุ่มที่เหลือ</button>
         <span class="status" id="save-status"></span>
@@ -574,8 +626,10 @@ function selectPrintType(type){
   printType=type;
   document.getElementById('ptype-room').classList.toggle('active',type==='room');
   document.getElementById('ptype-color').classList.toggle('active',type==='color');
+  document.getElementById('ptype-teacher').classList.toggle('active',type==='teacher');
   document.getElementById('print-room-opts').style.display=type==='room'?'':'none';
   document.getElementById('print-color-opts').style.display=type==='color'?'':'none';
+  document.getElementById('print-teacher-opts').style.display=type==='teacher'?'':'none';
 }
 
 function filterPrintLevels(){
@@ -602,28 +656,152 @@ function loadPrintRooms(){
   sel.disabled=false;
 }
 
+async function loadTeachers(){
+  const wrap=document.getElementById('teacher-content');
+  wrap.innerHTML=`<div class="loading"><div class="spinner"></div><br>กำลังโหลด...</div>`;
+  try{
+    const res=await fetch(`${SCRIPT_URL}?action=getTeachers`);
+    const data=await res.json();
+    if(data.error){wrap.innerHTML=`<div class="loading">❌ ${data.error}</div>`;return;}
+    const teachers=data.teachers||{};
+
+    const MALE_PREFIX=['นาย','ด.ช.','เด็กชาย'];
+    function countGender(list){
+      let m=0,f=0;
+      list.forEach(t=>{
+        if(MALE_PREFIX.some(p=>t.prefix.startsWith(p))) m++;
+        else f++;
+      });
+      return {m,f};
+    }
+
+    const colorMeta=[
+      {key:'red',   label:'🔴 สีแดง'},
+      {key:'yellow',label:'🟡 สีเหลือง'},
+      {key:'blue',  label:'🔵 สีฟ้า'},
+      {key:'pink',  label:'🩷 สีชมพู'},
+    ];
+
+    // stats bar เหมือนนักเรียน
+    const statsHtml=`
+      <div class="stats-grid" style="margin-bottom:12px">
+        ${colorMeta.map(cm=>{
+          const list=teachers[cm.key]||[];
+          const {m,f}=countGender(list);
+          return `<div class="stat stat-${cm.key}">
+            <div class="n">${list.length}</div>
+            <div class="lbl">${cm.label}</div>
+            <div style="font-size:11px;margin-top:3px;opacity:.85">ช ${m} / ญ ${f}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    `;
+
+    const cardsHtml=colorMeta.map(cm=>{
+      const list=teachers[cm.key]||[];
+      const {m,f}=countGender(list);
+      const rows=list.map((t,i)=>`
+        <div class="st-card" style="padding:10px 14px">
+          <div class="st-num">${i+1}</div>
+          <div class="st-info">
+            <div class="st-name">${t.prefix}${t.firstName} ${t.lastName}</div>
+            ${t.role?`<div class="st-sub">${t.role}</div>`:''}
+          </div>
+        </div>
+      `).join('');
+      return `<div class="card">
+        <div class="card-title">
+          <span class="badge badge-${cm.key}" style="font-size:14px;padding:4px 14px">${cm.label}</span>
+          <span style="font-size:13px;color:var(--text3);margin-left:auto">${list.length} คน &nbsp;·&nbsp; ช ${m} / ญ ${f}</span>
+        </div>
+        ${rows||'<div style="color:var(--text3);font-size:14px;padding:8px 0">ยังไม่มีข้อมูล</div>'}
+      </div>`;
+    }).join('');
+
+    wrap.innerHTML=statsHtml+cardsHtml;
+  }catch(e){
+    wrap.innerHTML=`<div class="loading">❌ ${e.message}</div>`;
+  }
+}
+
 async function doPrint(){
   if(!SCRIPT_URL){showToast('ยังไม่ได้ตั้งค่า URL','error');return;}
   showToast('⏳ กำลังเตรียม...');
-  let students=[];
-  if(printType==='room'){
+
+  if(printType==='teacher'){
+    const res=await fetch(`${SCRIPT_URL}?action=getTeachers`);
+    const data=await res.json();
+    buildPrintTeachers(data.teachers||{});
+  }else if(printType==='room'){
     const level=document.getElementById('print-level').value;
     const room=document.getElementById('print-room').value;
-    // ถ้าเลือกทั้งหมด ใช้ getAllStudents แล้ว filter
     const res=await fetch(`${SCRIPT_URL}?action=getAllStudents`);
     const data=await res.json();
     let all=data.students||[];
     if(level&&level!=='all') all=all.filter(s=>s.level===level);
     if(room&&room!=='all') all=all.filter(s=>s.room===room);
-    students=all;
-    buildPrintByRoom(students);
+    buildPrintByRoom(all);
   }else{
     const res=await fetch(`${SCRIPT_URL}?action=getAllStudents`);
     const data=await res.json();
-    students=data.students||[];
-    buildPrintByColor(students);
+    buildPrintByColor(data.students||[]);
   }
+
+  const pages=document.querySelectorAll('#printArea .print-page');
+  pages.forEach((p,i)=>{
+    p.classList.remove('last-page');
+    if(i===pages.length-1) p.classList.add('last-page');
+  });
   setTimeout(()=>window.print(),400);
+}
+
+function buildPrintTeachers(teachers){
+  const colorMeta=[
+    {key:'red',   label:'🔴 สีแดง'},
+    {key:'yellow',label:'🟡 สีเหลือง'},
+    {key:'blue',  label:'🔵 สีฟ้า'},
+    {key:'pink',  label:'🩷 สีชมพู'},
+  ];
+  // รวมทุกสีในหน้าเดียว
+  const sections=colorMeta.map(cm=>{
+    const list=teachers[cm.key]||[];
+    const rows=list.map((t,i)=>`
+      <tr>
+        <td style="text-align:center;width:30px">${i+1}</td>
+        <td style="width:70px">${t.prefix}</td>
+        <td style="text-align:left">${t.firstName}</td>
+        <td style="text-align:left">${t.lastName}</td>
+        <td style="text-align:left">${t.role||''}</td>
+      </tr>
+    `).join('');
+    return `
+      <div style="margin-bottom:16px">
+        <div style="font-size:13px;font-weight:700;padding:4px 8px;background:#f0f0f0;border:1px solid #000;border-bottom:none">${cm.label} (${list.length} คน)</div>
+        <table style="width:100%;border-collapse:collapse;font-size:11px">
+          <thead>
+            <tr style="background:#e8e8e8">
+              <th style="border:.5px solid #000;padding:3px;width:30px">ที่</th>
+              <th style="border:.5px solid #000;padding:3px;width:70px">คำนำหน้า</th>
+              <th style="border:.5px solid #000;padding:3px;text-align:left">ชื่อ</th>
+              <th style="border:.5px solid #000;padding:3px;text-align:left">นามสกุล</th>
+              <th style="border:.5px solid #000;padding:3px;text-align:left">ตำแหน่ง/หมายเหตุ</th>
+            </tr>
+          </thead>
+          <tbody>${rows||'<tr><td colspan="5" style="border:.5px solid #000;padding:4px;text-align:center;color:#999">ยังไม่มีข้อมูล</td></tr>'}</tbody>
+        </table>
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('printArea').innerHTML=`
+    <div class="print-page last-page" style="padding:12mm 10mm;font-family:Sarabun,sans-serif">
+      <div style="text-align:center;border-bottom:2px solid #000;padding-bottom:6px;margin-bottom:14px">
+        <div style="font-size:15px;font-weight:700">รายชื่อครูกีฬาสี ปีการศึกษา 2569</div>
+        <div style="font-size:11px;color:#444">โรงเรียนบ้านห้วยผึ้ง</div>
+      </div>
+      ${sections}
+    </div>
+  `;
 }
 
 function buildPrintByRoom(students){
