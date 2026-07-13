@@ -551,12 +551,59 @@ function filterColor(color,el){
 }
 
 function assignRandom(){
-  const colors=['red','yellow','blue','pink'];
   if(!window._currentStudents)return;
-  Object.values(window._currentStudents).forEach(s=>{
-    if(!s.color)setColor(s.rowIndex,colors[Math.floor(Math.random()*colors.length)]);
+  const COLORS=['red','yellow','blue','pink'];
+  const MALE_PREFIX=['นาย','เด็กชาย','ด.ช.'];
+
+  // แยกเฉพาะที่ยังไม่มีสี
+  const unassigned=Object.values(window._currentStudents).filter(s=>!s.color);
+  if(!unassigned.length){showToast('ทุกคนมีสีแล้ว');return;}
+
+  const males  =unassigned.filter(s=>MALE_PREFIX.some(p=>s.prefix.startsWith(p)));
+  const females=unassigned.filter(s=>!MALE_PREFIX.some(p=>s.prefix.startsWith(p)));
+
+  function balancedShuffle(group){
+    if(!group.length)return;
+    const n=group.length;
+    const base=Math.floor(n/4);
+    const extra=n%4; // 4 สี แต่ละสีได้ base คน สีแรก extra คนได้เพิ่ม
+
+    // สร้าง pool สี ให้แต่ละสีเท่ากัน ± 1
+    const pool=[];
+    COLORS.forEach((c,i)=>{
+      const count=base+(i<extra?1:0);
+      for(let j=0;j<count;j++)pool.push(c);
+    });
+
+    // สุ่ม shuffle pool
+    for(let i=pool.length-1;i>0;i--){
+      const j=Math.floor(Math.random()*(i+1));
+      [pool[i],pool[j]]=[pool[j],pool[i]];
+    }
+
+    // กำหนดสีให้แต่ละคน
+    group.forEach((s,i)=>setColor(s.rowIndex,pool[i]));
+  }
+
+  balancedShuffle(males);
+  balancedShuffle(females);
+
+  // สรุปจำนวน
+  const all=Object.values(window._currentStudents);
+  const countM={red:0,yellow:0,blue:0,pink:0};
+  const countF={red:0,yellow:0,blue:0,pink:0};
+  all.forEach(s=>{
+    if(!s.color)return;
+    if(MALE_PREFIX.some(p=>s.prefix.startsWith(p)))countM[s.color]=(countM[s.color]||0)+1;
+    else countF[s.color]=(countF[s.color]||0)+1;
   });
-  showToast('🎲 สุ่มสีเรียบร้อย');
+
+  const summary=COLORS.map(c=>{
+    const label={red:'แดง',yellow:'เหลือง',blue:'ฟ้า',pink:'ชมพู'}[c];
+    return `${label}: ช${countM[c]||0}/ญ${countF[c]||0}`;
+  }).join('  ');
+
+  showToast(`🎲 ${summary}`,'success');
 }
 
 async function saveColors(){
