@@ -158,10 +158,37 @@ select:disabled{opacity:.45;cursor:not-allowed}
 #printArea{display:none}
 @media print{
   @page{size:A4 landscape;margin:10mm 8mm}
+  html,body{
+    height:auto!important;
+    min-height:0!important;
+    overflow:visible!important;
+  }
+  body{
+    display:block!important;
+    background:#fff!important;
+  }
   body>*:not(#printArea){display:none!important}
-  #printArea{display:block!important}
-  .print-page{page-break-before:auto;page-break-after:always;page-break-inside:auto}
-  .print-page.last-page{page-break-after:avoid}
+  #printArea{
+    display:block!important;
+    height:auto!important;
+    overflow:visible!important;
+  }
+  .print-page{
+    display:block!important;
+    position:relative!important;
+    height:auto!important;
+    overflow:visible!important;
+    page-break-before:auto;
+    page-break-after:always;
+    page-break-inside:auto;
+    break-before:auto;
+    break-after:page;
+    break-inside:auto;
+  }
+  .print-page.last-page{
+    page-break-after:auto;
+    break-after:auto;
+  }
   .print-header{text-align:center;margin-bottom:5px;border-bottom:1.5px solid #000;padding-bottom:4px}
   .print-header h2{font-size:13px;margin-bottom:1px}
   .print-header p{font-size:10px;color:#333}
