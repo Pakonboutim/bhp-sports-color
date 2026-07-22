@@ -192,6 +192,9 @@ select:disabled{opacity:.45;cursor:not-allowed}
   .print-header{text-align:center;margin-bottom:5px;border-bottom:1.5px solid #000;padding-bottom:4px}
   .print-header h2{font-size:13px;margin-bottom:1px}
   .print-header p{font-size:10px;color:#333}
+  .print-color-room{margin-bottom:8px;page-break-inside:auto;break-inside:auto}
+  .print-color-room h3{font-size:11px;margin:5px 0 3px;page-break-after:avoid;break-after:avoid}
+  .print-empty{text-align:center;font-size:12px;padding:20px}
   .attendance-table{width:100%;border-collapse:collapse;font-size:11px;table-layout:fixed}
   .attendance-table thead{display:table-header-group}
   .attendance-table tfoot{display:table-footer-group}
@@ -954,18 +957,19 @@ function buildPrintByColor(students){
   const colorFilter=document.getElementById('print-color-sel').value;
   const COLORS=colorFilter==='all'?['red','yellow','blue','pink']:[colorFilter];
   const COLS=15;
-  const pages=COLORS.flatMap(color=>{
+  const pages=COLORS.map(color=>{
     const colorSts=students.filter(s=>s.color===color);
     const groups={};
     colorSts.forEach(s=>{const k=s.level+'|'+s.room;if(!groups[k])groups[k]={level:s.level,room:s.room,list:[]};groups[k].list.push(s);});
-    return Object.values(groups).sort((a,b)=>(a.level+a.room).localeCompare(b.level+b.room)).map(g=>{
+    const sections=Object.values(groups).sort((a,b)=>(a.level+a.room).localeCompare(b.level+b.room)).map(g=>{
       const rows=g.list.map(s=>{
         const checks=Array(COLS).fill('<td class="col-check"></td>').join('');
         return `<tr><td class="col-no">${s.number}</td><td class="col-id">${s.id}</td><td class="col-prefix">${s.prefix}</td><td class="col-name">${s.firstName}</td><td class="col-last">${s.lastName}</td>${checks}</tr>`;
       }).join('');
       const checkH=Array(COLS).fill(0).map((_,i)=>`<th class="col-check">${i+1}</th>`).join('');
-      return `<div class="print-page"><div class="print-header"><h2>${COLOR_LABELS[color]} — ${g.level} ห้อง ${g.room}</h2><p>กีฬาสี ปีการศึกษา 2569 | โรงเรียนบ้านห้วยผึ้ง</p></div><table class="attendance-table"><colgroup><col class="col-no"><col class="col-id"><col class="col-prefix"><col class="col-name"><col class="col-last">${Array(COLS).fill('<col class="col-check">').join('')}</colgroup><thead><tr><th class="col-no">เลขที่</th><th class="col-id">เลขประจำตัว</th><th class="col-prefix">คำนำหน้า</th><th class="col-name">ชื่อ</th><th class="col-last">สกุล</th>${checkH}</tr></thead><tbody>${rows}</tbody></table></div>`;
-    });
+      return `<section class="print-color-room"><h3>${g.level} ห้อง ${g.room}</h3><table class="attendance-table"><colgroup><col class="col-no"><col class="col-id"><col class="col-prefix"><col class="col-name"><col class="col-last">${Array(COLS).fill('<col class="col-check">').join('')}</colgroup><thead><tr><th class="col-no">เลขที่</th><th class="col-id">เลขประจำตัว</th><th class="col-prefix">คำนำหน้า</th><th class="col-name">ชื่อ</th><th class="col-last">สกุล</th>${checkH}</tr></thead><tbody>${rows}</tbody></table></section>`;
+    }).join('');
+    return `<div class="print-page"><div class="print-header"><h2>${COLOR_LABELS[color]}</h2><p>กีฬาสี ปีการศึกษา 2569 | โรงเรียนบ้านห้วยผึ้ง</p></div>${sections||'<p class="print-empty">ไม่มีรายชื่อในสีนี้</p>'}</div>`;
   });
   document.getElementById('printArea').innerHTML=pages.join('');
 }
