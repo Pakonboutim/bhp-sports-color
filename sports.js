@@ -1,7 +1,7 @@
-﻿/** Shared Sports Competition utilities. Used by every competition page. */
+/** Shared Sports Competition utilities. Used by every competition page. */
 (function(){
   'use strict';
-  const DEFAULT_URL='https://script.google.com/macros/s/AKfycbywZcSjZJpOWRg1fB62_a_VNsiy5Rlr-TIukphiwY41cSYYtBj4iaVqJdOMq21L1hIf/exec';
+  const DEFAULT_URL='https://script.google.com/macros/s/AKfycbwZgU6f2eZXiTx56dv8M_I9w3bfBIv7ystCEm65JFiQYU92ym_5s6DRtmMBXCBCxEs8/exec';
   const COLORS={red:{th:'สีแดง',en:'RED',hex:'#E53935'},yellow:{th:'สีเหลือง',en:'YELLOW',hex:'#F9A825'},blue:{th:'สีฟ้า',en:'BLUE',hex:'#1E88E5'},pink:{th:'สีชมพู',en:'PINK',hex:'#D81B60'}};
   const url=()=>localStorage.getItem('bhp_script_url')||DEFAULT_URL;
   const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
