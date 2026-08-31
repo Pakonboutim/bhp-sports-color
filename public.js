@@ -1,12 +1,21 @@
 ﻿/** Read-only public dashboard module. */
+(function buildPublicNavigation(){
+  const main=document.querySelector('.sports-main'),hero=main.querySelector('.hero'),sportList=document.getElementById('sports-list'),results=document.getElementById('recent-results'),score=document.getElementById('scoreboard'),directory=main.querySelector('.public-directory');
+  const sportTitle=sportList.previousElementSibling,resultTitle=results.previousElementSibling,scoreTitle=score.previousElementSibling;
+  const tabs=document.createElement('nav');tabs.className='public-main-tabs';tabs.setAttribute('aria-label','ส่วนข้อมูลหน้าหลัก');tabs.innerHTML='<button class="active" data-main-view="overview">🏠<span>ภาพรวม</span></button><button data-main-view="sports">🏅<span>รายการกีฬา</span></button><button data-main-view="directory">👥<span>สมาชิกสี</span></button>';
+  const overview=document.createElement('section'),sports=document.createElement('section');overview.id='main-overview';overview.className='public-main-panel active';sports.id='main-sports';sports.className='public-main-panel';directory.id='main-directory';directory.classList.add('public-main-panel');
+  overview.append(scoreTitle,score,resultTitle,results);sports.append(sportTitle,sportList);hero.after(tabs,overview,sports,directory);
+  tabs.querySelectorAll('[data-main-view]').forEach(button=>button.onclick=()=>{tabs.querySelectorAll('button').forEach(x=>x.classList.remove('active'));main.querySelectorAll('.public-main-panel').forEach(x=>x.classList.remove('active'));button.classList.add('active');document.getElementById('main-'+button.dataset.mainView).classList.add('active');tabs.scrollIntoView({behavior:'smooth',block:'start'})});
+})();
+
 (async function(){
  const S=window.Sports, sportEl=document.getElementById('sports-list'), resultEl=document.getElementById('recent-results'), scoreEl=document.getElementById('scoreboard');
  try{const d=await S.api('getCompetitionData'),sports=d.sports||[],matches=d.matches||[];
- sportEl.innerHTML=sports.length?sports.map(x=>`<article class="sport-card"><h3>${S.esc(x.name)}</h3><div class="meta"><span class="chip">${S.esc(x.level)}</span><span class="chip">${S.esc(x.gender)}</span><span class="chip">${S.esc(x.type)}</span>${x.teamFormat==='UpperMaleCombined2'?'<span class="chip">เหลือง+ฟ้า vs ชมพู+แดง</span>':''}<span class="chip">${S.esc(x.athleteLimit)} คน/สี</span></div></article>`).join(''):'<div class="empty-state">ยังไม่มีกีฬา</div>';
+ sportEl.innerHTML=sports.length?sports.map(x=>`<article class="sport-card public-sport-card"><span class="sport-icon">🏅</span><div><h3>${S.esc(x.name)}</h3><div class="meta"><span class="chip">${S.esc(x.level)}</span><span class="chip">${S.esc(x.gender)}</span><span class="chip">${S.esc(x.type)}</span>${x.teamFormat==='UpperMaleCombined2'?'<span class="chip">ทีมรวม 2 ฝ่าย</span>':''}<span class="chip">${S.esc(x.athleteLimit)} คน/สี</span></div></div></article>`).join(''):'<div class="empty-state">ยังไม่มีกีฬา</div>';
  const confirmed=matches.filter(m=>m.status==='Confirmed').sort((a,b)=>String(b.timestamp).localeCompare(String(a.timestamp)));
  resultEl.innerHTML=confirmed.length?confirmed.slice(0,6).map(m=>`<article class="sport-card"><b>${S.esc(m.sportName)}</b><div style="display:flex;justify-content:space-between;margin-top:10px">${S.team(m.teamA)} <span class="score">${S.esc(m.scoreA)}–${S.esc(m.scoreB)}</span> ${S.team(m.teamB)}</div></article>`).join(''):'<div class="empty-state">ยังไม่มีผลการแข่งขัน</div>';
  const points={red:0,yellow:0,blue:0,pink:0};confirmed.forEach(m=>String(m.winner||'').split('-').forEach(color=>{if(points[color]!==undefined)points[color]+=m.round==='Final'?3:1}));
- scoreEl.innerHTML=Object.entries(points).sort((a,b)=>b[1]-a[1]).map(([c,p],i)=>`<div class="sport-card" style="display:flex;align-items:center"><b style="font-size:24px;width:36px">${i+1}</b>${S.team(c)}<b style="margin-left:auto;font-size:22px">${p}</b></div>`).join('');
+ scoreEl.className='public-scoreboard';scoreEl.innerHTML=Object.entries(points).sort((a,b)=>b[1]-a[1]).map(([c,p],i)=>`<article class="score-rank color-border-${c}"><span class="rank-no">${i+1}</span>${S.team(c)}<strong>${p}<small>คะแนน</small></strong></article>`).join('');
  }catch(e){[sportEl,resultEl,scoreEl].forEach(el=>el.innerHTML=`<div class="empty-state">เชื่อมต่อข้อมูลไม่ได้: ${S.esc(e.message)}</div>`)}
 })();
 
