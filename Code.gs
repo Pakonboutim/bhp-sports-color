@@ -91,7 +91,32 @@ function getTeachers(){const sh=SpreadsheetApp.getActiveSpreadsheet().getSheetBy
 function getCompetitionData(){setupCompetitionSheets();const sports=rows_(sheet_(SPORTS_SHEET,HEADERS.Sports)).filter(r=>String(r[6])!=='false'&&r[0]).map(r=>({id:String(r[0]),name:String(r[1]),level:String(r[2]),gender:String(r[3]),athleteLimit:Number(r[4]),type:String(r[5]),active:r[6]!==false,updatedAt:String(r[7]||''),teamFormat:String(r[8]||'Standard4')}));const matches=rows_(sheet_(MATCHES_SHEET,HEADERS.Matches)).filter(r=>r[0]).map(r=>({id:String(r[0]),sportId:String(r[1]),sportName:String(r[2]),round:String(r[3]),teamA:String(r[4]),teamB:String(r[5]),scoreA:r[6]===''?'':Number(r[6]),scoreB:r[7]===''?'':Number(r[7]),winner:String(r[8]||''),loser:String(r[9]||''),referee:String(r[10]||''),timestamp:String(r[11]||''),status:String(r[12]||'Pending')}));return{sports:sports,matches:matches}}
 
 /** Admin sports module. */
-function saveSport(sport,userType){if(!sport||!String(sport.name||'').trim())throw new Error('กรุณาระบุชื่อกีฬา');let teamFormat=String(sport.teamFormat||'Standard4');if(['Standard4','UpperMaleCombined2'].indexOf(teamFormat)<0)throw new Error('รูปแบบทีมไม่ถูกต้อง');if(teamFormat==='UpperMaleCombined2'){sport.gender='Male';sport.level='ม.4,ม.5,ม.6';sport.type='Knockout'}if(['Male','Female','Mixed'].indexOf(sport.gender)<0)throw new Error('เพศไม่ถูกต้อง');if(['Knockout','Round Robin'].indexOf(sport.type)<0)throw new Error('ประเภทการแข่งขันไม่ถูกต้อง');const limit=Number(sport.athleteLimit);if(!Number.isInteger(limit)||limit<1)throw new Error('จำนวนนักกีฬาต้องมากกว่า 0');const lock=LockService.getScriptLock();lock.waitLock(10000);try{const sh=sheet_(SPORTS_SHEET,HEADERS.Sports),all=rows_(sh),id=sport.id||id_('SP'),idx=all.findIndex(r=>String(r[0])===id),row=[id,String(sport.name).trim(),String(sport.level||''),sport.gender,limit,sport.type,true,now_(),teamFormat];if(idx>=0&&(String(all[idx][5])!==sport.type||String(all[idx][8]||'Standard4')!==teamFormat))throw new Error('ไม่สามารถเปลี่ยนประเภทการแข่งขันหรือรูปแบบทีมหลังสร้างตารางแข่งแล้ว กรุณาสร้างกีฬาใหม่');if(idx>=0)sh.getRange(idx+2,1,1,row.length).setValues([row]);else sh.appendRow(row);createMatches_(id,row[1],sport.type,teamFormat);audit_(idx>=0?'UPDATE_SPORT':'CREATE_SPORT',userType||'Admin',{sportId:id,name:row[1],teamFormat:teamFormat});return{success:true,sportId:id}}finally{lock.releaseLock()}}
+function saveSport(sport,userType){
+  if(!sport||!String(sport.name||'').trim())throw new Error('กรุณาระบุชื่อกีฬา');
+  const teamFormat=String(sport.teamFormat||'Standard4');
+  if(['Standard4','UpperMaleCombined2'].indexOf(teamFormat)<0)throw new Error('รูปแบบทีมไม่ถูกต้อง');
+  if(teamFormat==='UpperMaleCombined2'){sport.gender='Male';sport.level='ม.4,ม.5,ม.6';sport.type='Knockout'}
+  if(['Male','Female','Mixed'].indexOf(sport.gender)<0)throw new Error('เพศไม่ถูกต้อง');
+  if(['Knockout','Round Robin'].indexOf(sport.type)<0)throw new Error('ประเภทการแข่งขันไม่ถูกต้อง');
+  const limit=Number(sport.athleteLimit);if(!Number.isInteger(limit)||limit<1)throw new Error('จำนวนนักกีฬาต้องมากกว่า 0');
+  const lock=LockService.getScriptLock();lock.waitLock(10000);
+  try{
+    const sh=sheet_(SPORTS_SHEET,HEADERS.Sports),all=rows_(sh),id=sport.id||id_('SP'),idx=all.findIndex(r=>String(r[0])===id);
+    const row=[id,String(sport.name).trim(),String(sport.level||''),sport.gender,limit,sport.type,true,now_(),teamFormat];
+    const scheduleChanged=idx>=0&&(String(all[idx][5])!==sport.type||String(all[idx][8]||'Standard4')!==teamFormat);
+    if(scheduleChanged){
+      const matchSheet=sheet_(MATCHES_SHEET,HEADERS.Matches),related=rows_(matchSheet).filter(r=>String(r[1])===id);
+      const hasResult=related.some(r=>String(r[12])==='Confirmed'||r[6]!==''||r[7]!==''||r[8]||r[9]);
+      if(hasResult)throw new Error('ไม่สามารถเปลี่ยนรูปแบบทีมได้ เพราะมีผลการแข่งขันแล้ว');
+      deleteRowsBy_(matchSheet,1,id);
+      audit_('REBUILD_MATCH_SCHEDULE',userType||'Admin',{sportId:id,from:String(all[idx][8]||'Standard4'),to:teamFormat});
+    }
+    if(idx>=0)sh.getRange(idx+2,1,1,row.length).setValues([row]);else sh.appendRow(row);
+    createMatches_(id,row[1],sport.type,teamFormat);
+    audit_(idx>=0?'UPDATE_SPORT':'CREATE_SPORT',userType||'Admin',{sportId:id,name:row[1],teamFormat:teamFormat});
+    return{success:true,sportId:id,scheduleRebuilt:scheduleChanged};
+  }finally{lock.releaseLock()}
+}
 function createMatches_(sportId,name,type,teamFormat){const sh=sheet_(MATCHES_SHEET,HEADERS.Matches),existing=rows_(sh).some(r=>String(r[1])===sportId);if(existing)return;const blank=(round,a,b)=>[id_('MT'),sportId,name,round,a,b,'','','','','','','Pending'];if(teamFormat==='UpperMaleCombined2'){sh.appendRow(blank('Final','yellow-blue','pink-red'))}else if(type==='Knockout'){sh.appendRow(blank('Semi Final 1','red','yellow'));sh.appendRow(blank('Semi Final 2','blue','pink'));sh.appendRow(blank('Final','',''))}else{for(let i=0;i<COLORS.length;i++)for(let j=i+1;j<COLORS.length;j++)sh.appendRow(blank('Round Robin',COLORS[i],COLORS[j]))}}
 function deleteSport(sportId,userType){if(!sportId)throw new Error('ไม่พบกีฬา');const lock=LockService.getScriptLock();lock.waitLock(10000);try{deleteRowsBy_(sheet_(SPORTS_SHEET,HEADERS.Sports),0,sportId);deleteRowsBy_(sheet_(ATHLETES_SHEET,HEADERS.Athletes),0,sportId);deleteRowsBy_(sheet_(MATCHES_SHEET,HEADERS.Matches),1,sportId);audit_('DELETE_SPORT',userType||'Admin',{sportId:sportId});return{success:true}}finally{lock.releaseLock()}}
 function deleteRowsBy_(sh,col,value){for(let i=sh.getLastRow();i>=2;i--)if(String(sh.getRange(i,col+1).getValue())===String(value))sh.deleteRow(i)}
