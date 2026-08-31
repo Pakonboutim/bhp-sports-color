@@ -39,7 +39,8 @@ function studentColumns_(header){
     firstName:find(['ชื่อ','ชื่อจริง','firstname','name']),
     lastName:find(['นามสกุล','สกุล','lastname','surname']),
     level:find(['ระดับชั้น','ชั้น','ชั้นเรียน','level','grade']),
-    room:find(['ห้อง','ห้องเรียน','room'])
+    room:find(['ห้อง','ห้องเรียน','room']),
+    color:find(['สี','สีกีฬา','color','team'])
   };
   // Original six-column template: ID, number, level, room, first name, last name.
   if(columns.id<0)columns.id=0;
@@ -56,13 +57,34 @@ function studentObjects_(){
   const values=sh.getDataRange().getValues(),columns=studentColumns_(values[0]||[]),colors=colorMap_();
   return values.slice(1).map((r,i)=>{
     const id=String(r[columns.id]||'').trim();
-    return{id:id,number:String(r[columns.number]||'').trim(),level:String(r[columns.level]||'').trim(),room:String(r[columns.room]||'').trim(),prefix:columns.prefix>=0?String(r[columns.prefix]||'').trim():'',firstName:String(r[columns.firstName]||'').trim(),lastName:String(r[columns.lastName]||'').trim(),color:colors[id]||'',rowIndex:i+2};
+    const inlineColor=columns.color>=0?String(r[columns.color]||'').trim():'';
+    return{id:id,number:String(r[columns.number]||'').trim(),level:String(r[columns.level]||'').trim(),room:String(r[columns.room]||'').trim(),prefix:columns.prefix>=0?String(r[columns.prefix]||'').trim():'',firstName:String(r[columns.firstName]||'').trim(),lastName:String(r[columns.lastName]||'').trim(),color:inlineColor||colors[id]||'',rowIndex:i+2};
   }).filter(s=>s.id);
 }
 function getLevels(){const map={};studentObjects_().forEach(s=>{if(!s.level||!s.room)return;if(!map[s.level])map[s.level]=[];if(map[s.level].indexOf(s.room)<0)map[s.level].push(s.room)});Object.keys(map).forEach(k=>map[k].sort());return{levels:map}}
 function getStudents(level,room){if(!level||!room)throw new Error('กรุณาระบุ level และ room');return{students:studentObjects_().filter(s=>s.level===level&&s.room===room).sort((a,b)=>Number(a.number)-Number(b.number))}}
 function getAllStudents(){return{students:studentObjects_()}}
-function saveColors(students){if(!Array.isArray(students)||!students.length)throw new Error('ไม่มีข้อมูลที่จะบันทึก');const sh=sheet_(SHEET_NAME_COLORS,['รหัสนักเรียน','สีกีฬา','ชื่อ-สกุล','ระดับชั้น/ห้อง']);const index={};rows_(sh).forEach((r,i)=>index[String(r[0]||'').trim()]=i+2);students.forEach(s=>{if(index[s.id])sh.getRange(index[s.id],2).setValue(s.color||'');else sh.appendRow([s.id,s.color||'',((s.prefix||'')+(s.firstName||'')+' '+(s.lastName||'')).trim(),(s.level||'')+'/'+(s.room||'')])});audit_('SAVE_COLORS','Admin',{count:students.length});return{success:true,saved:students.length}}
+function saveColors(students){
+  if(!Array.isArray(students)||!students.length)throw new Error('ไม่มีข้อมูลที่จะบันทึก');
+  const ss=SpreadsheetApp.getActiveSpreadsheet(),studentSheet=ss.getSheetByName(SHEET_NAME_STUDENTS);
+  if(!studentSheet)throw new Error('ไม่พบชีต '+SHEET_NAME_STUDENTS);
+  const studentValues=studentSheet.getDataRange().getValues(),columns=studentColumns_(studentValues[0]||[]),byId={};
+  students.forEach(s=>byId[String(s.id)]=s);
+  // Preserve the original inline color column when it exists in the student sheet.
+  if(columns.color>=0){
+    const inlineColors=studentValues.slice(1).map(r=>{
+      const s=byId[String(r[columns.id]||'').trim()];
+      return[s?s.color||'':r[columns.color]||''];
+    });
+    if(inlineColors.length)studentSheet.getRange(2,columns.color+1,inlineColors.length,1).setValues(inlineColors);
+  }
+  // Keep the separate color sheet in sync for backward compatibility.
+  const sh=sheet_(SHEET_NAME_COLORS,['รหัสนักเรียน','สีกีฬา','ชื่อ-สกุล','ระดับชั้น/ห้อง']),index={};
+  rows_(sh).forEach((r,i)=>index[String(r[0]||'').trim()]=i+2);
+  students.forEach(s=>{if(index[s.id])sh.getRange(index[s.id],2).setValue(s.color||'');else sh.appendRow([s.id,s.color||'',((s.prefix||'')+(s.firstName||'')+' '+(s.lastName||'')).trim(),(s.level||'')+'/'+(s.room||'')])});
+  audit_('SAVE_COLORS','Admin',{count:students.length});
+  return{success:true,saved:students.length};
+}
 function getTeachers(){const sh=SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME_TEACHERS),teachers={red:[],yellow:[],blue:[],pink:[]};if(!sh)return{teachers:teachers};rows_(sh).forEach(r=>{const c=String(r[0]||'').toLowerCase();if(teachers[c])teachers[c].push({prefix:String(r[1]||''),firstName:String(r[2]||''),lastName:String(r[3]||''),role:String(r[4]||'')})});return{teachers:teachers}}
 
 /** Competition read model shared by all pages. */
