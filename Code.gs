@@ -28,7 +28,37 @@ function audit_(action,userType,details){sheet_(AUDIT_SHEET,HEADERS.AuditLog).ap
 
 /** Existing color assignment module. */
 function colorMap_(){const sh=SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME_COLORS),map={};if(!sh)return map;rows_(sh).forEach(r=>{const id=String(r[0]||'').trim();if(id)map[id]=String(r[1]||'').trim()});return map}
-function studentObjects_(){const sh=SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME_STUDENTS);if(!sh)throw new Error('ไม่พบชีต '+SHEET_NAME_STUDENTS);const values=sh.getDataRange().getValues(),header=values[0]||[],hasPrefix=header.length>=7||String(header[4]||'').indexOf('คำนำ')>=0,colors=colorMap_();return values.slice(1).map((r,i)=>{const id=String(r[0]||'').trim();return{id:id,number:String(r[1]||'').trim(),level:String(r[2]||'').trim(),room:String(r[3]||'').trim(),prefix:hasPrefix?String(r[4]||'').trim():'',firstName:String(r[hasPrefix?5:4]||'').trim(),lastName:String(r[hasPrefix?6:5]||'').trim(),color:colors[id]||'',rowIndex:i+2}}).filter(s=>s.id)}
+/** Resolve student columns from their headers so existing Sheet layouts remain compatible. */
+function studentColumns_(header){
+  const normalized=header.map(v=>String(v||'').trim().toLowerCase().replace(/[\s_\-\/]/g,''));
+  const find=aliases=>{for(let i=0;i<normalized.length;i++)if(aliases.indexOf(normalized[i])>=0)return i;return-1};
+  const columns={
+    id:find(['รหัสนักเรียน','รหัสประจำตัว','เลขประจำตัว','เลขประจำตัวนักเรียน','studentid','id']),
+    number:find(['เลขที่','ที่','number','no']),
+    prefix:find(['คำนำหน้า','คำนำหน้านาม','prefix','title']),
+    firstName:find(['ชื่อ','ชื่อจริง','firstname','name']),
+    lastName:find(['นามสกุล','สกุล','lastname','surname']),
+    level:find(['ระดับชั้น','ชั้น','ชั้นเรียน','level','grade']),
+    room:find(['ห้อง','ห้องเรียน','room'])
+  };
+  // Original six-column template: ID, number, level, room, first name, last name.
+  if(columns.id<0)columns.id=0;
+  if(columns.number<0)columns.number=1;
+  if(columns.level<0)columns.level=2;
+  if(columns.room<0)columns.room=3;
+  if(columns.firstName<0)columns.firstName=4;
+  if(columns.lastName<0)columns.lastName=5;
+  return columns;
+}
+function studentObjects_(){
+  const sh=SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEET_NAME_STUDENTS);
+  if(!sh)throw new Error('ไม่พบชีต '+SHEET_NAME_STUDENTS);
+  const values=sh.getDataRange().getValues(),columns=studentColumns_(values[0]||[]),colors=colorMap_();
+  return values.slice(1).map((r,i)=>{
+    const id=String(r[columns.id]||'').trim();
+    return{id:id,number:String(r[columns.number]||'').trim(),level:String(r[columns.level]||'').trim(),room:String(r[columns.room]||'').trim(),prefix:columns.prefix>=0?String(r[columns.prefix]||'').trim():'',firstName:String(r[columns.firstName]||'').trim(),lastName:String(r[columns.lastName]||'').trim(),color:colors[id]||'',rowIndex:i+2};
+  }).filter(s=>s.id);
+}
 function getLevels(){const map={};studentObjects_().forEach(s=>{if(!s.level||!s.room)return;if(!map[s.level])map[s.level]=[];if(map[s.level].indexOf(s.room)<0)map[s.level].push(s.room)});Object.keys(map).forEach(k=>map[k].sort());return{levels:map}}
 function getStudents(level,room){if(!level||!room)throw new Error('กรุณาระบุ level และ room');return{students:studentObjects_().filter(s=>s.level===level&&s.room===room).sort((a,b)=>Number(a.number)-Number(b.number))}}
 function getAllStudents(){return{students:studentObjects_()}}
