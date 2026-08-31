@@ -395,6 +395,7 @@ let SCRIPT_URL='https://script.google.com/macros/s/AKfycbwZgU6f2eZXiTx56dv8M_I9w
 let allLevels={};
 let printType='room';
 let isAdmin=false;
+let adminCredential='';
 const ADMIN_PASS='pakon1404';
 
 window.onload=()=>{ fetchLevels(); updateAdminUI(); };
@@ -425,6 +426,7 @@ function updateAdminUI(){
 function toggleAdmin(){
   if(isAdmin){
     isAdmin=false;
+    adminCredential='';
     updateAdminUI();
     showToast('ออกจากโหมดแอดมินแล้ว');
     return;
@@ -432,6 +434,7 @@ function toggleAdmin(){
   const pass=prompt('รหัสผ่านแอดมิน:');
   if(pass===ADMIN_PASS){
     isAdmin=true;
+    adminCredential=pass;
     updateAdminUI();
     showToast('🔓 เข้าสู่โหมดแอดมิน','success');
   }else if(pass!==null){

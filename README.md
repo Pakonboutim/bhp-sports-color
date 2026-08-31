@@ -106,6 +106,7 @@ The original student color assignment, teacher summary, print, and administratio
 
 - `index.html` — read-only sports, recent results, and scoreboard
 - `admin.html` — existing administration plus sport CRUD, athlete links, result unlock, and score editing
+- `staff.html?color=red` — authenticated Staff dashboard (change color to red, yellow, blue, or pink)
 - `register.html?color=red|yellow|blue|pink` — color-scoped athlete registration
 - `referee.html` — score confirmation only
 - `bracket.html` — read-only four-color knockout bracket
@@ -117,6 +118,18 @@ The original student color assignment, teacher summary, print, and administratio
 2. Run `setupCompetitionSheets()` once. It adds only `Sports`, `Athletes`, `Matches`, and `AuditLog`; it does not clear existing sheets.
 3. Deploy a new Apps Script Web App version using the existing deployment settings.
 4. If the Web App URL changes, update `DEFAULT_URL` in `sports.js` and `SCRIPT_URL` in `admin.html`.
+
+### Staff access and registration switch
+
+In Apps Script, open **Project Settings → Script Properties** and add these values before using the Staff pages:
+
+- `ADMIN_KEY` — use the same value as the administrator password
+- `STAFF_RED_KEY` — password for red Staff
+- `STAFF_YELLOW_KEY` — password for yellow Staff
+- `STAFF_BLUE_KEY` — password for blue Staff
+- `STAFF_PINK_KEY` — password for pink Staff
+
+These passwords are stored only in Apps Script Properties and must not be committed to GitHub. Deploy a new Web App version after replacing `Code.gs`. The administrator can then open or close athlete registration from the competition tab. Closing registration blocks athlete changes on the server while Staff can still view results and print rosters.
 5. Host all HTML, CSS, and JS files together so the shared relative asset paths resolve.
 
 The backend supports both the original six-column student sheet and a seven-column layout that includes a title/prefix column.
