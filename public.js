@@ -23,7 +23,26 @@
     draw('red');
   }
   function renderTeachers(teachers){teacherEl.innerHTML=colors.map(color=>{const list=teachers[color]||[];return`<article class="sports-card teacher-color-card color-border-${color}"><div class="teacher-card-title">${S.team(color)}<b>${list.length} คน</b></div>${list.length?list.map((teacher,i)=>`<div class="public-person"><span class="person-no">${i+1}</span><span>${S.esc(teacher.prefix||'')}${S.esc(teacher.firstName)} ${S.esc(teacher.lastName)}${teacher.role?`<small class="person-role">${S.esc(teacher.role)}</small>`:''}</span></div>`).join(''):'<div class="empty-state">ยังไม่มีข้อมูล</div>'}</article>`}).join('')}
+  /** Build a clean A4 print view without exposing student identification numbers. */
+  function printDirectory(type,color,students,teachers){
+    const printColors=color==='all'?colors:[color];
+    const sections=printColors.map(teamColor=>{
+      if(type==='teachers'){
+        const list=teachers[teamColor]||[],rows=list.map((t,i)=>`<tr><td>${i+1}</td><td>${S.esc(t.prefix||'')}${S.esc(t.firstName)} ${S.esc(t.lastName)}</td><td>${S.esc(t.role||'')}</td></tr>`).join('');
+        return`<section class="print-directory-section"><h2>${S.esc(S.COLORS[teamColor].th)} — ครูประจำสี (${list.length} คน)</h2><table><thead><tr><th>ที่</th><th>ชื่อ-สกุล</th><th>หน้าที่</th></tr></thead><tbody>${rows||'<tr><td colspan="3">ยังไม่มีข้อมูล</td></tr>'}</tbody></table></section>`;
+      }
+      const filtered=students.filter(s=>s.color===teamColor),groups={};filtered.forEach(s=>{const key=`${s.level}|${s.room}`;if(!groups[key])groups[key]={level:s.level,room:s.room,list:[]};groups[key].list.push(s)});
+      const roomSections=Object.values(groups).sort((a,b)=>(a.level+a.room).localeCompare(b.level+b.room,'th')).map(group=>`<h3>${S.esc(group.level)} ห้อง ${S.esc(group.room)} (${group.list.length} คน)</h3><table><thead><tr><th>เลขที่</th><th>ชื่อ-สกุล</th></tr></thead><tbody>${group.list.sort((a,b)=>Number(a.number)-Number(b.number)).map(s=>`<tr><td>${S.esc(s.number)}</td><td>${S.esc(s.prefix||'')}${S.esc(s.firstName)} ${S.esc(s.lastName)}</td></tr>`).join('')}</tbody></table>`).join('');
+      return`<section class="print-directory-section"><h2>${S.esc(S.COLORS[teamColor].th)} — นักเรียน (${filtered.length} คน)</h2>${roomSections||'<p>ยังไม่มีข้อมูล</p>'}</section>`;
+    }).join('');
+    let area=document.getElementById('public-print-area');if(!area){area=document.createElement('div');area.id='public-print-area';document.body.appendChild(area)}
+    area.innerHTML=`<header><h1>รายชื่อ${type==='teachers'?'ครูประจำสี':'นักเรียนตามสี'}</h1><p>กีฬาสี ปีการศึกษา 2569 — โรงเรียนบ้านห้วยผึ้ง</p></header>${sections}`;
+    document.body.classList.add('public-printing');window.onafterprint=()=>document.body.classList.remove('public-printing');setTimeout(()=>window.print(),100);
+  }
   const results=await Promise.allSettled([S.api('getAllStudents'),S.api('getTeachers')]);
-  if(results[0].status==='fulfilled')renderStudents(results[0].value.students||[]);else studentEl.innerHTML=`<div class="empty-state">โหลดรายชื่อนักเรียนไม่ได้: ${S.esc(results[0].reason.message)}</div>`;
-  if(results[1].status==='fulfilled')renderTeachers(results[1].value.teachers||{});else teacherEl.innerHTML=`<div class="empty-state">โหลดรายชื่อครูไม่ได้: ${S.esc(results[1].reason.message)}</div>`;
+  const students=results[0].status==='fulfilled'?results[0].value.students||[]:[],teachers=results[1].status==='fulfilled'?results[1].value.teachers||{}:{};
+  if(results[0].status==='fulfilled')renderStudents(students);else studentEl.innerHTML=`<div class="empty-state">โหลดรายชื่อนักเรียนไม่ได้: ${S.esc(results[0].reason.message)}</div>`;
+  if(results[1].status==='fulfilled')renderTeachers(teachers);else teacherEl.innerHTML=`<div class="empty-state">โหลดรายชื่อครูไม่ได้: ${S.esc(results[1].reason.message)}</div>`;
+  document.querySelectorAll('[data-directory-view]').forEach(button=>button.onclick=()=>{document.querySelectorAll('[data-directory-view]').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.directory-panel').forEach(x=>x.classList.remove('active'));button.classList.add('active');document.getElementById('directory-'+button.dataset.directoryView).classList.add('active')});
+  document.getElementById('public-print-button').onclick=()=>printDirectory(document.getElementById('public-print-type').value,document.getElementById('public-print-color').value,students,teachers);
 })();
