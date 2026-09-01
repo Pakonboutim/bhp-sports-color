@@ -8,6 +8,7 @@
 <title>ผู้ดูแลระบบกีฬาสี 2569 — บ้านห้วยผึ้ง</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="sports.css">
 <style>
 :root {
   --red:#E53935; --red-bg:#FFEBEE; --red-dark:#B71C1C;
@@ -396,7 +397,6 @@ let allLevels={};
 let printType='room';
 let isAdmin=false;
 let adminCredential='';
-const ADMIN_PASS='pakon1404';
 
 window.onload=()=>{ fetchLevels(); updateAdminUI(); };
 
@@ -423,23 +423,25 @@ function updateAdminUI(){
   // badge แสดงตลอด แค่ปุ่มสีซ่อน
 }
 
-function toggleAdmin(){
+async function toggleAdmin(){
   if(isAdmin){
     isAdmin=false;
     adminCredential='';
     updateAdminUI();
     showToast('ออกจากโหมดแอดมินแล้ว');
-    return;
+    return false;
   }
   const pass=prompt('รหัสผ่านแอดมิน:');
-  if(pass===ADMIN_PASS){
+  if(pass===null)return false;
+  try{
+    const response=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action:'verifyAdmin',adminKey:pass})});
+    const result=await response.json();if(result.error)throw new Error(result.error);
     isAdmin=true;
     adminCredential=pass;
     updateAdminUI();
     showToast('🔓 เข้าสู่โหมดแอดมิน','success');
-  }else if(pass!==null){
-    showToast('รหัสผ่านไม่ถูกต้อง','error');
-  }
+    return true;
+  }catch(error){showToast(error.message||'รหัสผ่านไม่ถูกต้อง','error');return false}
 }
 
 function switchTab(tab){

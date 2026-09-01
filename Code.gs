@@ -20,7 +20,7 @@ const HEADERS={
 };
 
 function doGet(e){const p=e&&e.parameter?e.parameter:{},a=p.action||'';try{let r;if(a==='getStudents')r=getStudents(p.level,p.room);else if(a==='getLevels')r=getLevels();else if(a==='getAllStudents')r=getAllStudents();else if(a==='getTeachers')r=getTeachers();else if(a==='getCompetitionData')r=getCompetitionData();else if(a==='getColorStudents')r=getColorStudents(p.color,p.sportId);else if(!a)r={status:'BHP Sports Day API is running'};else throw new Error('Unknown action: '+a);return json_(r)}catch(err){return json_({error:err.message})}}
-function doPost(e){try{const p=JSON.parse(e.postData.contents||'{}'),a=p.action;let r;if(a==='saveColors')r=saveColors(p.students);else if(a==='saveSport')r=saveSport(p.sport,p.userType);else if(a==='deleteSport')r=deleteSport(p.sportId,p.userType);else if(a==='getStaffData')r=getStaffData(p.color,p.staffKey);else if(a==='saveAthletes')r=saveAthletes(p.sportId,p.color,p.studentIds,p.userType,p.staffKey);else if(a==='setStaffRegistrationOpen')r=setStaffRegistrationOpen(p.open,p.adminKey,p.userType);else if(a==='confirmResult')r=confirmResult(p);else if(a==='unlockResult')r=unlockResult(p.matchId,p.userType);else if(a==='editScore')r=editScore(p);else throw new Error('Unknown action: '+a);return json_(r)}catch(err){return json_({error:err.message})}}
+function doPost(e){try{const p=JSON.parse(e.postData.contents||'{}'),a=p.action;let r;if(a==='saveColors')r=saveColors(p.students);else if(a==='saveSport')r=saveSport(p.sport,p.userType);else if(a==='deleteSport')r=deleteSport(p.sportId,p.userType);else if(a==='verifyAdmin')r=verifyAdmin(p.adminKey);else if(a==='getStaffData')r=getStaffData(p.color,p.staffKey);else if(a==='saveAthletes')r=saveAthletes(p.sportId,p.color,p.studentIds,p.userType,p.staffKey);else if(a==='setStaffRegistrationOpen')r=setStaffRegistrationOpen(p.open,p.adminKey,p.userType);else if(a==='updateMatchTeams')r=updateMatchTeams(p);else if(a==='confirmResult')r=confirmResult(p);else if(a==='unlockResult')r=unlockResult(p.matchId,p.userType);else if(a==='editScore')r=editScore(p);else throw new Error('Unknown action: '+a);return json_(r)}catch(err){return json_({error:err.message})}}
 function json_(v){return ContentService.createTextOutput(JSON.stringify(v)).setMimeType(ContentService.MimeType.JSON)}
 function sheet_(name,headers){const ss=SpreadsheetApp.getActiveSpreadsheet();let sh=ss.getSheetByName(name);if(!sh){sh=ss.insertSheet(name);if(headers)sh.getRange(1,1,1,headers.length).setValues([headers]);sh.setFrozenRows(1)}return sh}
 function rows_(sh){const v=sh.getDataRange().getValues();return v.length>1?v.slice(1):[]}
@@ -91,6 +91,7 @@ function getTeachers(){const sh=SpreadsheetApp.getActiveSpreadsheet().getSheetBy
 
 /** Validate a secret stored only in Apps Script Properties, never in GitHub. */
 function requireSecret_(property,key,label){const expected=PropertiesService.getScriptProperties().getProperty(property);if(!expected)throw new Error('ยังไม่ได้ตั้งค่า '+property+' ใน Script Properties');if(String(key||'')!==expected)throw new Error('รหัส'+label+'ไม่ถูกต้อง')}
+function verifyAdmin(adminKey){requireSecret_('ADMIN_KEY',adminKey,'ผู้ดูแลระบบ');audit_('ADMIN_LOGIN','Admin',{});return{success:true}}
 /** Staff registration is open by default until an administrator closes it. */
 function staffRegistrationOpen_(){const row=rows_(sheet_(SETTINGS_SHEET,HEADERS.Settings)).find(r=>String(r[0])==='StaffRegistrationOpen');return!row||String(row[1]).toLowerCase()!=='false'}
 /** Admin-only global registration switch. */
@@ -142,6 +143,23 @@ function saveAthletes(sportId,color,studentIds,userType,staffKey){if(COLORS.inde
 
 /** Referee result module. Confirmation is locked and advances the final immediately. */
 function matchRow_(matchId){const sh=sheet_(MATCHES_SHEET,HEADERS.Matches),data=rows_(sh),idx=data.findIndex(r=>String(r[0])===String(matchId));if(idx<0)throw new Error('ไม่พบการแข่งขัน');return{sheet:sh,row:idx+2,values:data[idx]}}
+/** Let an authenticated administrator set a pending match-up without changing scores. */
+function updateMatchTeams(p){
+  requireSecret_('ADMIN_KEY',p.adminKey,'ผู้ดูแลระบบ');
+  const lock=LockService.getScriptLock();lock.waitLock(10000);
+  try{
+    const match=matchRow_(p.matchId),row=match.values,teamA=String(p.teamA||'').trim(),teamB=String(p.teamB||'').trim();
+    if(String(row[12])==='Confirmed')throw new Error('กรุณาปลดล็อกผลก่อนเปลี่ยนคู่แข่งขัน');
+    if(!teamA||!teamB)throw new Error('กรุณาเลือกทั้งทีม A และทีม B');
+    const sport=getCompetitionData().sports.find(s=>s.id===String(row[1]));if(!sport)throw new Error('ไม่พบกีฬา');
+    const allowed=sport.teamFormat==='UpperMaleCombined2'?['yellow-blue','pink-red']:COLORS.slice();
+    if(allowed.indexOf(teamA)<0||allowed.indexOf(teamB)<0)throw new Error('สีที่เลือกไม่ตรงกับรูปแบบทีมของกีฬานี้');
+    const partsA=teamA.split('-'),partsB=teamB.split('-');if(partsA.some(color=>partsB.indexOf(color)>=0))throw new Error('ทีม A และทีม B ต้องไม่ใช้สีซ้ำกัน');
+    match.sheet.getRange(match.row,5,1,2).setValues([[teamA,teamB]]);
+    audit_('UPDATE_MATCH_TEAMS',p.userType||'Admin',{matchId:String(row[0]),sportId:String(row[1]),round:String(row[3]),teamA:teamA,teamB:teamB});
+    return{success:true,matchId:String(row[0]),teamA:teamA,teamB:teamB};
+  }finally{lock.releaseLock()}
+}
 function confirmResult(p){const a=Number(p.scoreA),b=Number(p.scoreB);if(!Number.isFinite(a)||!Number.isFinite(b)||a<0||b<0||a===b)throw new Error('คะแนนไม่ถูกต้องหรือเสมอกัน');if(!String(p.referee||'').trim())throw new Error('กรุณาระบุชื่อกรรมการ');const lock=LockService.getScriptLock();lock.waitLock(10000);try{const m=matchRow_(p.matchId),r=m.values;if(String(r[12])==='Confirmed')throw new Error('ผลการแข่งขันถูกยืนยันแล้ว');if(!r[4]||!r[5])throw new Error('ยังไม่ทราบคู่แข่งขัน');const winner=a>b?String(r[4]):String(r[5]),loser=a>b?String(r[5]):String(r[4]),stamp=now_();m.sheet.getRange(m.row,7,1,7).setValues([[a,b,winner,loser,String(p.referee).trim(),stamp,'Confirmed']]);advanceBracket_(String(r[1]),String(r[3]),winner);audit_('CONFIRM_RESULT',p.userType||'Referee',{matchId:p.matchId,referee:p.referee,winner:winner,loser:loser,score:a+'-'+b,status:'Confirmed'});return{success:true,winner:winner,loser:loser,status:'Confirmed',timestamp:stamp}}finally{lock.releaseLock()}}
 function advanceBracket_(sportId,round,winner){if(round!=='Semi Final 1'&&round!=='Semi Final 2')return;const sh=sheet_(MATCHES_SHEET,HEADERS.Matches),data=rows_(sh),finalIdx=data.findIndex(r=>String(r[1])===sportId&&String(r[3])==='Final');if(finalIdx<0)return;sh.getRange(finalIdx+2,round==='Semi Final 1'?5:6).setValue(winner)}
 function unlockResult(matchId,userType){const m=matchRow_(matchId),r=m.values;m.sheet.getRange(m.row,7,1,7).setValues([['','','','','','','Pending']]);if(String(r[3]).indexOf('Semi Final')===0){const data=rows_(m.sheet),fi=data.findIndex(x=>String(x[1])===String(r[1])&&String(x[3])==='Final');if(fi>=0){m.sheet.getRange(fi+2,5,1,9).setValues([['','','','','','','','','Pending']])}}audit_('UNLOCK_RESULT',userType||'Admin',{matchId:matchId});return{success:true}}
