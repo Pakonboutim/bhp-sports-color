@@ -24,7 +24,8 @@
 /** Read-only public student and teacher summaries. */
 (async function(){
   'use strict';
-  const S=window.Sports,studentEl=document.getElementById('public-students'),teacherEl=document.getElementById('public-teachers');
+  if(!document.getElementById('directory-athletes')){const menu=document.querySelector('.directory-menu'),printButton=menu&&menu.querySelector('[data-directory-view="print"]'),button=document.createElement('button'),panel=document.createElement('div');button.className='directory-menu-btn';button.dataset.directoryView='athletes';button.textContent='🏃 นักกีฬา';panel.className='directory-panel';panel.id='directory-athletes';panel.innerHTML='<div id="public-athletes"><div class="empty-state">กำลังโหลด…</div></div>';if(menu)menu.insertBefore(button,printButton);document.getElementById('directory-teachers').before(panel)}
+  const S=window.Sports,studentEl=document.getElementById('public-students'),athleteEl=document.getElementById('public-athletes'),teacherEl=document.getElementById('public-teachers');
   const colors=['red','yellow','blue','pink'];
   function renderStudents(students){
     studentEl.innerHTML=`<div class="public-color-tabs">${colors.map((color,i)=>`<button class="public-color-tab color-${color} ${i===0?'active':''}" data-public-color="${color}">${S.team(color)} <b>${students.filter(s=>s.color===color).length}</b></button>`).join('')}</div><div id="public-student-list"></div>`;
@@ -34,6 +35,9 @@
     draw('red');
   }
   function renderTeachers(teachers){teacherEl.innerHTML=colors.map(color=>{const list=teachers[color]||[];return`<article class="sports-card teacher-color-card color-border-${color}"><div class="teacher-card-title">${S.team(color)}<b>${list.length} คน</b></div>${list.length?list.map((teacher,i)=>`<div class="public-person"><span class="person-no">${i+1}</span><span>${S.esc(teacher.prefix||'')}${S.esc(teacher.firstName)} ${S.esc(teacher.lastName)}${teacher.role?`<small class="person-role">${S.esc(teacher.role)}</small>`:''}</span></div>`).join(''):'<div class="empty-state">ยังไม่มีข้อมูล</div>'}</article>`}).join('')}
+  function initials(name){return String(name||'?').trim().split(/\s+/).map(x=>x[0]||'').slice(0,2).join('')||'?'}
+  function athleteAvatar(person){return person.photoUrl?`<span class="athlete-avatar avatar-large"><img src="${S.esc(person.photoUrl)}" alt="รูป ${S.esc(person.studentName)}" loading="lazy" referrerpolicy="no-referrer"></span>`:`<span class="athlete-avatar avatar-large avatar-fallback" aria-hidden="true">${S.esc(initials(person.studentName))}</span>`}
+  function renderAthletes(athletes){const groups={};athletes.forEach(a=>{const key=a.sportId||a.sportName;if(!groups[key])groups[key]={name:a.sportName,rows:[]};groups[key].rows.push(a)});athleteEl.innerHTML=athletes.length?`<div class="public-athlete-sports">${Object.values(groups).map(group=>`<article class="sports-card public-athlete-card"><div class="section-head"><h3>🏅 ${S.esc(group.name)}</h3><b>${group.rows.length} คน</b></div><div class="public-athlete-grid">${group.rows.map(a=>`<div class="public-athlete-row color-border-${S.esc(a.color)}">${athleteAvatar(a)}<span><b>${S.esc(a.studentName)}</b><small>${S.esc(a.levelRoom)} · ${S.team(a.color)}</small></span></div>`).join('')}</div></article>`).join('')}</div>`:'<div class="empty-state">ยังไม่มีรายชื่อนักกีฬา</div>'}
   /** Build a clean A4 print view without exposing student identification numbers. */
   function printDirectory(type,color,students,teachers){
     const printColors=color==='all'?colors:[color];
@@ -50,10 +54,11 @@
     area.innerHTML=`<header><h1>รายชื่อ${type==='teachers'?'ครูประจำสี':'นักเรียนตามสี'}</h1><p>กีฬาสี ปีการศึกษา 2569 — โรงเรียนบ้านห้วยผึ้ง</p></header>${sections}`;
     document.body.classList.add('public-printing');window.onafterprint=()=>document.body.classList.remove('public-printing');setTimeout(()=>window.print(),100);
   }
-  const results=await Promise.allSettled([S.api('getAllStudents'),S.api('getTeachers')]);
-  const students=results[0].status==='fulfilled'?results[0].value.students||[]:[],teachers=results[1].status==='fulfilled'?results[1].value.teachers||{}:{};
+  const results=await Promise.allSettled([S.api('getAllStudents'),S.api('getTeachers'),S.api('getPublicAthletes')]);
+  const students=results[0].status==='fulfilled'?results[0].value.students||[]:[],teachers=results[1].status==='fulfilled'?results[1].value.teachers||{}:{},athletes=results[2].status==='fulfilled'?results[2].value.athletes||[]:[];
   if(results[0].status==='fulfilled')renderStudents(students);else studentEl.innerHTML=`<div class="empty-state">โหลดรายชื่อนักเรียนไม่ได้: ${S.esc(results[0].reason.message)}</div>`;
   if(results[1].status==='fulfilled')renderTeachers(teachers);else teacherEl.innerHTML=`<div class="empty-state">โหลดรายชื่อครูไม่ได้: ${S.esc(results[1].reason.message)}</div>`;
+  if(athleteEl){if(results[2].status==='fulfilled')renderAthletes(athletes);else athleteEl.innerHTML=`<div class="empty-state">โหลดรายชื่อนักกีฬาไม่ได้: ${S.esc(results[2].reason.message)}</div>`}
   document.querySelectorAll('[data-directory-view]').forEach(button=>button.onclick=()=>{document.querySelectorAll('[data-directory-view]').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.directory-panel').forEach(x=>x.classList.remove('active'));button.classList.add('active');document.getElementById('directory-'+button.dataset.directoryView).classList.add('active')});
   document.getElementById('public-print-button').onclick=()=>printDirectory(document.getElementById('public-print-type').value,document.getElementById('public-print-color').value,students,teachers);
 })();
