@@ -150,16 +150,12 @@ function updateMatchTeams(p){
   requireSecret_('ADMIN_KEY',p.adminKey,'ผู้ดูแลระบบ');
   const lock=LockService.getScriptLock();lock.waitLock(10000);
   try{
-    const match=matchRow_(p.matchId),row=match.values,teamA=String(p.teamA||'').trim(),teamB=String(p.teamB||'').trim(),matchDate=String(p.matchDate||'').trim(),matchTime=String(p.matchTime||'').trim();
-    const confirmed=String(row[12])==='Confirmed';if(confirmed&&(teamA!==String(row[4])||teamB!==String(row[5])))throw new Error('กรุณาปลดล็อกผลก่อนเปลี่ยนคู่แข่งขัน');
-    if(!teamA||!teamB)throw new Error('กรุณาเลือกทั้งทีม A และทีม B');
+    const match=matchRow_(p.matchId),row=match.values,isFinal=String(row[3])==='Final',teamA=isFinal?String(row[4]||''):String(p.teamA||'').trim(),teamB=isFinal?String(row[5]||''):String(p.teamB||'').trim(),matchDate=String(p.matchDate||'').trim(),matchTime=String(p.matchTime||'').trim();
+    const confirmed=String(row[12])==='Confirmed';if(!isFinal&&confirmed&&(teamA!==String(row[4])||teamB!==String(row[5])))throw new Error('กรุณาปลดล็อกผลก่อนเปลี่ยนคู่แข่งขัน');
+    if(!isFinal&&(!teamA||!teamB))throw new Error('กรุณาเลือกทั้งทีม A และทีม B');
     if(!/^\d{4}-\d{2}-\d{2}$/.test(matchDate))throw new Error('กรุณาระบุวันที่แข่งขัน');
     if(!/^\d{2}:\d{2}$/.test(matchTime)){throw new Error('กรุณาระบุเวลาแข่งขัน')}const timeParts=matchTime.split(':').map(Number);if(timeParts[0]>23||timeParts[1]>59)throw new Error('เวลาแข่งขันไม่ถูกต้อง');
-    const sport=getCompetitionData().sports.find(s=>s.id===String(row[1]));if(!sport)throw new Error('ไม่พบกีฬา');
-    const allowed=sport.teamFormat==='UpperMaleCombined2'?['yellow-blue','pink-red']:COLORS.slice();
-    if(allowed.indexOf(teamA)<0||allowed.indexOf(teamB)<0)throw new Error('สีที่เลือกไม่ตรงกับรูปแบบทีมของกีฬานี้');
-    const partsA=teamA.split('-'),partsB=teamB.split('-');if(partsA.some(color=>partsB.indexOf(color)>=0))throw new Error('ทีม A และทีม B ต้องไม่ใช้สีซ้ำกัน');
-    match.sheet.getRange(match.row,5,1,2).setValues([[teamA,teamB]]);
+    if(!isFinal){const sport=getCompetitionData().sports.find(s=>s.id===String(row[1]));if(!sport)throw new Error('ไม่พบกีฬา');const allowed=sport.teamFormat==='UpperMaleCombined2'?['yellow-blue','pink-red']:COLORS.slice();if(allowed.indexOf(teamA)<0||allowed.indexOf(teamB)<0)throw new Error('สีที่เลือกไม่ตรงกับรูปแบบทีมของกีฬานี้');const partsA=teamA.split('-'),partsB=teamB.split('-');if(partsA.some(color=>partsB.indexOf(color)>=0))throw new Error('ทีม A และทีม B ต้องไม่ใช้สีซ้ำกัน');match.sheet.getRange(match.row,5,1,2).setValues([[teamA,teamB]])}
     match.sheet.getRange(match.row,14,1,2).setNumberFormat('@').setValues([[matchDate,matchTime]]);
     audit_('UPDATE_MATCH_SCHEDULE',p.userType||'Admin',{matchId:String(row[0]),sportId:String(row[1]),round:String(row[3]),teamA:teamA,teamB:teamB,matchDate:matchDate,matchTime:matchTime});
     return{success:true,matchId:String(row[0]),teamA:teamA,teamB:teamB,matchDate:matchDate,matchTime:matchTime};
