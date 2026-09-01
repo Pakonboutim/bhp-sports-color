@@ -14,7 +14,7 @@ const COLORS=['red','yellow','blue','pink'];
 const HEADERS={
   Sports:['SportId','Name','Level','Gender','AthleteLimit','Type','Active','UpdatedAt','TeamFormat'],
   Athletes:['SportId','Color','StudentId','StudentName','LevelRoom','UpdatedAt'],
-  Matches:['MatchId','SportId','SportName','Round','TeamA','TeamB','ScoreA','ScoreB','Winner','Loser','Referee','Timestamp','Status'],
+  Matches:['MatchId','SportId','SportName','Round','TeamA','TeamB','ScoreA','ScoreB','Winner','Loser','Referee','Timestamp','Status','MatchDate','MatchTime'],
   AuditLog:['Time','Action','UserType','Details'],
   Settings:['Key','Value','UpdatedAt']
 };
@@ -25,6 +25,8 @@ function json_(v){return ContentService.createTextOutput(JSON.stringify(v)).setM
 function sheet_(name,headers){const ss=SpreadsheetApp.getActiveSpreadsheet();let sh=ss.getSheetByName(name);if(!sh){sh=ss.insertSheet(name);if(headers)sh.getRange(1,1,1,headers.length).setValues([headers]);sh.setFrozenRows(1)}return sh}
 function rows_(sh){const v=sh.getDataRange().getValues();return v.length>1?v.slice(1):[]}
 function now_(){return Utilities.formatDate(new Date(),Session.getScriptTimeZone()||'Asia/Bangkok','yyyy-MM-dd HH:mm:ss')}
+function inputDate_(value){if(value instanceof Date&&!isNaN(value.getTime()))return Utilities.formatDate(value,Session.getScriptTimeZone()||'Asia/Bangkok','yyyy-MM-dd');return String(value||'').trim().slice(0,10)}
+function inputTime_(value){if(value instanceof Date&&!isNaN(value.getTime()))return Utilities.formatDate(value,Session.getScriptTimeZone()||'Asia/Bangkok','HH:mm');const found=String(value||'').trim().match(/\d{1,2}:\d{2}/);return found?found[0].split(':').map((part,index)=>index===0?part.padStart(2,'0'):part).join(':'):''}
 function id_(prefix){return prefix+'-'+Utilities.getUuid().slice(0,8)}
 function audit_(action,userType,details){sheet_(AUDIT_SHEET,HEADERS.AuditLog).appendRow([new Date(),action,userType||'System',typeof details==='string'?details:JSON.stringify(details)])}
 
@@ -100,7 +102,7 @@ function setStaffRegistrationOpen(open,adminKey,userType){requireSecret_('ADMIN_
 function getStaffData(color,staffKey){if(COLORS.indexOf(color)<0)throw new Error('สีไม่ถูกต้อง');requireSecret_('STAFF_'+color.toUpperCase()+'_KEY',staffKey,' Staff');const competition=getCompetitionData(),teachers=getTeachers().teachers[color]||[],students=studentObjects_().filter(s=>s.color===color),athletes=rows_(sheet_(ATHLETES_SHEET,HEADERS.Athletes)).filter(r=>String(r[1])===color).map(r=>({sportId:String(r[0]),studentId:String(r[2]),studentName:String(r[3]),levelRoom:String(r[4]),updatedAt:String(r[5]||'')})),belongs=team=>String(team||'').split('-').indexOf(color)>=0;return{color:color,staffRegistrationOpen:staffRegistrationOpen_(),students:students,teachers:teachers,sports:competition.sports,athletes:athletes,matches:competition.matches.filter(m=>belongs(m.teamA)||belongs(m.teamB)||belongs(m.winner)||belongs(m.loser))}}
 
 /** Competition read model shared by all pages. */
-function getCompetitionData(){setupCompetitionSheets();const sports=rows_(sheet_(SPORTS_SHEET,HEADERS.Sports)).filter(r=>String(r[6])!=='false'&&r[0]).map(r=>({id:String(r[0]),name:String(r[1]),level:String(r[2]),gender:String(r[3]),athleteLimit:Number(r[4]),type:String(r[5]),active:r[6]!==false,updatedAt:String(r[7]||''),teamFormat:String(r[8]||'Standard4')}));const matches=rows_(sheet_(MATCHES_SHEET,HEADERS.Matches)).filter(r=>r[0]).map(r=>({id:String(r[0]),sportId:String(r[1]),sportName:String(r[2]),round:String(r[3]),teamA:String(r[4]),teamB:String(r[5]),scoreA:r[6]===''?'':Number(r[6]),scoreB:r[7]===''?'':Number(r[7]),winner:String(r[8]||''),loser:String(r[9]||''),referee:String(r[10]||''),timestamp:String(r[11]||''),status:String(r[12]||'Pending')}));return{sports:sports,matches:matches,staffRegistrationOpen:staffRegistrationOpen_()}}
+function getCompetitionData(){setupCompetitionSheets();const sports=rows_(sheet_(SPORTS_SHEET,HEADERS.Sports)).filter(r=>String(r[6])!=='false'&&r[0]).map(r=>({id:String(r[0]),name:String(r[1]),level:String(r[2]),gender:String(r[3]),athleteLimit:Number(r[4]),type:String(r[5]),active:r[6]!==false,updatedAt:String(r[7]||''),teamFormat:String(r[8]||'Standard4')}));const matches=rows_(sheet_(MATCHES_SHEET,HEADERS.Matches)).filter(r=>r[0]).map(r=>({id:String(r[0]),sportId:String(r[1]),sportName:String(r[2]),round:String(r[3]),teamA:String(r[4]),teamB:String(r[5]),scoreA:r[6]===''?'':Number(r[6]),scoreB:r[7]===''?'':Number(r[7]),winner:String(r[8]||''),loser:String(r[9]||''),referee:String(r[10]||''),timestamp:String(r[11]||''),status:String(r[12]||'Pending'),matchDate:inputDate_(r[13]),matchTime:inputTime_(r[14])}));return{sports:sports,matches:matches,staffRegistrationOpen:staffRegistrationOpen_()}}
 
 /** Admin sports module. */
 function saveSport(sport,userType){
@@ -129,7 +131,7 @@ function saveSport(sport,userType){
     return{success:true,sportId:id,scheduleRebuilt:scheduleChanged};
   }finally{lock.releaseLock()}
 }
-function createMatches_(sportId,name,type,teamFormat){const sh=sheet_(MATCHES_SHEET,HEADERS.Matches),existing=rows_(sh).some(r=>String(r[1])===sportId);if(existing)return;const blank=(round,a,b)=>[id_('MT'),sportId,name,round,a,b,'','','','','','','Pending'];if(teamFormat==='UpperMaleCombined2'){sh.appendRow(blank('Final','yellow-blue','pink-red'))}else if(type==='Knockout'){sh.appendRow(blank('Semi Final 1','red','yellow'));sh.appendRow(blank('Semi Final 2','blue','pink'));sh.appendRow(blank('Final','',''))}else{for(let i=0;i<COLORS.length;i++)for(let j=i+1;j<COLORS.length;j++)sh.appendRow(blank('Round Robin',COLORS[i],COLORS[j]))}}
+function createMatches_(sportId,name,type,teamFormat){const sh=sheet_(MATCHES_SHEET,HEADERS.Matches),existing=rows_(sh).some(r=>String(r[1])===sportId);if(existing)return;const blank=(round,a,b)=>[id_('MT'),sportId,name,round,a,b,'','','','','','','Pending','',''];if(teamFormat==='UpperMaleCombined2'){sh.appendRow(blank('Final','yellow-blue','pink-red'))}else if(type==='Knockout'){sh.appendRow(blank('Semi Final 1','red','yellow'));sh.appendRow(blank('Semi Final 2','blue','pink'));sh.appendRow(blank('Final','',''))}else{for(let i=0;i<COLORS.length;i++)for(let j=i+1;j<COLORS.length;j++)sh.appendRow(blank('Round Robin',COLORS[i],COLORS[j]))}}
 function deleteSport(sportId,userType){if(!sportId)throw new Error('ไม่พบกีฬา');const lock=LockService.getScriptLock();lock.waitLock(10000);try{deleteRowsBy_(sheet_(SPORTS_SHEET,HEADERS.Sports),0,sportId);deleteRowsBy_(sheet_(ATHLETES_SHEET,HEADERS.Athletes),0,sportId);deleteRowsBy_(sheet_(MATCHES_SHEET,HEADERS.Matches),1,sportId);audit_('DELETE_SPORT',userType||'Admin',{sportId:sportId});return{success:true}}finally{lock.releaseLock()}}
 function deleteRowsBy_(sh,col,value){for(let i=sh.getLastRow();i>=2;i--)if(String(sh.getRange(i,col+1).getValue())===String(value))sh.deleteRow(i)}
 
@@ -148,16 +150,19 @@ function updateMatchTeams(p){
   requireSecret_('ADMIN_KEY',p.adminKey,'ผู้ดูแลระบบ');
   const lock=LockService.getScriptLock();lock.waitLock(10000);
   try{
-    const match=matchRow_(p.matchId),row=match.values,teamA=String(p.teamA||'').trim(),teamB=String(p.teamB||'').trim();
-    if(String(row[12])==='Confirmed')throw new Error('กรุณาปลดล็อกผลก่อนเปลี่ยนคู่แข่งขัน');
+    const match=matchRow_(p.matchId),row=match.values,teamA=String(p.teamA||'').trim(),teamB=String(p.teamB||'').trim(),matchDate=String(p.matchDate||'').trim(),matchTime=String(p.matchTime||'').trim();
+    const confirmed=String(row[12])==='Confirmed';if(confirmed&&(teamA!==String(row[4])||teamB!==String(row[5])))throw new Error('กรุณาปลดล็อกผลก่อนเปลี่ยนคู่แข่งขัน');
     if(!teamA||!teamB)throw new Error('กรุณาเลือกทั้งทีม A และทีม B');
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(matchDate))throw new Error('กรุณาระบุวันที่แข่งขัน');
+    if(!/^\d{2}:\d{2}$/.test(matchTime)){throw new Error('กรุณาระบุเวลาแข่งขัน')}const timeParts=matchTime.split(':').map(Number);if(timeParts[0]>23||timeParts[1]>59)throw new Error('เวลาแข่งขันไม่ถูกต้อง');
     const sport=getCompetitionData().sports.find(s=>s.id===String(row[1]));if(!sport)throw new Error('ไม่พบกีฬา');
     const allowed=sport.teamFormat==='UpperMaleCombined2'?['yellow-blue','pink-red']:COLORS.slice();
     if(allowed.indexOf(teamA)<0||allowed.indexOf(teamB)<0)throw new Error('สีที่เลือกไม่ตรงกับรูปแบบทีมของกีฬานี้');
     const partsA=teamA.split('-'),partsB=teamB.split('-');if(partsA.some(color=>partsB.indexOf(color)>=0))throw new Error('ทีม A และทีม B ต้องไม่ใช้สีซ้ำกัน');
     match.sheet.getRange(match.row,5,1,2).setValues([[teamA,teamB]]);
-    audit_('UPDATE_MATCH_TEAMS',p.userType||'Admin',{matchId:String(row[0]),sportId:String(row[1]),round:String(row[3]),teamA:teamA,teamB:teamB});
-    return{success:true,matchId:String(row[0]),teamA:teamA,teamB:teamB};
+    match.sheet.getRange(match.row,14,1,2).setNumberFormat('@').setValues([[matchDate,matchTime]]);
+    audit_('UPDATE_MATCH_SCHEDULE',p.userType||'Admin',{matchId:String(row[0]),sportId:String(row[1]),round:String(row[3]),teamA:teamA,teamB:teamB,matchDate:matchDate,matchTime:matchTime});
+    return{success:true,matchId:String(row[0]),teamA:teamA,teamB:teamB,matchDate:matchDate,matchTime:matchTime};
   }finally{lock.releaseLock()}
 }
 function confirmResult(p){const a=Number(p.scoreA),b=Number(p.scoreB);if(!Number.isFinite(a)||!Number.isFinite(b)||a<0||b<0||a===b)throw new Error('คะแนนไม่ถูกต้องหรือเสมอกัน');if(!String(p.referee||'').trim())throw new Error('กรุณาระบุชื่อกรรมการ');const lock=LockService.getScriptLock();lock.waitLock(10000);try{const m=matchRow_(p.matchId),r=m.values;if(String(r[12])==='Confirmed')throw new Error('ผลการแข่งขันถูกยืนยันแล้ว');if(!r[4]||!r[5])throw new Error('ยังไม่ทราบคู่แข่งขัน');const winner=a>b?String(r[4]):String(r[5]),loser=a>b?String(r[5]):String(r[4]),stamp=now_();m.sheet.getRange(m.row,7,1,7).setValues([[a,b,winner,loser,String(p.referee).trim(),stamp,'Confirmed']]);advanceBracket_(String(r[1]),String(r[3]),winner);audit_('CONFIRM_RESULT',p.userType||'Referee',{matchId:p.matchId,referee:p.referee,winner:winner,loser:loser,score:a+'-'+b,status:'Confirmed'});return{success:true,winner:winner,loser:loser,status:'Confirmed',timestamp:stamp}}finally{lock.releaseLock()}}
@@ -166,5 +171,5 @@ function unlockResult(matchId,userType){const m=matchRow_(matchId),r=m.values;m.
 function editScore(p){const a=Number(p.scoreA),b=Number(p.scoreB);if(a<0||b<0||a===b)throw new Error('คะแนนไม่ถูกต้อง');const m=matchRow_(p.matchId),r=m.values;if(String(r[12])!=='Confirmed')throw new Error('แก้คะแนนได้เฉพาะผลที่ยืนยันแล้ว');const winner=a>b?String(r[4]):String(r[5]),loser=a>b?String(r[5]):String(r[4]);m.sheet.getRange(m.row,7,1,4).setValues([[a,b,winner,loser]]);advanceBracket_(String(r[1]),String(r[3]),winner);audit_('EDIT_SCORE',p.userType||'Admin',{matchId:p.matchId,score:a+'-'+b,winner:winner});return{success:true,winner:winner}}
 
 /** Additive setup: never clears or replaces an existing sheet. */
-function setupCompetitionSheets(){const sports=sheet_(SPORTS_SHEET,HEADERS.Sports);if(sports.getLastColumn()<HEADERS.Sports.length)sports.getRange(1,1,1,HEADERS.Sports.length).setValues([HEADERS.Sports]);sheet_(ATHLETES_SHEET,HEADERS.Athletes);sheet_(MATCHES_SHEET,HEADERS.Matches);sheet_(AUDIT_SHEET,HEADERS.AuditLog);sheet_(SETTINGS_SHEET,HEADERS.Settings);return{success:true}}
+function setupCompetitionSheets(){const sports=sheet_(SPORTS_SHEET,HEADERS.Sports);if(sports.getLastColumn()<HEADERS.Sports.length)sports.getRange(1,1,1,HEADERS.Sports.length).setValues([HEADERS.Sports]);sheet_(ATHLETES_SHEET,HEADERS.Athletes);const matches=sheet_(MATCHES_SHEET,HEADERS.Matches);if(matches.getLastColumn()<HEADERS.Matches.length)matches.getRange(1,1,1,HEADERS.Matches.length).setValues([HEADERS.Matches]);sheet_(AUDIT_SHEET,HEADERS.AuditLog);sheet_(SETTINGS_SHEET,HEADERS.Settings);return{success:true}}
 function setupSheets(){const ss=SpreadsheetApp.getActiveSpreadsheet();if(!ss.getSheetByName(SHEET_NAME_STUDENTS)){const sh=ss.insertSheet(SHEET_NAME_STUDENTS);sh.getRange(1,1,1,7).setValues([['รหัสนักเรียน','เลขที่','ระดับชั้น','ห้อง','คำนำหน้า','ชื่อ','นามสกุล']]);sh.setFrozenRows(1)}if(!ss.getSheetByName(SHEET_NAME_COLORS)){const sh=ss.insertSheet(SHEET_NAME_COLORS);sh.getRange(1,1,1,4).setValues([['รหัสนักเรียน','สีกีฬา','ชื่อ-สกุล','ระดับชั้น/ห้อง']]);sh.setFrozenRows(1)}setupCompetitionSheets();SpreadsheetApp.getUi().alert('สร้างชีตที่จำเป็นเรียบร้อยแล้ว โดยไม่ลบข้อมูลเดิม')}
