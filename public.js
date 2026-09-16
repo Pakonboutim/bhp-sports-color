@@ -55,8 +55,27 @@
   function renderClassroomChecks(students){
     const root=document.getElementById('public-print-classrooms');if(!root)return;
     root.innerHTML=groupedClassroomOptions(students).map(({group,rooms})=>`<fieldset class="print-check-group"><legend>${group.label}</legend><div class="print-check-grid">${rooms.map(r=>`<label class="print-room-choice"><input type="checkbox" value="${S.esc(r.key)}" checked><span>${S.esc(r.level)}/${S.esc(r.room)}</span></label>`).join('')}</div></fieldset>`).join('');
+
+    const tools=document.querySelector('.print-check-tools');
+    if(tools&&!tools.querySelector('[data-print-group]')){
+      tools.insertAdjacentHTML('beforeend',PRINT_LEVEL_GROUPS.map(group=>`<button type="button" class="secondary print-group-btn" data-print-group="${group.id}">${group.label}</button>`).join(''));
+    }
+
     document.getElementById('public-print-all').onclick=()=>root.querySelectorAll('input').forEach(x=>x.checked=true);
     document.getElementById('public-print-none').onclick=()=>root.querySelectorAll('input').forEach(x=>x.checked=false);
+
+    if(tools){
+      tools.querySelectorAll('[data-print-group]').forEach(button=>{
+        button.onclick=()=>{
+          const group=PRINT_LEVEL_GROUPS.find(g=>g.id===button.dataset.printGroup);
+          if(!group)return;
+          root.querySelectorAll('input').forEach(input=>{
+            const level=String(input.value).split('|')[0];
+            input.checked=group.levels.includes(level);
+          });
+        };
+      });
+    }
   }
   function selectedClassrooms(){return new Set([...document.querySelectorAll('#public-print-classrooms input:checked')].map(x=>x.value))}
   function printDirectory(type,color,selectedRooms,students,teachers){
@@ -64,21 +83,67 @@
     const checkHeaders=()=>Array.from({length:10},(_,i)=>`<th class="print-check">${i+1}</th>`).join('');
     const checkCells=()=>'<td class="print-check"></td>'.repeat(10);
     const sections=[];
+
+    function roomBlocks(rowsData){
+      const map=new Map();
+      rowsData.forEach(st=>{
+        const key=roomKey(st);
+        if(!map.has(key))map.set(key,{key,level:st.level,room:st.room,students:[]});
+        map.get(key).students.push(st);
+      });
+      return [...map.values()].sort((a,b)=>String(a.level).localeCompare(String(b.level),'th',{numeric:true})||String(a.room).localeCompare(String(b.room),'th',{numeric:true}));
+    }
+
+    function paginateWholeRooms(rooms){
+      const capacity=isCheck?44:48;
+      const pages=[];
+      let page=[],used=0;
+      rooms.forEach(room=>{
+        const units=room.students.length+3;
+        if(page.length&&used+units>capacity){
+          pages.push(page);
+          page=[];
+          used=0;
+        }
+        page.push(room);
+        used+=units;
+      });
+      if(page.length)pages.push(page);
+      return pages;
+    }
+
+    function renderRoom(room){
+      const rows=room.students.sort(sortStudents).map(st=>`<tr><td>${S.esc(st.number||'')}</td><td>${S.esc(st.prefix||'')}${S.esc(st.firstName)} ${S.esc(st.lastName)}</td>${isCheck?checkCells():''}</tr>`).join('');
+      const head=isCheck
+        ?`<tr><th class="print-no">เลขที่</th><th class="print-name">ชื่อ–สกุล</th>${checkHeaders()}</tr>`
+        :`<tr><th class="print-no">เลขที่</th><th class="print-name">ชื่อ–สกุล</th></tr>`;
+      return `<section class="print-room-block"><h2 class="print-room-title">${S.esc(room.level)}/${S.esc(room.room)}</h2><table class="public-print-table ${isCheck?'public-check-table':'public-list-table'}"><thead>${head}</thead><tbody>${rows}</tbody></table></section>`;
+    }
+
     printColors.forEach(teamColor=>{
       const colorName=S.COLORS[teamColor].th;
+
       if(isTeacher){
         const list=teachers[teamColor]||[],rows=list.map((t,i)=>`<tr><td>${i+1}</td><td>${S.esc(t.prefix||'')}${S.esc(t.firstName)} ${S.esc(t.lastName)}</td><td>${S.esc(t.role||'')}</td></tr>`).join('');
         sections.push(`<section class="print-directory-section public-print-page"><header><h1>รายชื่อครูประจำ${S.esc(colorName)}</h1><p>กีฬาสี ปีการศึกษา 2569 — โรงเรียนบ้านห้วยผึ้ง</p></header><table class="public-print-table public-list-table"><thead><tr><th>ที่</th><th>ชื่อ-สกุล</th><th>หน้าที่</th></tr></thead><tbody>${rows||'<tr><td colspan="3">ยังไม่มีข้อมูล</td></tr>'}</tbody></table></section>`);
         return;
       }
+
       PRINT_LEVEL_GROUPS.forEach(group=>{
-        const rowsData=students.filter(st=>st.color===teamColor&&group.levels.includes(st.level)&&selectedRooms.has(roomKey(st))).sort(sortStudents);
+        const rowsData=students
+          .filter(st=>st.color===teamColor&&group.levels.includes(st.level)&&selectedRooms.has(roomKey(st)))
+          .sort(sortStudents);
         if(!rowsData.length)return;
-        const rows=rowsData.map(st=>`<tr><td>${S.esc(st.number||'')}</td><td>${S.esc(st.prefix||'')}${S.esc(st.firstName)} ${S.esc(st.lastName)}</td><td>${S.esc(classroomLabel(st))}</td>${isCheck?checkCells():''}</tr>`).join('');
-        const head=isCheck?`<tr><th class="print-no">เลขที่</th><th class="print-name">ชื่อ–สกุล</th><th class="print-class">ชั้น/ห้อง</th>${checkHeaders()}</tr>`:`<tr><th class="print-no">เลขที่</th><th class="print-name">ชื่อ–สกุล</th><th class="print-class">ชั้น/ห้อง</th></tr>`;
-        sections.push(`<section class="print-directory-section public-print-page compact-group-page"><header><h1>รายชื่อนักเรียน ${S.esc(colorName)} — ${S.esc(group.label)}</h1><p>กีฬาสี ปีการศึกษา 2569 — โรงเรียนบ้านห้วยผึ้ง</p></header><table class="public-print-table ${isCheck?'public-check-table':'public-list-table'}"><thead>${head}</thead><tbody>${rows}</tbody></table></section>`);
+
+        const rooms=roomBlocks(rowsData);
+        const pages=paginateWholeRooms(rooms);
+
+        pages.forEach((pageRooms,pageIndex)=>{
+          sections.push(`<section class="print-directory-section public-print-page compact-group-page"><header><h1>รายชื่อนักเรียน ${S.esc(colorName)}</h1><p>${S.esc(group.label)} · กีฬาสี ปีการศึกษา 2569 — โรงเรียนบ้านห้วยผึ้ง${pages.length>1?` · หน้า ${pageIndex+1}/${pages.length}`:''}</p></header>${pageRooms.map(renderRoom).join('')}</section>`);
+        });
       });
     });
+
     let area=document.getElementById('public-print-area');if(!area){area=document.createElement('div');area.id='public-print-area';document.body.appendChild(area)}
     area.innerHTML=sections.join('')||'<section class="print-directory-section public-print-page"><header><h1>รายชื่อนักเรียน</h1><p>กีฬาสี ปีการศึกษา 2569 — โรงเรียนบ้านห้วยผึ้ง</p></header><p class="empty-state">ไม่พบรายชื่อตามห้องที่เลือก</p></section>';
     document.body.classList.add('public-printing');window.onafterprint=()=>document.body.classList.remove('public-printing');setTimeout(()=>window.print(),100);

@@ -38,3 +38,46 @@
 @media print{body.public-printing .compact-group-page .public-print-table{font-size:7.4px}body.public-printing .compact-group-page .public-print-table th,body.public-printing .compact-group-page .public-print-table td{padding:1.3px 2px;height:4.2mm;line-height:1.05}body.public-printing .compact-group-page .print-no{width:8mm}body.public-printing .compact-group-page .print-class{width:16mm;text-align:center}body.public-printing .compact-group-page .print-check{width:5.8mm;padding:0}body.public-printing .compact-group-page header{margin-bottom:4px;padding-bottom:3px}body.public-printing .compact-group-page header h1{font-size:12px}body.public-printing .compact-group-page header p{font-size:8px}}
 
 @media print{body.staff-printing .staff-compact-group table{font-size:7.2px}body.staff-printing .staff-compact-group th,body.staff-printing .staff-compact-group td{height:4.2mm;padding:1.2px 2px;line-height:1.05}body.staff-printing .staff-compact-group th:nth-child(1){width:8mm}body.staff-printing .staff-compact-group th:nth-child(3){width:16mm}body.staff-printing .staff-compact-group.staff-print-section h1{font-size:12px}body.staff-printing .staff-compact-group.staff-print-section p{font-size:8px;margin:1px}body.staff-printing .staff-compact-group.staff-print-section header{margin-bottom:4px}body.staff-printing .staff-compact-group .staff-check-table th:nth-child(n+4),body.staff-printing .staff-compact-group .staff-check-table td:nth-child(n+4){width:5.8mm;padding:0}}
+
+
+/* PRINT V5 — group shortcuts + whole-room pagination */
+.print-check-tools{flex-wrap:wrap}
+.print-group-btn{white-space:nowrap}
+@media print{
+  .print-room-block{
+    break-inside:avoid!important;
+    page-break-inside:avoid!important;
+    margin:0 0 6px;
+  }
+  .print-room-title{
+    margin:5px 0 2px;
+    padding:3px 6px;
+    border:1px solid #333;
+    background:#eee;
+    font-size:11px;
+    font-weight:800;
+    line-height:1.2;
+  }
+  .compact-group-page>header{
+    display:block!important;
+    break-after:avoid;
+    page-break-after:avoid;
+  }
+  .compact-group-page .public-print-table{
+    margin:0;
+  }
+  .compact-group-page .public-print-table th,
+  .compact-group-page .public-print-table td{
+    height:4.2mm;
+    padding:1.2px 2px;
+    font-size:7.5px;
+    line-height:1.05;
+  }
+  .compact-group-page .public-print-table .print-no{
+    width:8mm;
+  }
+  .compact-group-page .public-check-table .print-check{
+    width:5.8mm;
+    padding:0;
+  }
+}
