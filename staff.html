@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ระบบ Staff กีฬาสี</title><link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="sports.css?v=20260916-print2"></head>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>ระบบ Staff กีฬาสี</title><link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="sports.css?v=20260916-print2"><link rel="stylesheet" href="staff-v8.css?v=20260916-8"></head>
 <body class="sports-page staff-page">
   <header id="staff-banner" class="team-banner"><h1 id="staff-title">STAFF</h1><p>ระบบจัดการทีมกีฬาสี</p></header>
   <main class="sports-main">
@@ -7,15 +7,17 @@
     <div id="staff-app" hidden>
       <div id="staff-status" class="notice"></div>
       <nav class="staff-menu" aria-label="เมนู Staff">
-        <button data-view="overview" class="active">🏠 ภาพรวม</button><button data-view="students">🎒 นักเรียน</button><button data-view="teachers">👩‍🏫 ครู</button><button data-view="register">🏃 ลงนักกีฬา</button><button data-view="athletes">📋 นักกีฬา</button><button data-view="results">🏆 ผลแข่งขัน</button>
+        <button data-view="overview" class="active">🏠 ภาพรวม</button><button data-view="students">🎒 นักเรียน</button><button data-view="teachers">👩‍🏫 ครู</button><button data-view="roles">🎖️ ตำแหน่งในสี</button><button data-view="attendance">✅ เช็คชื่อกิจกรรม</button><button data-view="register">🏃 ลงนักกีฬา</button><button data-view="athletes">📋 นักกีฬา</button><button data-view="results">🏆 ผลแข่งขัน</button>
       </nav>
       <section id="staff-overview" class="staff-view active"></section>
       <section id="staff-students" class="staff-view"></section>
       <section id="staff-teachers" class="staff-view"></section>
+      <section id="staff-roles" class="staff-view"></section>
+      <section id="staff-attendance" class="staff-view"></section>
       <section id="staff-register" class="staff-view"></section>
       <section id="staff-athletes" class="staff-view"></section>
       <section id="staff-results" class="staff-view"></section>
     </div>
   </main>
-  <div id="staff-print-area"></div><script src="sports.js?v=20260916-supabase4"></script><script src="staff.js?v=20260916-print2"></script>
+  <div id="staff-print-area"></div><script src="sports.js?v=20260916-supabase4"></script><script src="staff.js?v=20260916-staff8"></script>
 </body></html>
