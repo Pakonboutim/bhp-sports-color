@@ -209,7 +209,29 @@ select:disabled{opacity:.45;cursor:not-allowed}
   .attendance-table .col-last{width:76px;text-align:left}
   .attendance-table .col-color{width:30px}
   .attendance-table .col-check{width:14px;padding:3px 1px}
+
+  /* รูปแบบพิมพ์รายห้องแบบ A4 แนวตั้ง */
+  .print-page.print-portrait-page{page:portraitPage}
+  .print-page.print-landscape-page{page:landscapePage}
+  .portrait-roster-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:12px}
+  .portrait-roster-table thead{display:table-header-group}
+  .portrait-roster-table tr{page-break-inside:avoid;break-inside:avoid}
+  .portrait-roster-table th,.portrait-roster-table td{border:.6px solid #000;padding:5px 6px;height:25px;line-height:1.25}
+  .portrait-roster-table th{background:#E8E8E8;font-weight:700;text-align:center;font-size:11px}
+  .portrait-roster-table .p-no{width:12%;text-align:center}
+  .portrait-roster-table .p-name{width:auto;text-align:left}
+  .portrait-roster-table .p-color{width:22%;text-align:center}
+  .portrait-check-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:11px}
+  .portrait-check-table thead{display:table-header-group}
+  .portrait-check-table tr{page-break-inside:avoid;break-inside:avoid}
+  .portrait-check-table th,.portrait-check-table td{border:.6px solid #000;padding:3px 2px;height:25px;line-height:1.2;text-align:center}
+  .portrait-check-table th{background:#E8E8E8;font-weight:700;font-size:10px}
+  .portrait-check-table .p-no{width:8%}
+  .portrait-check-table .p-name{width:42%;text-align:left;padding-left:6px}
+  .portrait-check-table .p-check{width:5%}
 }
+@page portraitPage{size:A4 portrait;margin:10mm 9mm}
+@page landscapePage{size:A4 landscape;margin:10mm 8mm}
 </style>
 </head>
 <body>
@@ -307,6 +329,21 @@ select:disabled{opacity:.45;cursor:not-allowed}
 
       <div id="print-room-opts">
         <div class="field">
+          <label>รูปแบบเอกสาร</label>
+          <div class="ptype-grid" style="grid-template-columns:1fr 1fr;margin-bottom:4px">
+            <div class="ptype active" id="roommode-list" onclick="selectRoomPrintMode('list')">
+              <div class="ico">📄</div>
+              <div class="t">เฉพาะรายชื่อ</div>
+              <div class="d">A4 แนวตั้ง</div>
+            </div>
+            <div class="ptype" id="roommode-check" onclick="selectRoomPrintMode('check')">
+              <div class="ico">☑️</div>
+              <div class="t">ตารางเช็คชื่อ</div>
+              <div class="d">A4 แนวตั้ง · 10 ช่อง</div>
+            </div>
+          </div>
+        </div>
+        <div class="field">
           <label>ระดับ</label>
           <select id="print-educLevel" onchange="filterPrintLevels()">
             <option value="">— เลือก —</option>
@@ -316,7 +353,7 @@ select:disabled{opacity:.45;cursor:not-allowed}
           </select>
         </div>
         <div class="field">
-          <label>ชั้น</label>
+          <label>ชั้นที่ต้องการพิมพ์</label>
           <select id="print-level" disabled onchange="loadPrintRooms()">
             <option value="">— —</option>
           </select>
@@ -394,6 +431,7 @@ const SECONDARY_LEVELS=['ม.1','ม.2','ม.3','ม.4','ม.5','ม.6'];
 let SCRIPT_URL='https://script.google.com/macros/s/AKfycbwZgU6f2eZXiTx56dv8M_I9w3bfBIv7ystCEm65JFiQYU92ym_5s6DRtmMBXCBCxEs8/exec';
 let allLevels={};
 let printType='room';
+let roomPrintMode='list';
 let isAdmin=false;
 let adminCredential='';
 
@@ -770,6 +808,12 @@ function selectPrintType(type){
   document.getElementById('print-teacher-opts').style.display=type==='teacher'?'':'none';
 }
 
+function selectRoomPrintMode(mode){
+  roomPrintMode=mode;
+  document.getElementById('roommode-list').classList.toggle('active',mode==='list');
+  document.getElementById('roommode-check').classList.toggle('active',mode==='check');
+}
+
 function filterPrintLevels(){
   const edu=document.getElementById('print-educLevel').value;
   const sel=document.getElementById('print-level');
@@ -944,18 +988,38 @@ function buildPrintTeachers(teachers){
 
 function buildPrintByRoom(students){
   const groups={};
-  students.forEach(s=>{const k=s.level+'|'+s.room;if(!groups[k])groups[k]={level:s.level,room:s.room,list:[]};groups[k].list.push(s);});
-  const COLS=15;
-  const pages=Object.values(groups).sort((a,b)=>(a.level+a.room).localeCompare(b.level+b.room)).map(g=>{
+  students.forEach(s=>{
+    const k=s.level+'|'+s.room;
+    if(!groups[k]) groups[k]={level:s.level,room:s.room,list:[]};
+    groups[k].list.push(s);
+  });
+
+  const sortedGroups=Object.values(groups).sort((a,b)=>(a.level+a.room).localeCompare(b.level+b.room,'th',{numeric:true}));
+  const colorText={red:'แดง',yellow:'เหลือง',blue:'ฟ้า',pink:'ชมพู','':'-'};
+
+  const pages=sortedGroups.map(g=>{
+    const header=`<div class="print-header"><h2>รายชื่อนักเรียน ${g.level} ห้อง ${g.room} — กีฬาสี ปีการศึกษา 2569</h2><p>โรงเรียนบ้านห้วยผึ้ง</p></div>`;
+
+    if(roomPrintMode==='check'){
+      const COLS=10;
+      const checkH=Array(COLS).fill(0).map((_,i)=>`<th class="p-check">${i+1}</th>`).join('');
+      const rows=g.list.map(s=>{
+        const checks=Array(COLS).fill('<td class="p-check"></td>').join('');
+        const fullName=[s.prefix,s.firstName,s.lastName].filter(Boolean).join(' ');
+        return `<tr><td class="p-no">${s.number||''}</td><td class="p-name">${fullName}</td>${checks}</tr>`;
+      }).join('');
+      return `<div class="print-page print-portrait-page">${header}<table class="portrait-check-table"><colgroup><col class="p-no"><col class="p-name">${Array(COLS).fill('<col class="p-check">').join('')}</colgroup><thead><tr><th class="p-no">เลขที่</th><th class="p-name">ชื่อ–สกุล</th>${checkH}</tr></thead><tbody>${rows}</tbody></table></div>`;
+    }
+
     const rows=g.list.map(s=>{
-      const checks=Array(COLS).fill('<td class="col-check"></td>').join('');
-      const ct={red:'แดง',yellow:'เหลือง',blue:'ฟ้า',pink:'ชมพู','':'-'}[s.color]||'-';
-      return `<tr><td class="col-no">${s.number}</td><td class="col-id">${s.id}</td><td class="col-prefix">${s.prefix}</td><td class="col-name">${s.firstName}</td><td class="col-last">${s.lastName}</td><td class="col-color">${ct}</td>${checks}</tr>`;
+      const fullName=[s.prefix,s.firstName,s.lastName].filter(Boolean).join(' ');
+      const ct=colorText[s.color]||'-';
+      return `<tr><td class="p-no">${s.number||''}</td><td class="p-name">${fullName}</td><td class="p-color">${ct}</td></tr>`;
     }).join('');
-    const checkH=Array(COLS).fill(0).map((_,i)=>`<th class="col-check">${i+1}</th>`).join('');
-    return `<div class="print-page"><div class="print-header"><h2>รายชื่อนักเรียน ${g.level} ห้อง ${g.room} — กีฬาสี ปีการศึกษา 2569</h2><p>โรงเรียนบ้านห้วยผึ้ง</p></div><table class="attendance-table"><colgroup><col class="col-no"><col class="col-id"><col class="col-prefix"><col class="col-name"><col class="col-last"><col class="col-color">${Array(COLS).fill('<col class="col-check">').join('')}</colgroup><thead><tr><th class="col-no">เลขที่</th><th class="col-id">เลขประจำตัว</th><th class="col-prefix">คำนำหน้า</th><th class="col-name">ชื่อ</th><th class="col-last">สกุล</th><th class="col-color">สีกีฬา</th>${checkH}</tr></thead><tbody>${rows}</tbody></table></div>`;
+    return `<div class="print-page print-portrait-page">${header}<table class="portrait-roster-table"><colgroup><col class="p-no"><col class="p-name"><col class="p-color"></colgroup><thead><tr><th class="p-no">เลขที่</th><th class="p-name">ชื่อ–สกุล</th><th class="p-color">สีกีฬา</th></tr></thead><tbody>${rows}</tbody></table></div>`;
   }).join('');
-  document.getElementById('printArea').innerHTML=pages;
+
+  document.getElementById('printArea').innerHTML=pages||'<div class="print-page print-portrait-page last-page"><div class="print-header"><h2>รายชื่อนักเรียน — กีฬาสี ปีการศึกษา 2569</h2><p>โรงเรียนบ้านห้วยผึ้ง</p></div><p class="print-empty">ไม่พบรายชื่อนักเรียนตามชั้น/ห้องที่เลือก</p></div>';
 }
 
 function buildPrintByColor(students){
@@ -974,7 +1038,7 @@ function buildPrintByColor(students){
       const checkH=Array(COLS).fill(0).map((_,i)=>`<th class="col-check">${i+1}</th>`).join('');
       return `<section class="print-color-room"><h3>${g.level} ห้อง ${g.room}</h3><table class="attendance-table"><colgroup><col class="col-no"><col class="col-id"><col class="col-prefix"><col class="col-name"><col class="col-last">${Array(COLS).fill('<col class="col-check">').join('')}</colgroup><thead><tr><th class="col-no">เลขที่</th><th class="col-id">เลขประจำตัว</th><th class="col-prefix">คำนำหน้า</th><th class="col-name">ชื่อ</th><th class="col-last">สกุล</th>${checkH}</tr></thead><tbody>${rows}</tbody></table></section>`;
     }).join('');
-    return `<div class="print-page"><div class="print-header"><h2>${COLOR_LABELS[color]}</h2><p>กีฬาสี ปีการศึกษา 2569 | โรงเรียนบ้านห้วยผึ้ง</p></div>${sections||'<p class="print-empty">ไม่มีรายชื่อในสีนี้</p>'}</div>`;
+    return `<div class="print-page print-landscape-page"><div class="print-header"><h2>${COLOR_LABELS[color]}</h2><p>กีฬาสี ปีการศึกษา 2569 | โรงเรียนบ้านห้วยผึ้ง</p></div>${sections||'<p class="print-empty">ไม่มีรายชื่อในสีนี้</p>'}</div>`;
   });
   document.getElementById('printArea').innerHTML=pages.join('');
 }
