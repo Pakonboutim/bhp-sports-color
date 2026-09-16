@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="th">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="theme-color" content="#1A4D8F">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>ผู้ดูแลระบบกีฬาสี 2569 — บ้านห้วยผึ้ง</title>
+<title>เธเธนเนเธ”เธนเนเธฅเธฃเธฐเธเธเธเธตเธฌเธฒเธชเธต 2569 โ€” เธเนเธฒเธเธซเนเธงเธขเธเธถเนเธ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="sports.css?v=20260901-photos">
@@ -77,7 +77,7 @@ select:disabled{opacity:.45;cursor:not-allowed}
 .empty .ico{font-size:52px;margin-bottom:12px}
 .empty p{font-size:14px}
 
-/* STUDENT CARDS — mobile-first */
+/* STUDENT CARDS โ€” mobile-first */
 .st-card{background:var(--surface);border-radius:var(--r);padding:14px 16px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.06);display:flex;align-items:center;gap:12px}
 .st-num{width:28px;height:28px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--text3);flex-shrink:0}
 .st-info{flex:1;min-width:0}
@@ -85,11 +85,11 @@ select:disabled{opacity:.45;cursor:not-allowed}
 .st-sub{font-size:12px;color:var(--text3);margin-top:1px}
 .st-colors{display:flex;gap:8px;flex-shrink:0;align-items:center}
 
-/* COLOR BUTTONS — ใหญ่ขึ้น กดง่ายบนมือถือ */
+/* COLOR BUTTONS โ€” เนเธซเธเนเธเธถเนเธ เธเธ”เธเนเธฒเธขเธเธเธกเธทเธญเธ–เธทเธญ */
 .cbtn{width:38px;height:38px;border-radius:50%;border:3px solid transparent;cursor:pointer;transition:transform .12s;flex-shrink:0;position:relative;-webkit-appearance:none}
 .cbtn:active{transform:scale(.9)}
 .cbtn.sel{border-color:#1A202C;transform:scale(1.15)}
-.cbtn.sel::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff}
+.cbtn.sel::after{content:'โ“';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff}
 .cbtn.c-red{background:var(--red)}
 .cbtn.c-yellow{background:var(--yellow)}
 .cbtn.c-blue{background:var(--blue)}
@@ -210,7 +210,7 @@ select:disabled{opacity:.45;cursor:not-allowed}
   .attendance-table .col-color{width:30px}
   .attendance-table .col-check{width:14px;padding:3px 1px}
 
-  /* รูปแบบพิมพ์รายห้องแบบ A4 แนวตั้ง */
+  /* เธฃเธนเธเนเธเธเธเธดเธกเธเนเธฃเธฒเธขเธซเนเธญเธเนเธเธ A4 เนเธเธงเธ•เธฑเนเธ */
   .print-page.print-portrait-page{page:portraitPage}
   .print-page.print-landscape-page{page:landscapePage}
   .portrait-roster-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:12px}
@@ -242,12 +242,12 @@ select:disabled{opacity:.45;cursor:not-allowed}
 <body>
 
 <header>
-  <div class="h-logo">🏆</div>
+  <div class="h-logo">๐</div>
   <div class="h-title">
-    <h1>กีฬาสี ปีการศึกษา 2569</h1>
-    <p>โรงเรียนบ้านห้วยผึ้ง</p>
+    <h1>เธเธตเธฌเธฒเธชเธต เธเธตเธเธฒเธฃเธจเธถเธเธฉเธฒ 2569</h1>
+    <p>เนเธฃเธเน€เธฃเธตเธขเธเธเนเธฒเธเธซเนเธงเธขเธเธถเนเธ</p>
   </div>
-  <button id="admin-btn" onclick="toggleAdmin()" style="background:transparent;border:none;color:var(--text3);font-size:12px;font-family:inherit;font-weight:600;cursor:pointer;padding:6px 8px;border-radius:8px;flex-shrink:0">🔒 แอดมิน</button>
+  <button id="admin-btn" onclick="toggleAdmin()" style="background:transparent;border:none;color:var(--text3);font-size:12px;font-family:inherit;font-weight:600;cursor:pointer;padding:6px 8px;border-radius:8px;flex-shrink:0">๐”’ เนเธญเธ”เธกเธดเธ</button>
 </header>
 
 <div id="app">
@@ -255,142 +255,142 @@ select:disabled{opacity:.45;cursor:not-allowed}
   <!-- ASSIGN -->
   <div class="panel active" id="panel-assign">
     <div class="card">
-      <div class="card-title">🏫 เลือกห้องเรียน</div>
+      <div class="card-title">๐ซ เน€เธฅเธทเธญเธเธซเนเธญเธเน€เธฃเธตเธขเธ</div>
       <div class="field">
-        <label>ระดับการศึกษา</label>
+        <label>เธฃเธฐเธ”เธฑเธเธเธฒเธฃเธจเธถเธเธฉเธฒ</label>
         <select id="sel-educLevel" onchange="filterLevels()">
-          <option value="">— เลือก —</option>
-          <option value="primary">ประถมศึกษา (ป.1–ป.6)</option>
-          <option value="secondary">มัธยมศึกษา (ม.1–ม.6)</option>
+          <option value="">โ€” เน€เธฅเธทเธญเธ โ€”</option>
+          <option value="primary">เธเธฃเธฐเธ–เธกเธจเธถเธเธฉเธฒ (เธ.1โ€“เธ.6)</option>
+          <option value="secondary">เธกเธฑเธเธขเธกเธจเธถเธเธฉเธฒ (เธก.1โ€“เธก.6)</option>
         </select>
       </div>
       <div class="field">
-        <label>ชั้นเรียน</label>
+        <label>เธเธฑเนเธเน€เธฃเธตเธขเธ</label>
         <select id="sel-level" disabled onchange="loadRooms()">
-          <option value="">— เลือกระดับก่อน —</option>
+          <option value="">โ€” เน€เธฅเธทเธญเธเธฃเธฐเธ”เธฑเธเธเนเธญเธ โ€”</option>
         </select>
       </div>
       <div class="field">
-        <label>ห้อง</label>
+        <label>เธซเนเธญเธ</label>
         <select id="sel-room" disabled>
-          <option value="">— เลือกชั้นก่อน —</option>
+          <option value="">โ€” เน€เธฅเธทเธญเธเธเธฑเนเธเธเนเธญเธ โ€”</option>
         </select>
       </div>
       <button class="btn btn-primary" onclick="loadStudents()" style="margin-top:4px">
-        📋 โหลดรายชื่อ
+        ๐“ เนเธซเธฅเธ”เธฃเธฒเธขเธเธทเนเธญ
       </button>
     </div>
     <div id="assign-content">
-      <div class="empty"><div class="ico">📚</div><p>เลือกห้องแล้วกด "โหลดรายชื่อ"</p></div>
+      <div class="empty"><div class="ico">๐“</div><p>เน€เธฅเธทเธญเธเธซเนเธญเธเนเธฅเนเธงเธเธ” "เนเธซเธฅเธ”เธฃเธฒเธขเธเธทเนเธญ"</p></div>
     </div>
   </div>
 
   <!-- SUMMARY -->
   <div class="panel" id="panel-summary">
     <div class="stats-grid">
-      <div class="stat stat-red"><div class="n" id="stat-red">—</div><div class="lbl">🔴 สีแดง</div></div>
-      <div class="stat stat-yellow"><div class="n" id="stat-yellow">—</div><div class="lbl">🟡 สีเหลือง</div></div>
-      <div class="stat stat-blue"><div class="n" id="stat-blue">—</div><div class="lbl">🔵 สีฟ้า</div></div>
-      <div class="stat stat-pink"><div class="n" id="stat-pink">—</div><div class="lbl">🩷 สีชมพู</div></div>
+      <div class="stat stat-red"><div class="n" id="stat-red">โ€”</div><div class="lbl">๐”ด เธชเธตเนเธ”เธ</div></div>
+      <div class="stat stat-yellow"><div class="n" id="stat-yellow">โ€”</div><div class="lbl">๐ก เธชเธตเน€เธซเธฅเธทเธญเธ</div></div>
+      <div class="stat stat-blue"><div class="n" id="stat-blue">โ€”</div><div class="lbl">๐”ต เธชเธตเธเนเธฒ</div></div>
+      <div class="stat stat-pink"><div class="n" id="stat-pink">โ€”</div><div class="lbl">๐ฉท เธชเธตเธเธกเธเธน</div></div>
     </div>
     <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center">
-      <button class="btn btn-outline btn-sm" onclick="loadSummary()">🔄 โหลดข้อมูล</button>
+      <button class="btn btn-outline btn-sm" onclick="loadSummary()">๐” เนเธซเธฅเธ”เธเนเธญเธกเธนเธฅ</button>
       <select id="summary-color-filter" onchange="filterSummaryColor()" style="flex:1;padding:10px 12px;font-size:14px" disabled>
-        <option value="">— เลือกสีที่ต้องการดู —</option>
-        <option value="red">🔴 สีแดง</option>
-        <option value="yellow">🟡 สีเหลือง</option>
-        <option value="blue">🔵 สีฟ้า</option>
-        <option value="pink">🩷 สีชมพู</option>
+        <option value="">โ€” เน€เธฅเธทเธญเธเธชเธตเธ—เธตเนเธ•เนเธญเธเธเธฒเธฃเธ”เธน โ€”</option>
+        <option value="red">๐”ด เธชเธตเนเธ”เธ</option>
+        <option value="yellow">๐ก เธชเธตเน€เธซเธฅเธทเธญเธ</option>
+        <option value="blue">๐”ต เธชเธตเธเนเธฒ</option>
+        <option value="pink">๐ฉท เธชเธตเธเธกเธเธน</option>
       </select>
     </div>
     <div id="summary-content">
       <div class="empty"><div class="ico" style="font-size:40px;color:var(--primary);">
         <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-      </div><p>กด "โหลดข้อมูล" เพื่อดูสรุป</p></div>
+      </div><p>เธเธ” "เนเธซเธฅเธ”เธเนเธญเธกเธนเธฅ" เน€เธเธทเนเธญเธ”เธนเธชเธฃเธธเธ</p></div>
     </div>
   </div>
 
   <!-- PRINT -->
   <div class="panel" id="panel-print">
     <div class="card">
-      <div class="card-title">🖨️ รูปแบบการพิมพ์</div>
+      <div class="card-title">๐–จ๏ธ เธฃเธนเธเนเธเธเธเธฒเธฃเธเธดเธกเธเน</div>
       <div class="ptype-grid" style="grid-template-columns:1fr 1fr 1fr">
         <div class="ptype active" id="ptype-room" onclick="selectPrintType('room')">
-          <div class="ico">🏫</div>
-          <div class="t">รายห้อง</div>
-          <div class="d">เลือกหลายชั้น/ห้อง</div>
+          <div class="ico">๐ซ</div>
+          <div class="t">เธฃเธฒเธขเธซเนเธญเธ</div>
+          <div class="d">เน€เธฅเธทเธญเธเธซเธฅเธฒเธขเธเธฑเนเธ/เธซเนเธญเธ</div>
         </div>
         <div class="ptype" id="ptype-color" onclick="selectPrintType('color')">
-          <div class="ico">🎨</div>
-          <div class="t">รายสี</div>
-          <div class="d">แยกตามสี</div>
+          <div class="ico">๐จ</div>
+          <div class="t">เธฃเธฒเธขเธชเธต</div>
+          <div class="d">เนเธขเธเธ•เธฒเธกเธชเธต</div>
         </div>
         <div class="ptype" id="ptype-teacher" onclick="selectPrintType('teacher')">
-          <div class="ico">👩‍🏫</div>
-          <div class="t">ครูกีฬาสี</div>
-          <div class="d">รายชื่อครู</div>
+          <div class="ico">๐‘ฉโ€๐ซ</div>
+          <div class="t">เธเธฃเธนเธเธตเธฌเธฒเธชเธต</div>
+          <div class="d">เธฃเธฒเธขเธเธทเนเธญเธเธฃเธน</div>
         </div>
       </div>
 
       <div id="print-room-opts">
         <div class="field">
-          <label>รูปแบบเอกสาร</label>
+          <label>เธฃเธนเธเนเธเธเน€เธญเธเธชเธฒเธฃ</label>
           <div class="ptype-grid" style="grid-template-columns:1fr 1fr;margin-bottom:4px">
             <div class="ptype active" id="roommode-list" onclick="selectRoomPrintMode('list')">
-              <div class="ico">📄</div>
-              <div class="t">เฉพาะรายชื่อ</div>
-              <div class="d">A4 แนวตั้ง</div>
+              <div class="ico">๐“</div>
+              <div class="t">เน€เธเธเธฒเธฐเธฃเธฒเธขเธเธทเนเธญ</div>
+              <div class="d">A4 เนเธเธงเธ•เธฑเนเธ</div>
             </div>
             <div class="ptype" id="roommode-check" onclick="selectRoomPrintMode('check')">
-              <div class="ico">☑️</div>
-              <div class="t">ตารางเช็คชื่อ</div>
-              <div class="d">A4 แนวตั้ง · 10 ช่อง</div>
+              <div class="ico">โ‘๏ธ</div>
+              <div class="t">เธ•เธฒเธฃเธฒเธเน€เธเนเธเธเธทเนเธญ</div>
+              <div class="d">A4 เนเธเธงเธ•เธฑเนเธ ยท 10 เธเนเธญเธ</div>
             </div>
           </div>
         </div>
         <div class="field">
-          <label>สีกีฬาที่ต้องการพิมพ์</label>
+          <label>เธชเธตเธเธตเธฌเธฒเธ—เธตเนเธ•เนเธญเธเธเธฒเธฃเธเธดเธกเธเน</label>
           <select id="print-room-color">
-            <option value="all">ทุกสี</option>
-            <option value="red">🔴 สีแดง</option>
-            <option value="yellow">🟡 สีเหลือง</option>
-            <option value="blue">🔵 สีฟ้า</option>
-            <option value="pink">🩷 สีชมพู</option>
+            <option value="all">เธ—เธธเธเธชเธต</option>
+            <option value="red">๐”ด เธชเธตเนเธ”เธ</option>
+            <option value="yellow">๐ก เธชเธตเน€เธซเธฅเธทเธญเธ</option>
+            <option value="blue">๐”ต เธชเธตเธเนเธฒ</option>
+            <option value="pink">๐ฉท เธชเธตเธเธกเธเธน</option>
           </select>
         </div>
         <div class="field print-classroom-field">
-          <label>ชั้น/ห้องที่ต้องการพิมพ์ <span style="font-weight:400;color:var(--text3)">(เลือกได้หลายห้อง)</span></label>
-          <div class="print-check-tools"><button type="button" class="btn" onclick="setAdminPrintRooms(true)">เลือกทั้งหมด</button><button type="button" class="btn" onclick="setAdminPrintRooms(false)">ล้างทั้งหมด</button></div>
+          <label>เธเธฑเนเธ/เธซเนเธญเธเธ—เธตเนเธ•เนเธญเธเธเธฒเธฃเธเธดเธกเธเน <span style="font-weight:400;color:var(--text3)">(เน€เธฅเธทเธญเธเนเธ”เนเธซเธฅเธฒเธขเธซเนเธญเธ)</span></label>
+          <div class="print-check-tools"><button type="button" class="btn" onclick="setAdminPrintRooms(true)">เน€เธฅเธทเธญเธเธ—เธฑเนเธเธซเธกเธ”</button><button type="button" class="btn" onclick="setAdminPrintRooms(false)">เธฅเนเธฒเธเธ—เธฑเนเธเธซเธกเธ”</button></div>
           <div id="print-classroom-checks" class="print-classroom-checks"></div>
         </div>
       </div>
 
       <div id="print-color-opts" style="display:none">
         <div class="field">
-          <label>สีกีฬา</label>
+          <label>เธชเธตเธเธตเธฌเธฒ</label>
           <select id="print-color-sel">
-            <option value="all">ทุกสี</option>
-            <option value="red">🔴 สีแดง</option>
-            <option value="yellow">🟡 สีเหลือง</option>
-            <option value="blue">🔵 สีฟ้า</option>
-            <option value="pink">🩷 สีชมพู</option>
+            <option value="all">เธ—เธธเธเธชเธต</option>
+            <option value="red">๐”ด เธชเธตเนเธ”เธ</option>
+            <option value="yellow">๐ก เธชเธตเน€เธซเธฅเธทเธญเธ</option>
+            <option value="blue">๐”ต เธชเธตเธเนเธฒ</option>
+            <option value="pink">๐ฉท เธชเธตเธเธกเธเธน</option>
           </select>
         </div>
       </div>
 
       <div id="print-teacher-opts" style="display:none">
-        <p style="font-size:13px;color:var(--text3);margin-bottom:8px">พิมพ์รายชื่อครูแยกตามสีกีฬาทั้ง 4 สี</p>
+        <p style="font-size:13px;color:var(--text3);margin-bottom:8px">เธเธดเธกเธเนเธฃเธฒเธขเธเธทเนเธญเธเธฃเธนเนเธขเธเธ•เธฒเธกเธชเธตเธเธตเธฌเธฒเธ—เธฑเนเธ 4 เธชเธต</p>
       </div>
 
-      <button class="btn btn-primary" onclick="doPrint()" style="margin-top:4px">🖨️ พิมพ์เลย</button>
+      <button class="btn btn-primary" onclick="doPrint()" style="margin-top:4px">๐–จ๏ธ เธเธดเธกเธเนเน€เธฅเธข</button>
     </div>
   </div>
 
   <!-- TEACHERS -->
   <div class="panel" id="panel-teacher">
-    <button class="btn btn-outline btn-sm" onclick="loadTeachers()" style="margin-bottom:12px">🔄 โหลดรายชื่อครู</button>
+    <button class="btn btn-outline btn-sm" onclick="loadTeachers()" style="margin-bottom:12px">๐” เนเธซเธฅเธ”เธฃเธฒเธขเธเธทเนเธญเธเธฃเธน</button>
     <div id="teacher-content">
-      <div class="empty"><div class="ico">👩‍🏫</div><p>กด "โหลดรายชื่อครู"</p></div>
+      <div class="empty"><div class="ico">๐‘ฉโ€๐ซ</div><p>เธเธ” "เนเธซเธฅเธ”เธฃเธฒเธขเธเธทเนเธญเธเธฃเธน"</p></div>
     </div>
   </div>
 
@@ -402,20 +402,20 @@ select:disabled{opacity:.45;cursor:not-allowed}
 <!-- BOTTOM NAV -->
 <nav>
   <button class="nav-btn active" onclick="switchTab('assign')" id="tab-assign">
-    <span class="ico">🎨</span>
-    แบ่งสี
+    <span class="ico">๐จ</span>
+    เนเธเนเธเธชเธต
   </button>
   <button class="nav-btn" onclick="switchTab('summary')" id="tab-summary">
-    <span class="ico" style="font-size:18px;font-weight:800;color:inherit;font-style:normal;">≡</span>
-    สรุป
+    <span class="ico" style="font-size:18px;font-weight:800;color:inherit;font-style:normal;">โก</span>
+    เธชเธฃเธธเธ
   </button>
   <button class="nav-btn" onclick="switchTab('teacher')" id="tab-teacher">
-    <span class="ico">👩‍🏫</span>
-    ครู
+    <span class="ico">๐‘ฉโ€๐ซ</span>
+    เธเธฃเธน
   </button>
   <button class="nav-btn" onclick="switchTab('print')" id="tab-print">
-    <span class="ico">🖨</span>
-    พิมพ์
+    <span class="ico">๐–จ</span>
+    เธเธดเธกเธเน
   </button>
 </nav>
 
@@ -423,9 +423,9 @@ select:disabled{opacity:.45;cursor:not-allowed}
 <div id="toast"></div>
 
 <script>
-const COLOR_LABELS={red:'🔴 สีแดง',yellow:'🟡 สีเหลือง',blue:'🔵 สีฟ้า',pink:'🩷 สีชมพู','':'— ยังไม่ได้แบ่ง'};
-const PRIMARY_LEVELS=['ป.1','ป.2','ป.3','ป.4','ป.5','ป.6'];
-const SECONDARY_LEVELS=['ม.1','ม.2','ม.3','ม.4','ม.5','ม.6'];
+const COLOR_LABELS={red:'๐”ด เธชเธตเนเธ”เธ',yellow:'๐ก เธชเธตเน€เธซเธฅเธทเธญเธ',blue:'๐”ต เธชเธตเธเนเธฒ',pink:'๐ฉท เธชเธตเธเธกเธเธน','':'โ€” เธขเธฑเธเนเธกเนเนเธ”เนเนเธเนเธ'};
+const PRIMARY_LEVELS=['เธ.1','เธ.2','เธ.3','เธ.4','เธ.5','เธ.6'];
+const SECONDARY_LEVELS=['เธก.1','เธก.2','เธก.3','เธก.4','เธก.5','เธก.6'];
 let SCRIPT_URL='https://wgmzzebuididxctksrpo.supabase.co/functions/v1/sports-api';
 const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndnbXp6ZWJ1aWRpZHhjdGtzcnBvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODk1MjA3NjQsImV4cCI6MjEwNTA5Njc2NH0.B-_3RcNXNXcU-3OMUdsKPAJlHcJgCf4VItEENaWxDE0';
 const API_HEADERS={apikey:SUPABASE_ANON_KEY,Authorization:`Bearer ${SUPABASE_ANON_KEY}`};
@@ -447,17 +447,17 @@ function updateAdminUI(){
   const btn=document.getElementById('admin-btn');
   const bar=document.getElementById('admin-bar');
   if(isAdmin){
-    if(btn){btn.textContent='🔓 แอดมิน';btn.style.color='#2E7D32';}
+    if(btn){btn.textContent='๐”“ เนเธญเธ”เธกเธดเธ';btn.style.color='#2E7D32';}
     if(bar)bar.style.display='flex';
   }else{
-    if(btn){btn.textContent='🔒 แอดมิน';btn.style.color='var(--text3)';}
+    if(btn){btn.textContent='๐”’ เนเธญเธ”เธกเธดเธ';btn.style.color='var(--text3)';}
     if(bar)bar.style.display='none';
   }
-  // ซ่อน/แสดงปุ่มสีทุกใบ
+  // เธเนเธญเธ/เนเธชเธ”เธเธเธธเนเธกเธชเธตเธ—เธธเธเนเธ
   document.querySelectorAll('.st-colors').forEach(el=>{
     el.style.display=isAdmin?'flex':'none';
   });
-  // badge แสดงตลอด แค่ปุ่มสีซ่อน
+  // badge เนเธชเธ”เธเธ•เธฅเธญเธ” เนเธเนเธเธธเนเธกเธชเธตเธเนเธญเธ
 }
 
 async function toggleAdmin(){
@@ -465,10 +465,10 @@ async function toggleAdmin(){
     isAdmin=false;
     adminCredential='';
     updateAdminUI();
-    showToast('ออกจากโหมดแอดมินแล้ว');
+    showToast('เธญเธญเธเธเธฒเธเนเธซเธกเธ”เนเธญเธ”เธกเธดเธเนเธฅเนเธง');
     return false;
   }
-  const pass=prompt('รหัสผ่านแอดมิน:');
+  const pass=prompt('เธฃเธซเธฑเธชเธเนเธฒเธเนเธญเธ”เธกเธดเธ:');
   if(pass===null)return false;
   try{
     const response=await fetch(SCRIPT_URL,{method:'POST',headers:{...API_HEADERS,'Content-Type':'application/json;charset=utf-8'},body:JSON.stringify({action:'verifyAdmin',adminKey:pass})});
@@ -476,9 +476,9 @@ async function toggleAdmin(){
     isAdmin=true;
     adminCredential=pass;
     updateAdminUI();
-    showToast('🔓 เข้าสู่โหมดแอดมิน','success');
+    showToast('๐”“ เน€เธเนเธฒเธชเธนเนเนเธซเธกเธ”เนเธญเธ”เธกเธดเธ','success');
     return true;
-  }catch(error){showToast(error.message||'รหัสผ่านไม่ถูกต้อง','error');return false}
+  }catch(error){showToast(error.message||'เธฃเธซเธฑเธชเธเนเธฒเธเนเธกเนเธ–เธนเธเธ•เนเธญเธ','error');return false}
 }
 
 function switchTab(tab){
@@ -491,8 +491,8 @@ function switchTab(tab){
 
 function colorBadge(c){
   const m={red:'badge-red',yellow:'badge-yellow',blue:'badge-blue',pink:'badge-pink','':'badge-none'};
-  const l={red:'แดง',yellow:'เหลือง',blue:'ฟ้า',pink:'ชมพู','':'ยังไม่แบ่ง'};
-  return `<span class="badge ${m[c]||'badge-none'}">${l[c]||'—'}</span>`;
+  const l={red:'เนเธ”เธ',yellow:'เน€เธซเธฅเธทเธญเธ',blue:'เธเนเธฒ',pink:'เธเธกเธเธน','':'เธขเธฑเธเนเธกเนเนเธเนเธ'};
+  return `<span class="badge ${m[c]||'badge-none'}">${l[c]||'โ€”'}</span>`;
 }
 
 async function fetchLevels(){
@@ -507,9 +507,9 @@ async function fetchLevels(){
 function filterLevels(){
   const edu=document.getElementById('sel-educLevel').value;
   const sel=document.getElementById('sel-level');
-  sel.innerHTML='<option value="">— เลือก —</option>';
+  sel.innerHTML='<option value="">โ€” เน€เธฅเธทเธญเธ โ€”</option>';
   sel.disabled=true;
-  document.getElementById('sel-room').innerHTML='<option value="">— —</option>';
+  document.getElementById('sel-room').innerHTML='<option value="">โ€” โ€”</option>';
   document.getElementById('sel-room').disabled=true;
   if(!edu)return;
   const set=edu==='primary'?PRIMARY_LEVELS:SECONDARY_LEVELS;
@@ -524,33 +524,33 @@ function filterLevels(){
 function loadRooms(){
   const level=document.getElementById('sel-level').value;
   const sel=document.getElementById('sel-room');
-  sel.innerHTML='<option value="">— เลือก —</option>';
+  sel.innerHTML='<option value="">โ€” เน€เธฅเธทเธญเธ โ€”</option>';
   sel.disabled=true;
   if(!level)return;
   const rooms=allLevels[level]||['1','2','3'];
-  rooms.forEach(r=>sel.innerHTML+=`<option value="${r}">ห้อง ${r}</option>`);
+  rooms.forEach(r=>sel.innerHTML+=`<option value="${r}">เธซเนเธญเธ ${r}</option>`);
   sel.disabled=false;
 }
 
 async function loadStudents(){
   const level=document.getElementById('sel-level').value;
   const room=document.getElementById('sel-room').value;
-  if(!level||!room){showToast('เลือกชั้นและห้องก่อน','error');return;}
+  if(!level||!room){showToast('เน€เธฅเธทเธญเธเธเธฑเนเธเนเธฅเธฐเธซเนเธญเธเธเนเธญเธ','error');return;}
   const wrap=document.getElementById('assign-content');
-  wrap.innerHTML=`<div class="loading"><div class="spinner"></div><br>กำลังโหลด...</div>`;
+  wrap.innerHTML=`<div class="loading"><div class="spinner"></div><br>เธเธณเธฅเธฑเธเนเธซเธฅเธ”...</div>`;
   try{
     const res=await fetch(`${SCRIPT_URL}?action=getStudents&level=${encodeURIComponent(level)}&room=${encodeURIComponent(room)}`,{headers:API_HEADERS});
     const data=await res.json();
-    if(data.error){wrap.innerHTML=`<div class="loading">❌ ${data.error}</div>`;return;}
+    if(data.error){wrap.innerHTML=`<div class="loading">โ ${data.error}</div>`;return;}
     renderStudentList(wrap,data.students,level,room);
   }catch(e){
-    wrap.innerHTML=`<div class="loading">❌ โหลดไม่สำเร็จ<br><small>${e.message}</small></div>`;
+    wrap.innerHTML=`<div class="loading">โ เนเธซเธฅเธ”เนเธกเนเธชเธณเน€เธฃเนเธ<br><small>${e.message}</small></div>`;
   }
 }
 
 function renderStudentList(wrap,students,level,room){
   if(!students.length){
-    wrap.innerHTML=`<div class="empty"><div class="ico">🔍</div><p>ไม่พบนักเรียนใน ${level}/${room}</p></div>`;
+    wrap.innerHTML=`<div class="empty"><div class="ico">๐”</div><p>เนเธกเนเธเธเธเธฑเธเน€เธฃเธตเธขเธเนเธ ${level}/${room}</p></div>`;
     return;
   }
   const stMap={};
@@ -568,7 +568,7 @@ function renderStudentList(wrap,students,level,room){
         ${['red','yellow','blue','pink'].map(c=>`
           <button class="cbtn c-${c} ${s.color===c?'sel':''}" onclick="setColor(${s.rowIndex},'${c}')" title="${COLOR_LABELS[c]}"></button>
         `).join('')}
-        <button class="cbtn c-none ${s.color===''?'sel':''}" onclick="setColor(${s.rowIndex},'')" title="ยังไม่แบ่ง">—</button>
+        <button class="cbtn c-none ${s.color===''?'sel':''}" onclick="setColor(${s.rowIndex},'')" title="เธขเธฑเธเนเธกเนเนเธเนเธ">โ€”</button>
       </div>
     </div>
   `).join('');
@@ -576,21 +576,21 @@ function renderStudentList(wrap,students,level,room){
   wrap.innerHTML=`
     <div style="padding:0 0 4px">
       <div class="room-bar">
-        <div class="title">📋 ${level} ห้อง ${room}</div>
-        <div class="count">${students.length} คน</div>
+        <div class="title">๐“ ${level} เธซเนเธญเธ ${room}</div>
+        <div class="count">${students.length} เธเธ</div>
       </div>
       <div class="pills">
-        <span class="pill pill-all" onclick="filterColor('all',this)">ทั้งหมด</span>
-        <span class="pill pill-red" onclick="filterColor('red',this)">🔴 แดง</span>
-        <span class="pill pill-yellow" onclick="filterColor('yellow',this)">🟡 เหลือง</span>
-        <span class="pill pill-blue" onclick="filterColor('blue',this)">🔵 ฟ้า</span>
-        <span class="pill pill-pink" onclick="filterColor('pink',this)">🩷 ชมพู</span>
-        <span class="pill pill-inactive" onclick="filterColor('none',this)">— ยังไม่แบ่ง</span>
+        <span class="pill pill-all" onclick="filterColor('all',this)">เธ—เธฑเนเธเธซเธกเธ”</span>
+        <span class="pill pill-red" onclick="filterColor('red',this)">๐”ด เนเธ”เธ</span>
+        <span class="pill pill-yellow" onclick="filterColor('yellow',this)">๐ก เน€เธซเธฅเธทเธญเธ</span>
+        <span class="pill pill-blue" onclick="filterColor('blue',this)">๐”ต เธเนเธฒ</span>
+        <span class="pill pill-pink" onclick="filterColor('pink',this)">๐ฉท เธเธกเธเธน</span>
+        <span class="pill pill-inactive" onclick="filterColor('none',this)">โ€” เธขเธฑเธเนเธกเนเนเธเนเธ</span>
       </div>
       <div id="student-list">${cards}</div>
       <div class="save-bar" id="admin-bar" style="display:${isAdmin?'flex':'none'}">
-        <button class="btn btn-success btn-sm" onclick="saveColors()">💾 บันทึก → Supabase</button>
-        <button class="btn btn-outline btn-sm" onclick="assignRandom()">🎲 สุ่มที่เหลือ</button>
+        <button class="btn btn-success btn-sm" onclick="saveColors()">๐’พ เธเธฑเธเธ—เธถเธ โ’ Supabase</button>
+        <button class="btn btn-outline btn-sm" onclick="assignRandom()">๐ฒ เธชเธธเนเธกเธ—เธตเนเน€เธซเธฅเธทเธญ</button>
         <span class="status" id="save-status"></span>
       </div>
     </div>
@@ -626,11 +626,11 @@ function filterColor(color,el){
 function assignRandom(){
   if(!window._currentStudents)return;
   const COLORS=['red','yellow','blue','pink'];
-  const MALE_PREFIX=['นาย','เด็กชาย','ด.ช.'];
+  const MALE_PREFIX=['เธเธฒเธข','เน€เธ”เนเธเธเธฒเธข','เธ”.เธ.'];
 
-  // แยกเฉพาะที่ยังไม่มีสี
+  // เนเธขเธเน€เธเธเธฒเธฐเธ—เธตเนเธขเธฑเธเนเธกเนเธกเธตเธชเธต
   const unassigned=Object.values(window._currentStudents).filter(s=>!s.color);
-  if(!unassigned.length){showToast('ทุกคนมีสีแล้ว');return;}
+  if(!unassigned.length){showToast('เธ—เธธเธเธเธเธกเธตเธชเธตเนเธฅเนเธง');return;}
 
   const males  =unassigned.filter(s=>MALE_PREFIX.some(p=>s.prefix.startsWith(p)));
   const females=unassigned.filter(s=>!MALE_PREFIX.some(p=>s.prefix.startsWith(p)));
@@ -639,29 +639,29 @@ function assignRandom(){
     if(!group.length)return;
     const n=group.length;
     const base=Math.floor(n/4);
-    const extra=n%4; // 4 สี แต่ละสีได้ base คน สีแรก extra คนได้เพิ่ม
+    const extra=n%4; // 4 เธชเธต เนเธ•เนเธฅเธฐเธชเธตเนเธ”เน base เธเธ เธชเธตเนเธฃเธ extra เธเธเนเธ”เนเน€เธเธดเนเธก
 
-    // สร้าง pool สี ให้แต่ละสีเท่ากัน ± 1
+    // เธชเธฃเนเธฒเธ pool เธชเธต เนเธซเนเนเธ•เนเธฅเธฐเธชเธตเน€เธ—เนเธฒเธเธฑเธ ยฑ 1
     const pool=[];
     COLORS.forEach((c,i)=>{
       const count=base+(i<extra?1:0);
       for(let j=0;j<count;j++)pool.push(c);
     });
 
-    // สุ่ม shuffle pool
+    // เธชเธธเนเธก shuffle pool
     for(let i=pool.length-1;i>0;i--){
       const j=Math.floor(Math.random()*(i+1));
       [pool[i],pool[j]]=[pool[j],pool[i]];
     }
 
-    // กำหนดสีให้แต่ละคน
+    // เธเธณเธซเธเธ”เธชเธตเนเธซเนเนเธ•เนเธฅเธฐเธเธ
     group.forEach((s,i)=>setColor(s.rowIndex,pool[i]));
   }
 
   balancedShuffle(males);
   balancedShuffle(females);
 
-  // สรุปจำนวน
+  // เธชเธฃเธธเธเธเธณเธเธงเธ
   const all=Object.values(window._currentStudents);
   const countM={red:0,yellow:0,blue:0,pink:0};
   const countF={red:0,yellow:0,blue:0,pink:0};
@@ -672,55 +672,55 @@ function assignRandom(){
   });
 
   const summary=COLORS.map(c=>{
-    const label={red:'แดง',yellow:'เหลือง',blue:'ฟ้า',pink:'ชมพู'}[c];
-    return `${label}: ช${countM[c]||0}/ญ${countF[c]||0}`;
+    const label={red:'เนเธ”เธ',yellow:'เน€เธซเธฅเธทเธญเธ',blue:'เธเนเธฒ',pink:'เธเธกเธเธน'}[c];
+    return `${label}: เธ${countM[c]||0}/เธ${countF[c]||0}`;
   }).join('  ');
 
-  showToast(`🎲 ${summary}`,'success');
+  showToast(`๐ฒ ${summary}`,'success');
 }
 
 async function saveColors(){
   if(!window._currentStudents)return;
   const students=Object.values(window._currentStudents);
   const status=document.getElementById('save-status');
-  if(status)status.textContent='⏳ กำลังบันทึก...';
+  if(status)status.textContent='โณ เธเธณเธฅเธฑเธเธเธฑเธเธ—เธถเธ...';
   try{
     const res=await fetch(SCRIPT_URL,{method:'POST',headers:{...API_HEADERS,'Content-Type':'application/json;charset=utf-8'},body:JSON.stringify({action:'saveColors',students,adminKey:adminCredential})});
     const data=await res.json();
     if(data.success){
-      showToast(`✅ บันทึก ${data.saved} คน เรียบร้อย`,'success');
-      if(status)status.textContent=`✅ บันทึกแล้ว`;
+      showToast(`โ… เธเธฑเธเธ—เธถเธ ${data.saved} เธเธ เน€เธฃเธตเธขเธเธฃเนเธญเธข`,'success');
+      if(status)status.textContent=`โ… เธเธฑเธเธ—เธถเธเนเธฅเนเธง`;
     }else{
-      showToast('❌ '+(data.error||'บันทึกไม่สำเร็จ'),'error');
+      showToast('โ '+(data.error||'เธเธฑเธเธ—เธถเธเนเธกเนเธชเธณเน€เธฃเนเธ'),'error');
       if(status)status.textContent='';
     }
   }catch(e){
-    showToast('❌ เชื่อมต่อไม่ได้','error');
+    showToast('โ เน€เธเธทเนเธญเธกเธ•เนเธญเนเธกเนเนเธ”เน','error');
     if(status)status.textContent='';
   }
 }
 
-let _summaryData = null; // เก็บข้อมูลไว้ filter ทีหลัง
+let _summaryData = null; // เน€เธเนเธเธเนเธญเธกเธนเธฅเนเธงเน filter เธ—เธตเธซเธฅเธฑเธ
 
 function buildSummaryTable(color) {
   if (!_summaryData) return;
   const wrap = document.getElementById('summary-content');
   if (!color) {
-    wrap.innerHTML = `<div class="empty"><div class="ico">👆</div><p>เลือกสีที่ต้องการดูจาก dropdown ด้านบน</p></div>`;
+    wrap.innerHTML = `<div class="empty"><div class="ico">๐‘</div><p>เน€เธฅเธทเธญเธเธชเธตเธ—เธตเนเธ•เนเธญเธเธเธฒเธฃเธ”เธนเธเธฒเธ dropdown เธ”เนเธฒเธเธเธ</p></div>`;
     return;
   }
   const colorMeta = {
-    red:   {label:'🔴 สีแดง'},
-    yellow:{label:'🟡 สีเหลือง'},
-    blue:  {label:'🔵 สีฟ้า'},
-    pink:  {label:'🩷 สีชมพู'},
+    red:   {label:'๐”ด เธชเธตเนเธ”เธ'},
+    yellow:{label:'๐ก เธชเธตเน€เธซเธฅเธทเธญเธ'},
+    blue:  {label:'๐”ต เธชเธตเธเนเธฒ'},
+    pink:  {label:'๐ฉท เธชเธตเธเธกเธเธน'},
   };
   const cm = colorMeta[color];
   const sts = _summaryData.byColor[color] || [];
   const rooms = {};
   sts.forEach(s => {
     const k = s.level+'|'+s.room;
-    if (!rooms[k]) rooms[k] = {label: s.level+' ห้อง '+s.room, list: []};
+    if (!rooms[k]) rooms[k] = {label: s.level+' เธซเนเธญเธ '+s.room, list: []};
     rooms[k].list.push(s);
   });
   const tableRows = Object.entries(rooms).sort(([a],[b])=>a.localeCompare(b)).map(([k,g]) => {
@@ -732,7 +732,7 @@ function buildSummaryTable(color) {
       </tr>`).join('');
     return `<tr>
       <td colspan="3" style="background:var(--surface2);font-size:12px;font-weight:700;color:var(--primary);padding:6px 10px;border-top:2px solid var(--border)">
-        ${g.label} &nbsp;·&nbsp; ${g.list.length} คน
+        ${g.label} &nbsp;ยท&nbsp; ${g.list.length} เธเธ
       </td>
     </tr>${studentRows}`;
   }).join('');
@@ -740,20 +740,20 @@ function buildSummaryTable(color) {
   wrap.innerHTML = `<div class="card" style="padding:12px">
     <div class="card-title" style="margin-bottom:10px">
       <span class="badge badge-${color}" style="font-size:14px;padding:4px 14px">${cm.label}</span>
-      <span style="font-size:13px;color:var(--text3);margin-left:auto">${sts.length} คน</span>
+      <span style="font-size:13px;color:var(--text3);margin-left:auto">${sts.length} เธเธ</span>
     </div>
     ${sts.length ? `<div style="overflow-x:auto">
       <table style="width:100%;border-collapse:collapse">
         <thead>
           <tr style="background:var(--primary-light)">
-            <th style="padding:6px 8px;font-size:12px;color:var(--primary);text-align:center;width:32px">เลขที่</th>
-            <th style="padding:6px 8px;font-size:12px;color:var(--primary);text-align:left">ชื่อ-สกุล</th>
-            <th style="padding:6px 8px;font-size:12px;color:var(--primary);text-align:center;width:80px">เลขประจำตัว</th>
+            <th style="padding:6px 8px;font-size:12px;color:var(--primary);text-align:center;width:32px">เน€เธฅเธเธ—เธตเน</th>
+            <th style="padding:6px 8px;font-size:12px;color:var(--primary);text-align:left">เธเธทเนเธญ-เธชเธเธธเธฅ</th>
+            <th style="padding:6px 8px;font-size:12px;color:var(--primary);text-align:center;width:80px">เน€เธฅเธเธเธฃเธฐเธเธณเธ•เธฑเธง</th>
           </tr>
         </thead>
         <tbody>${tableRows}</tbody>
       </table>
-    </div>` : '<div style="color:var(--text3);font-size:14px;padding:8px 0">ยังไม่มีนักเรียน</div>'}
+    </div>` : '<div style="color:var(--text3);font-size:14px;padding:8px 0">เธขเธฑเธเนเธกเนเธกเธตเธเธฑเธเน€เธฃเธตเธขเธ</div>'}
   </div>`;
 }
 
@@ -763,13 +763,13 @@ function filterSummaryColor() {
 }
 
 async function loadSummary(){
-  if(!SCRIPT_URL){showToast('ยังไม่ได้ตั้งค่า URL','error');return;}
+  if(!SCRIPT_URL){showToast('เธขเธฑเธเนเธกเนเนเธ”เนเธ•เธฑเนเธเธเนเธฒ URL','error');return;}
   const wrap=document.getElementById('summary-content');
-  wrap.innerHTML=`<div class="loading"><div class="spinner"></div><br>กำลังโหลด...</div>`;
+  wrap.innerHTML=`<div class="loading"><div class="spinner"></div><br>เธเธณเธฅเธฑเธเนเธซเธฅเธ”...</div>`;
   try{
     const res=await fetch(`${SCRIPT_URL}?action=getAllStudents`,{headers:API_HEADERS});
     const data=await res.json();
-    if(data.error){wrap.innerHTML=`<div class="loading">❌ ${data.error}</div>`;return;}
+    if(data.error){wrap.innerHTML=`<div class="loading">โ ${data.error}</div>`;return;}
     const all=data.students||[];
 
     const counts={red:0,yellow:0,blue:0,pink:0,'':0};
@@ -783,18 +783,18 @@ async function loadSummary(){
     all.forEach(s=>{if(byColor[s.color])byColor[s.color].push(s);});
     _summaryData = {byColor, counts};
 
-    // เปิด dropdown
+    // เน€เธเธดเธ” dropdown
     const sel = document.getElementById('summary-color-filter');
     sel.disabled = false;
 
-    // แสดง empty state รอเลือกสี
-    wrap.innerHTML=`<div class="empty"><div class="ico">👆</div><p>เลือกสีที่ต้องการดูจาก dropdown ด้านบน</p></div>`;
+    // เนเธชเธ”เธ empty state เธฃเธญเน€เธฅเธทเธญเธเธชเธต
+    wrap.innerHTML=`<div class="empty"><div class="ico">๐‘</div><p>เน€เธฅเธทเธญเธเธชเธตเธ—เธตเนเธ•เนเธญเธเธเธฒเธฃเธ”เธนเธเธฒเธ dropdown เธ”เนเธฒเธเธเธ</p></div>`;
 
-    // ถ้าเลือกสีไว้แล้ว render เลย
+    // เธ–เนเธฒเน€เธฅเธทเธญเธเธชเธตเนเธงเนเนเธฅเนเธง render เน€เธฅเธข
     if(sel.value) buildSummaryTable(sel.value);
 
   }catch(e){
-    wrap.innerHTML=`<div class="loading">❌ ${e.message}</div>`;
+    wrap.innerHTML=`<div class="loading">โ ${e.message}</div>`;
   }
 }
 
@@ -816,8 +816,8 @@ function selectRoomPrintMode(mode){
 }
 
 function printLevelGroups(){return[
-  {label:'ป.1–ป.3',levels:['ป.1','ป.2','ป.3']},{label:'ป.4–ป.6',levels:['ป.4','ป.5','ป.6']},
-  {label:'ม.1–ม.3',levels:['ม.1','ม.2','ม.3']},{label:'ม.4–ม.6',levels:['ม.4','ม.5','ม.6']}
+  {label:'เธ.1โ€“เธ.3',levels:['เธ.1','เธ.2','เธ.3']},{label:'เธ.4โ€“เธ.6',levels:['เธ.4','เธ.5','เธ.6']},
+  {label:'เธก.1โ€“เธก.3',levels:['เธก.1','เธก.2','เธก.3']},{label:'เธก.4โ€“เธก.6',levels:['เธก.4','เธก.5','เธก.6']}
 ]}
 function renderAdminPrintRooms(){
   const root=document.getElementById('print-classroom-checks');if(!root)return;
@@ -830,14 +830,14 @@ function loadPrintRooms(){}
 
 async function loadTeachers(){
   const wrap=document.getElementById('teacher-content');
-  wrap.innerHTML=`<div class="loading"><div class="spinner"></div><br>กำลังโหลด...</div>`;
+  wrap.innerHTML=`<div class="loading"><div class="spinner"></div><br>เธเธณเธฅเธฑเธเนเธซเธฅเธ”...</div>`;
   try{
     const res=await fetch(`${SCRIPT_URL}?action=getTeachers`,{headers:API_HEADERS});
     const data=await res.json();
-    if(data.error){wrap.innerHTML=`<div class="loading">❌ ${data.error}</div>`;return;}
+    if(data.error){wrap.innerHTML=`<div class="loading">โ ${data.error}</div>`;return;}
     const teachers=data.teachers||{};
 
-    const MALE_PREFIX=['นาย','ด.ช.','เด็กชาย'];
+    const MALE_PREFIX=['เธเธฒเธข','เธ”.เธ.','เน€เธ”เนเธเธเธฒเธข'];
     function countGender(list){
       let m=0,f=0;
       list.forEach(t=>{
@@ -848,13 +848,13 @@ async function loadTeachers(){
     }
 
     const colorMeta=[
-      {key:'red',   label:'🔴 สีแดง'},
-      {key:'yellow',label:'🟡 สีเหลือง'},
-      {key:'blue',  label:'🔵 สีฟ้า'},
-      {key:'pink',  label:'🩷 สีชมพู'},
+      {key:'red',   label:'๐”ด เธชเธตเนเธ”เธ'},
+      {key:'yellow',label:'๐ก เธชเธตเน€เธซเธฅเธทเธญเธ'},
+      {key:'blue',  label:'๐”ต เธชเธตเธเนเธฒ'},
+      {key:'pink',  label:'๐ฉท เธชเธตเธเธกเธเธน'},
     ];
 
-    // stats bar เหมือนนักเรียน
+    // stats bar เน€เธซเธกเธทเธญเธเธเธฑเธเน€เธฃเธตเธขเธ
     const statsHtml=`
       <div class="stats-grid" style="margin-bottom:12px">
         ${colorMeta.map(cm=>{
@@ -863,7 +863,7 @@ async function loadTeachers(){
           return `<div class="stat stat-${cm.key}">
             <div class="n">${list.length}</div>
             <div class="lbl">${cm.label}</div>
-            <div style="font-size:11px;margin-top:3px;opacity:.85">ช ${m} / ญ ${f}</div>
+            <div style="font-size:11px;margin-top:3px;opacity:.85">เธ ${m} / เธ ${f}</div>
           </div>`;
         }).join('')}
       </div>
@@ -884,21 +884,21 @@ async function loadTeachers(){
       return `<div class="card">
         <div class="card-title">
           <span class="badge badge-${cm.key}" style="font-size:14px;padding:4px 14px">${cm.label}</span>
-          <span style="font-size:13px;color:var(--text3);margin-left:auto">${list.length} คน &nbsp;·&nbsp; ช ${m} / ญ ${f}</span>
+          <span style="font-size:13px;color:var(--text3);margin-left:auto">${list.length} เธเธ &nbsp;ยท&nbsp; เธ ${m} / เธ ${f}</span>
         </div>
-        ${rows||'<div style="color:var(--text3);font-size:14px;padding:8px 0">ยังไม่มีข้อมูล</div>'}
+        ${rows||'<div style="color:var(--text3);font-size:14px;padding:8px 0">เธขเธฑเธเนเธกเนเธกเธตเธเนเธญเธกเธนเธฅ</div>'}
       </div>`;
     }).join('');
 
     wrap.innerHTML=statsHtml+cardsHtml;
   }catch(e){
-    wrap.innerHTML=`<div class="loading">❌ ${e.message}</div>`;
+    wrap.innerHTML=`<div class="loading">โ ${e.message}</div>`;
   }
 }
 
 async function doPrint(){
-  if(!SCRIPT_URL){showToast('ยังไม่ได้ตั้งค่า URL','error');return;}
-  showToast('⏳ กำลังเตรียม...');
+  if(!SCRIPT_URL){showToast('เธขเธฑเธเนเธกเนเนเธ”เนเธ•เธฑเนเธเธเนเธฒ URL','error');return;}
+  showToast('โณ เธเธณเธฅเธฑเธเน€เธ•เธฃเธตเธขเธก...');
 
   if(printType==='teacher'){
     const res=await fetch(`${SCRIPT_URL}?action=getTeachers`,{headers:API_HEADERS});
@@ -906,7 +906,7 @@ async function doPrint(){
     buildPrintTeachers(data.teachers||{});
   }else if(printType==='room'){
     const selected=selectedAdminPrintRooms();
-    if(!selected.size){showToast('กรุณาเลือกอย่างน้อย 1 ชั้น/ห้อง','error');return;}
+    if(!selected.size){showToast('เธเธฃเธธเธ“เธฒเน€เธฅเธทเธญเธเธญเธขเนเธฒเธเธเนเธญเธข 1 เธเธฑเนเธ/เธซเนเธญเธ','error');return;}
     const color=document.getElementById('print-room-color').value;
     const res=await fetch(`${SCRIPT_URL}?action=getAllStudents`,{headers:API_HEADERS});
     const data=await res.json();
@@ -929,12 +929,12 @@ async function doPrint(){
 
 function buildPrintTeachers(teachers){
   const colorMeta=[
-    {key:'red',   label:'🔴 สีแดง'},
-    {key:'yellow',label:'🟡 สีเหลือง'},
-    {key:'blue',  label:'🔵 สีฟ้า'},
-    {key:'pink',  label:'🩷 สีชมพู'},
+    {key:'red',   label:'๐”ด เธชเธตเนเธ”เธ'},
+    {key:'yellow',label:'๐ก เธชเธตเน€เธซเธฅเธทเธญเธ'},
+    {key:'blue',  label:'๐”ต เธชเธตเธเนเธฒ'},
+    {key:'pink',  label:'๐ฉท เธชเธตเธเธกเธเธน'},
   ];
-  // รวมทุกสีในหน้าเดียว
+  // เธฃเธงเธกเธ—เธธเธเธชเธตเนเธเธซเธเนเธฒเน€เธ”เธตเธขเธง
   const sections=colorMeta.map(cm=>{
     const list=teachers[cm.key]||[];
     const rows=list.map((t,i)=>`
@@ -948,18 +948,18 @@ function buildPrintTeachers(teachers){
     `).join('');
     return `
       <div style="margin-bottom:16px">
-        <div style="font-size:13px;font-weight:700;padding:4px 8px;background:#f0f0f0;border:1px solid #000;border-bottom:none">${cm.label} (${list.length} คน)</div>
+        <div style="font-size:13px;font-weight:700;padding:4px 8px;background:#f0f0f0;border:1px solid #000;border-bottom:none">${cm.label} (${list.length} เธเธ)</div>
         <table style="width:100%;border-collapse:collapse;font-size:11px">
           <thead>
             <tr style="background:#e8e8e8">
-              <th style="border:.5px solid #000;padding:3px;width:30px">ที่</th>
-              <th style="border:.5px solid #000;padding:3px;width:70px">คำนำหน้า</th>
-              <th style="border:.5px solid #000;padding:3px;text-align:left">ชื่อ</th>
-              <th style="border:.5px solid #000;padding:3px;text-align:left">นามสกุล</th>
-              <th style="border:.5px solid #000;padding:3px;text-align:left">ตำแหน่ง/หมายเหตุ</th>
+              <th style="border:.5px solid #000;padding:3px;width:30px">เธ—เธตเน</th>
+              <th style="border:.5px solid #000;padding:3px;width:70px">เธเธณเธเธณเธซเธเนเธฒ</th>
+              <th style="border:.5px solid #000;padding:3px;text-align:left">เธเธทเนเธญ</th>
+              <th style="border:.5px solid #000;padding:3px;text-align:left">เธเธฒเธกเธชเธเธธเธฅ</th>
+              <th style="border:.5px solid #000;padding:3px;text-align:left">เธ•เธณเนเธซเธเนเธ/เธซเธกเธฒเธขเน€เธซเธ•เธธ</th>
             </tr>
           </thead>
-          <tbody>${rows||'<tr><td colspan="5" style="border:.5px solid #000;padding:4px;text-align:center;color:#999">ยังไม่มีข้อมูล</td></tr>'}</tbody>
+          <tbody>${rows||'<tr><td colspan="5" style="border:.5px solid #000;padding:4px;text-align:center;color:#999">เธขเธฑเธเนเธกเนเธกเธตเธเนเธญเธกเธนเธฅ</td></tr>'}</tbody>
         </table>
       </div>
     `;
@@ -968,8 +968,8 @@ function buildPrintTeachers(teachers){
   document.getElementById('printArea').innerHTML=`
     <div class="print-page last-page" style="padding:12mm 10mm;font-family:Sarabun,sans-serif">
       <div style="text-align:center;border-bottom:2px solid #000;padding-bottom:6px;margin-bottom:14px">
-        <div style="font-size:15px;font-weight:700">รายชื่อครูกีฬาสี ปีการศึกษา 2569</div>
-        <div style="font-size:11px;color:#444">โรงเรียนบ้านห้วยผึ้ง</div>
+        <div style="font-size:15px;font-weight:700">เธฃเธฒเธขเธเธทเนเธญเธเธฃเธนเธเธตเธฌเธฒเธชเธต เธเธตเธเธฒเธฃเธจเธถเธเธฉเธฒ 2569</div>
+        <div style="font-size:11px;color:#444">เนเธฃเธเน€เธฃเธตเธขเธเธเนเธฒเธเธซเนเธงเธขเธเธถเนเธ</div>
       </div>
       ${sections}
     </div>
@@ -978,22 +978,22 @@ function buildPrintTeachers(teachers){
 
 function buildPrintByRoom(students,colorFilter='all'){
   const groups=printLevelGroups(),colors=colorFilter==='all'?['red','yellow','blue','pink']:[colorFilter];
-  const colorText={red:'สีแดง',yellow:'สีเหลือง',blue:'สีฟ้า',pink:'สีชมพู'};
+  const colorText={red:'เธชเธตเนเธ”เธ',yellow:'เธชเธตเน€เธซเธฅเธทเธญเธ',blue:'เธชเธตเธเนเธฒ',pink:'เธชเธตเธเธกเธเธน'};
   const COLS=10,checkH=Array(COLS).fill(0).map((_,i)=>`<th class="p-check">${i+1}</th>`).join('');
   const pages=[];
   colors.forEach(color=>groups.forEach(group=>{
     const list=students.filter(s=>s.color===color&&group.levels.includes(s.level)).sort((a,b)=>String(a.level).localeCompare(String(b.level),'th',{numeric:true})||String(a.room).localeCompare(String(b.room),'th',{numeric:true})||Number(a.number||0)-Number(b.number||0));
     if(!list.length)return;
-    const header=`<div class="print-header"><h2>รายชื่อนักเรียน ${colorText[color]} — ${group.label}</h2><p>กีฬาสี ปีการศึกษา 2569 | โรงเรียนบ้านห้วยผึ้ง</p></div>`;
+    const header=`<div class="print-header"><h2>เธฃเธฒเธขเธเธทเนเธญเธเธฑเธเน€เธฃเธตเธขเธ ${colorText[color]} โ€” ${group.label}</h2><p>เธเธตเธฌเธฒเธชเธต เธเธตเธเธฒเธฃเธจเธถเธเธฉเธฒ 2569 | เนเธฃเธเน€เธฃเธตเธขเธเธเนเธฒเธเธซเนเธงเธขเธเธถเนเธ</p></div>`;
     if(roomPrintMode==='check'){
       const rows=list.map(s=>{const checks=Array(COLS).fill('<td class="p-check"></td>').join(''),fullName=[s.prefix,s.firstName,s.lastName].filter(Boolean).join(' ');return `<tr><td class="p-no">${s.number||''}</td><td class="p-name">${fullName}</td><td class="p-room">${s.level}/${s.room}</td>${checks}</tr>`}).join('');
-      pages.push(`<div class="print-page print-portrait-page print-compact-group">${header}<table class="portrait-check-table"><colgroup><col class="p-no"><col class="p-name"><col class="p-room">${Array(COLS).fill('<col class="p-check">').join('')}</colgroup><thead><tr><th class="p-no">เลขที่</th><th class="p-name">ชื่อ–สกุล</th><th class="p-room">ชั้น/ห้อง</th>${checkH}</tr></thead><tbody>${rows}</tbody></table></div>`);
+      pages.push(`<div class="print-page print-portrait-page print-compact-group">${header}<table class="portrait-check-table"><colgroup><col class="p-no"><col class="p-name"><col class="p-room">${Array(COLS).fill('<col class="p-check">').join('')}</colgroup><thead><tr><th class="p-no">เน€เธฅเธเธ—เธตเน</th><th class="p-name">เธเธทเนเธญโ€“เธชเธเธธเธฅ</th><th class="p-room">เธเธฑเนเธ/เธซเนเธญเธ</th>${checkH}</tr></thead><tbody>${rows}</tbody></table></div>`);
     }else{
       const rows=list.map(s=>{const fullName=[s.prefix,s.firstName,s.lastName].filter(Boolean).join(' ');return `<tr><td class="p-no">${s.number||''}</td><td class="p-name">${fullName}</td><td class="p-room">${s.level}/${s.room}</td></tr>`}).join('');
-      pages.push(`<div class="print-page print-portrait-page print-compact-group">${header}<table class="portrait-roster-table"><colgroup><col class="p-no"><col class="p-name"><col class="p-room"></colgroup><thead><tr><th class="p-no">เลขที่</th><th class="p-name">ชื่อ–สกุล</th><th class="p-room">ชั้น/ห้อง</th></tr></thead><tbody>${rows}</tbody></table></div>`);
+      pages.push(`<div class="print-page print-portrait-page print-compact-group">${header}<table class="portrait-roster-table"><colgroup><col class="p-no"><col class="p-name"><col class="p-room"></colgroup><thead><tr><th class="p-no">เน€เธฅเธเธ—เธตเน</th><th class="p-name">เธเธทเนเธญโ€“เธชเธเธธเธฅ</th><th class="p-room">เธเธฑเนเธ/เธซเนเธญเธ</th></tr></thead><tbody>${rows}</tbody></table></div>`);
     }
   }));
-  document.getElementById('printArea').innerHTML=pages.join('')||'<div class="print-page print-portrait-page last-page"><div class="print-header"><h2>รายชื่อนักเรียน</h2><p>กีฬาสี ปีการศึกษา 2569 | โรงเรียนบ้านห้วยผึ้ง</p></div><p class="print-empty">ไม่พบรายชื่อตามเงื่อนไขที่เลือก</p></div>';
+  document.getElementById('printArea').innerHTML=pages.join('')||'<div class="print-page print-portrait-page last-page"><div class="print-header"><h2>เธฃเธฒเธขเธเธทเนเธญเธเธฑเธเน€เธฃเธตเธขเธ</h2><p>เธเธตเธฌเธฒเธชเธต เธเธตเธเธฒเธฃเธจเธถเธเธฉเธฒ 2569 | เนเธฃเธเน€เธฃเธตเธขเธเธเนเธฒเธเธซเนเธงเธขเธเธถเนเธ</p></div><p class="print-empty">เนเธกเนเธเธเธฃเธฒเธขเธเธทเนเธญเธ•เธฒเธกเน€เธเธทเนเธญเธเนเธเธ—เธตเนเน€เธฅเธทเธญเธ</p></div>';
 }
 
 function buildPrintByColor(students){
@@ -1001,7 +1001,8 @@ function buildPrintByColor(students){
   const oldMode=roomPrintMode;roomPrintMode='check';buildPrintByRoom(students,colorFilter);roomPrintMode=oldMode;
 }
 </script>
-<script src="sports.js?v=20260916-print3"></script>
+<script src="sports.js?v=20260916-supabase2"></script>
 <script src="competition-admin-v2.js?v=20260916-print3"></script>
 </body>
 </html>
+
