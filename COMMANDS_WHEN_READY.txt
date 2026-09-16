@@ -1,0 +1,14 @@
+# ยังไม่ต้องรันจนกว่าจะพร้อมสร้างฐานข้อมูลจริง
+cd "E:\แบ่งสีกีฬาสี"
+
+npm install --save-dev supabase
+npx supabase --help
+npx supabase login
+npx supabase init
+npx supabase link --project-ref YOUR_PROJECT_REF
+
+# ตรวจ SQL ก่อน
+Get-Content ".\supabase\migrations\202609160001_bhp_final_database.sql"
+
+# เมื่อพร้อมจริง ค่อยสร้าง Database schema ครั้งเดียว
+npx supabase db push
