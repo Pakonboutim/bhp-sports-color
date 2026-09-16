@@ -81,3 +81,45 @@
     padding:0;
   }
 }
+
+/* PRINT FONT — Angsana New 16pt */
+@media print{
+  #public-print-area,
+  #public-print-area *,
+  #staff-print-area,
+  #staff-print-area *,
+  .print-page,
+  .print-page *{
+    font-family:"Angsana New","AngsanaUPC",serif !important;
+    font-size:16pt !important;
+    line-height:1.05 !important;
+  }
+
+  #public-print-area header h1,
+  #staff-print-area h1,
+  .print-header h2{
+    font-size:16pt !important;
+  }
+
+  #public-print-area header p,
+  #staff-print-area p,
+  .print-header p,
+  .print-room-title{
+    font-size:16pt !important;
+  }
+
+  .public-print-table,
+  .public-print-table th,
+  .public-print-table td,
+  .attendance-table,
+  .attendance-table th,
+  .attendance-table td,
+  .portrait-roster-table,
+  .portrait-roster-table th,
+  .portrait-roster-table td,
+  .portrait-check-table,
+  .portrait-check-table th,
+  .portrait-check-table td{
+    font-size:16pt !important;
+  }
+}
