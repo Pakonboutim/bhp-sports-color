@@ -70,7 +70,7 @@ function render(){
   const open=data.staffRegistrationOpen!==false,full=(data.sports||[]).filter(s=>athletesFor(s.id).length>=Number(s.athleteLimit)).length;
   $('staff-status').className='notice '+(open?'staff-open':'staff-closed');
   $('staff-status').textContent=open?'🟢 ระบบเปิดรับ: เพิ่ม ลบ และเปลี่ยนนักกีฬาได้จนกว่าจะครบโควตา':'🔒 แอดมินปิดระบบลงทะเบียนนักกีฬาแล้ว';
-  $('staff-overview').innerHTML=`<div class="staff-stat-grid"><article class="sports-card"><strong>${data.students.length}</strong><span>นักเรียนในสี</span></article><article class="sports-card"><strong>${data.teachers.length}</strong><span>ครูประจำสี</span></article><article class="sports-card"><strong>${data.athletes.length}</strong><span>รายการนักกีฬา</span></article><article class="sports-card"><strong>${full}/${data.sports.length}</strong><span>กีฬาที่ลงครบ</span></article></div><h2 class="section-title">สถานะกีฬา</h2><div class="grid grid-2">${data.sports.map(s=>sportCard(s)).join('')}</div>`;
+  $('staff-overview').innerHTML=`<div class="staff-stat-grid compact-stats"><article class="sports-card"><strong>${data.students.length}</strong><span>นักเรียน</span></article><article class="sports-card"><strong>${data.teachers.length}</strong><span>ครู</span></article><article class="sports-card"><strong>${data.athletes.length}</strong><span>นักกีฬา</span></article><article class="sports-card"><strong>${full}/${data.sports.length}</strong><span>กีฬาครบ</span></article></div><h2 class="section-title compact-title">สถานะกีฬา</h2><div class="overview-sport-grid">${data.sports.map(s=>sportCard(s)).join('')}</div>`;
   renderStudents();renderTeachers();renderRoles();renderAttendance();renderProcession();renderRegister();renderAthletes();renderResults();
 }
 function sportCard(s){const count=athletesFor(s.id).length,max=Number(s.athleteLimit),complete=count>=max;return`<article class="sports-card"><h3>${S.esc(s.name)}</h3><div class="meta"><span class="chip">${S.esc(s.level)}</span><span class="chip">${genderLabel[s.gender]||S.esc(s.gender)}</span></div><div class="quota"><span style="width:${Math.min(100,count/max*100)}%"></span></div><p class="quota-copy ${complete?'complete':''}">${count} / ${max} คน · ${complete?'ครบแล้ว':'เหลือ '+(max-count)+' คน'}</p></article>`}
@@ -101,106 +101,46 @@ function renderTeachers(){
 }
 
 function renderRoles(){
-  const root=$('staff-roles'),roles=data.colorRoles||[];
-  const studentsSorted=data.students.slice().sort(sortStudents);
-  const fixedTeacherNames=['ประธานสี','รองประธานสี','เลขานุการ','เหรัญญิก'];
-
-  const teacherRoleByName=name=>roles.find(x=>x.personType==='teacher'&&x.roleName===name);
-  const studentRoleByName=name=>roles.find(x=>x.personType==='student'&&x.roleName===name);
-  const studentCommittee=roles.filter(x=>x.personType==='student'&&x.roleName==='กรรมการ').sort((a,b)=>(a.sortOrder||0)-(b.sortOrder||0));
-
-  const teacherOptionList=(selected='')=>`<option value="">— เลือกครู —</option>${data.teachers.map(t=>`<option value="${S.esc(t.id)}" ${t.id===selected?'selected':''}>${S.esc(personName(t))}</option>`).join('')}`;
-  const studentOptionList=(selected='')=>`<option value="">— เลือกนักเรียน —</option>${studentsSorted.map(st=>`<option value="${S.esc(st.id)}" ${st.id===selected?'selected':''}>${S.esc(personName(st))} · ${S.esc(st.level+'/'+st.room)} · เลขที่ ${S.esc(st.number)}</option>`).join('')}`;
-
-  root.innerHTML=`<div class="section-head">
-    <div><h2>🎖️ ตำแหน่งใน${team.th}</h2>
-    <p class="muted">ครูเลือกเฉพาะ 4 ตำแหน่งหลัก ครูที่เหลือเป็น “กรรมการ” อัตโนมัติ · นักเรียนมีกรรมการได้สูงสุด 6 คน</p></div>
-    <button class="primary" id="save-color-roles">💾 บันทึก</button>
-  </div>
-
-  <h3 class="section-title">ตำแหน่งครู</h3>
-  <div class="sports-card">
-    <div class="fixed-role-grid">
-      ${fixedTeacherNames.map(name=>`<div class="field"><label>${name}</label><select data-teacher-fixed-role="${name}">${teacherOptionList(teacherRoleByName(name)?.teacherId||'')}</select></div>`).join('')}
-    </div>
-    <div class="notice" id="auto-teacher-committee" style="margin-top:12px"></div>
-  </div>
-
-  <h3 class="section-title">ตำแหน่งนักเรียน</h3>
-  <div class="sports-card">
-    <div class="fixed-role-grid">
-      <div class="field"><label>ประธานสี</label><select data-student-fixed-role="ประธานสี">${studentOptionList(studentRoleByName('ประธานสี')?.studentId||'')}</select></div>
-      <div class="field"><label>รองประธานสี</label><select data-student-fixed-role="รองประธานสี">${studentOptionList(studentRoleByName('รองประธานสี')?.studentId||'')}</select></div>
-      <div class="field"><label>เลขานุการ</label><select data-student-fixed-role="เลขานุการ">${studentOptionList(studentRoleByName('เลขานุการ')?.studentId||'')}</select></div>
-      <div class="field"><label>เหรัญญิก</label><select data-student-fixed-role="เหรัญญิก">${studentOptionList(studentRoleByName('เหรัญญิก')?.studentId||'')}</select></div>
-    </div>
-    <h4 style="margin:12px 0 8px">กรรมการนักเรียน <span class="chip" id="student-committee-count">${studentCommittee.length}/6 คน</span></h4>
-    <div class="fixed-role-grid">${Array.from({length:6},(_,i)=>`<div class="field"><label>กรรมการ ${i+1}</label><select data-student-committee="${i}">${studentOptionList(studentCommittee[i]?.studentId||'')}</select></div>`).join('')}</div>
-  </div>`;
-
-  function teacherPreview(){
-    const chosen=new Set([...root.querySelectorAll('[data-teacher-fixed-role]')].map(x=>x.value).filter(Boolean));
-    const committee=data.teachers.filter(t=>!chosen.has(t.id));
-    $('auto-teacher-committee').innerHTML=`<b>กรรมการอัตโนมัติ ${committee.length} คน</b><br>${committee.length?committee.map(t=>S.esc(personName(t))).join(' · '):'ไม่มี'}`;
-  }
-  root.querySelectorAll('[data-teacher-fixed-role]').forEach(x=>x.onchange=teacherPreview);
-  teacherPreview();
-
-  root.querySelectorAll('[data-student-committee]').forEach(el=>el.onchange=()=>{
-    $('student-committee-count').textContent=`${[...root.querySelectorAll('[data-student-committee]')].filter(x=>x.value).length}/6 คน`;
-  });
-
-  $('save-color-roles').onclick=async()=>{
-    const teacherFixed=[...root.querySelectorAll('[data-teacher-fixed-role]')];
-    const studentFixed=[...root.querySelectorAll('[data-student-fixed-role]')];
-    const studentCommittees=[...root.querySelectorAll('[data-student-committee]')];
-
-    if(teacherFixed.some(x=>!x.value))return S.toast('กรุณาเลือกครูให้ครบ 4 ตำแหน่งหลัก');
-    if(studentFixed.some(x=>!x.value))return S.toast('กรุณาเลือกนักเรียนให้ครบ 4 ตำแหน่งหลัก');
-
-    const teacherFixedIds=teacherFixed.map(x=>x.value);
-    if(new Set(teacherFixedIds).size!==teacherFixedIds.length)return S.toast('ครู 1 คนรับตำแหน่งหลักซ้ำไม่ได้');
-
-    const studentIds=[...studentFixed.map(x=>x.value),...studentCommittees.map(x=>x.value).filter(Boolean)];
-    if(new Set(studentIds).size!==studentIds.length)return S.toast('นักเรียน 1 คนรับตำแหน่งซ้ำไม่ได้');
-
-    const teacherRoles=teacherFixed.map((sel,i)=>({teacherId:sel.value,roleName:sel.dataset.teacherFixedRole,sortOrder:i}));
-    const selectedTeachers=new Set(teacherFixedIds);
-    data.teachers.filter(t=>!selectedTeachers.has(t.id)).forEach((t,i)=>teacherRoles.push({teacherId:t.id,roleName:'กรรมการ',sortOrder:4+i}));
-
-    const studentRoles=studentFixed.map((sel,i)=>({studentId:sel.value,roleName:sel.dataset.studentFixedRole,sortOrder:i}));
-    studentCommittees.filter(x=>x.value).forEach((sel,i)=>studentRoles.push({studentId:sel.value,roleName:'กรรมการ',sortOrder:4+i}));
-
-    const btn=$('save-color-roles');btn.disabled=true;btn.textContent='กำลังบันทึก…';
-    try{
-      const res=await S.api('saveColorRoles',{...auth(),teacherRoles,studentRoles},'POST');
-      keepSession(res);S.toast('บันทึกตำแหน่งในสีแล้ว');await refreshStaff('roles');
-    }catch(e){
-      S.toast(e.message);btn.disabled=false;btn.textContent='💾 บันทึก';
-    }
-  };
+  const root=$('staff-roles'),roles=data.colorRoles||[],studentsSorted=data.students.slice().sort(sortStudents);
+  const teacherNames=['ประธานสี','รองประธานสี','เลขานุการ','เหรัญญิก'],studentNames=['ประธานสี','รองประธานสี','เลขานุการ','เหรัญญิก'];
+  const tRole=n=>roles.find(x=>x.personType==='teacher'&&x.roleName===n),sRole=n=>roles.find(x=>x.personType==='student'&&x.roleName===n);
+  const sCom=roles.filter(x=>x.personType==='student'&&x.roleName==='กรรมการ').sort((a,b)=>(a.sortOrder||0)-(b.sortOrder||0));
+  const tCom=roles.filter(x=>x.personType==='teacher'&&x.roleName==='กรรมการ').sort((a,b)=>(a.sortOrder||0)-(b.sortOrder||0));
+  const tBy=id=>data.teachers.find(x=>x.id===id),sBy=id=>data.students.find(x=>x.id===id);
+  const tOpts=(sel='')=>`<option value="">— เลือกครู —</option>${data.teachers.map(t=>`<option value="${S.esc(t.id)}" ${t.id===sel?'selected':''}>${S.esc(personName(t))}</option>`).join('')}`;
+  const sOpts=(sel='')=>`<option value="">— เลือกนักเรียน —</option>${studentsSorted.map(st=>`<option value="${S.esc(st.id)}" ${st.id===sel?'selected':''}>${S.esc(personName(st))} · ${S.esc(st.level+'/'+st.room)} · เลขที่ ${S.esc(st.number)}</option>`).join('')}`;
+  const tsum=teacherNames.map(n=>{const r=tRole(n),p=r&&tBy(r.teacherId);return`<div class="role-summary-item"><b>${n}</b><span>${p?S.esc(personName(p)):'— ยังไม่เลือก —'}</span></div>`}).join('');
+  const ssum=studentNames.map(n=>{const r=sRole(n),p=r&&sBy(r.studentId);return`<div class="role-summary-item"><b>${n}</b><span>${p?S.esc(personName(p)):'— ยังไม่เลือก —'}</span></div>`}).join('');
+  const tc=tCom.map(r=>tBy(r.teacherId)).filter(Boolean).map(personName),sc=sCom.map(r=>sBy(r.studentId)).filter(Boolean).map(personName);
+  root.innerHTML=`<div class="section-head"><div><h2>🎖️ ตำแหน่งใน${team.th}</h2><p class="muted">บันทึกแล้วจะแสดงผลสรุปด้านบนทันที</p></div><button class="primary" id="save-color-roles">💾 บันทึก</button></div>
+  <section class="role-result-card"><h3>📌 ตำแหน่งที่บันทึกแล้ว</h3><div class="role-result-columns"><div><h4>ครู</h4><div class="role-summary-grid">${tsum}</div><div class="auto-list"><b>กรรมการ:</b> ${tc.length?S.esc(tc.join(' · ')):'—'}</div></div><div><h4>นักเรียน</h4><div class="role-summary-grid">${ssum}</div><div class="auto-list"><b>กรรมการ:</b> ${sc.length?S.esc(sc.join(' · ')):'—'}</div></div></div></section>
+  <h3 class="section-title">แก้ไขตำแหน่งครู</h3><div class="sports-card compact-form-card"><div class="fixed-role-grid">${teacherNames.map(n=>`<div class="field"><label>${n}</label><select data-teacher-fixed-role="${n}">${tOpts(tRole(n)?.teacherId||'')}</select></div>`).join('')}</div><div class="notice" id="auto-teacher-committee" style="margin-top:10px"></div></div>
+  <h3 class="section-title">แก้ไขตำแหน่งนักเรียน</h3><div class="sports-card compact-form-card"><div class="fixed-role-grid">${studentNames.map(n=>`<div class="field"><label>${n}</label><select data-student-fixed-role="${n}">${sOpts(sRole(n)?.studentId||'')}</select></div>`).join('')}</div><h4 style="margin:10px 0 6px">กรรมการนักเรียน <span class="chip" id="student-committee-count">${sCom.length}/6 คน</span></h4><div class="fixed-role-grid">${Array.from({length:6},(_,i)=>`<div class="field"><label>กรรมการ ${i+1}</label><select data-student-committee>${sOpts(sCom[i]?.studentId||'')}</select></div>`).join('')}</div></div>`;
+  function preview(){const chosen=new Set([...root.querySelectorAll('[data-teacher-fixed-role]')].map(x=>x.value).filter(Boolean)),list=data.teachers.filter(t=>!chosen.has(t.id));$('auto-teacher-committee').innerHTML=`<b>กรรมการอัตโนมัติ ${list.length} คน:</b> ${list.map(t=>S.esc(personName(t))).join(' · ')||'ไม่มี'}`}
+  root.querySelectorAll('[data-teacher-fixed-role]').forEach(x=>x.onchange=preview);preview();
+  root.querySelectorAll('[data-student-committee]').forEach(x=>x.onchange=()=>{$('student-committee-count').textContent=`${[...root.querySelectorAll('[data-student-committee]')].filter(s=>s.value).length}/6 คน`});
+  $('save-color-roles').onclick=async()=>{const tf=[...root.querySelectorAll('[data-teacher-fixed-role]')],sf=[...root.querySelectorAll('[data-student-fixed-role]')],scs=[...root.querySelectorAll('[data-student-committee]')];if(tf.some(x=>!x.value))return S.toast('กรุณาเลือกครูให้ครบ 4 ตำแหน่งหลัก');if(sf.some(x=>!x.value))return S.toast('กรุณาเลือกนักเรียนให้ครบ 4 ตำแหน่งหลัก');const tids=tf.map(x=>x.value);if(new Set(tids).size!==tids.length)return S.toast('ครู 1 คนรับตำแหน่งหลักซ้ำไม่ได้');const sids=[...sf.map(x=>x.value),...scs.map(x=>x.value).filter(Boolean)];if(new Set(sids).size!==sids.length)return S.toast('นักเรียน 1 คนรับตำแหน่งซ้ำไม่ได้');const teacherRoles=tf.map((x,i)=>({teacherId:x.value,roleName:x.dataset.teacherFixedRole,sortOrder:i})),chosen=new Set(tids);data.teachers.filter(t=>!chosen.has(t.id)).forEach((t,i)=>teacherRoles.push({teacherId:t.id,roleName:'กรรมการ',sortOrder:4+i}));const studentRoles=sf.map((x,i)=>({studentId:x.value,roleName:x.dataset.studentFixedRole,sortOrder:i}));scs.filter(x=>x.value).forEach((x,i)=>studentRoles.push({studentId:x.value,roleName:'กรรมการ',sortOrder:4+i}));const btn=$('save-color-roles');btn.disabled=true;btn.textContent='กำลังบันทึก…';try{const res=await S.api('saveColorRoles',{...auth(),teacherRoles,studentRoles},'POST');keepSession(res);S.toast('บันทึกตำแหน่งแล้ว');await refreshStaff('roles')}catch(e){S.toast(e.message);btn.disabled=false;btn.textContent='💾 บันทึก'}};
 }
 
 function renderAttendance(){
-  const root=$('staff-attendance'),days=data.activityDays||[],saved=data.attendance||[];
-  if(!days.length){root.innerHTML='<div class="empty-state">ยังไม่ได้กำหนดวันกิจกรรม</div>';return}
-  root.innerHTML=`<div class="section-head"><div><h2>✅ เช็คชื่อกิจกรรม</h2><p class="muted">สถานะ: มา / ขาด / ลา</p></div><button class="primary" id="save-attendance">💾 บันทึก</button></div><div class="activity-day-tabs">${days.map((d,i)=>`<button class="secondary activity-day-btn ${i===0?'active':''}" data-day="${d.date}">${S.esc(d.label)}</button>`).join('')}</div><div class="attendance-tools"><button class="secondary" id="attendance-all-present">✓ ตั้งทั้งหมดเป็นมา</button><button class="secondary" id="attendance-clear">ล้างสถานะ</button><span id="attendance-summary"></span></div><div id="attendance-list"></div>`;
-  let current=days[0].date;const state={};saved.forEach(x=>{state[`${x.date}|${x.studentId}`]=x.status});
-  function draw(){
-    root.querySelectorAll('[data-day]').forEach(b=>b.classList.toggle('active',b.dataset.day===current));
-    const groups={};data.students.slice().sort(sortStudents).forEach(st=>{const k=keyOf(st);(groups[k]??=[]).push(st)});
-    $('attendance-list').innerHTML=Object.entries(groups).map(([k,rows])=>`<section class="attendance-room"><h3>${S.esc(k.replace('|','/'))}</h3>${rows.map(st=>{const status=state[`${current}|${st.id}`]||'';return`<div class="attendance-row"><span><b>${S.esc(personName(st))}</b><small>เลขที่ ${S.esc(st.number)}</small></span><div class="attendance-status"><button data-att-st="${S.esc(st.id)}" data-status="present" class="${status==='present'?'selected present':''}">มา</button><button data-att-st="${S.esc(st.id)}" data-status="absent" class="${status==='absent'?'selected absent':''}">ขาด</button><button data-att-st="${S.esc(st.id)}" data-status="leave" class="${status==='leave'?'selected leave':''}">ลา</button></div></div>`}).join('')}</section>`).join('');
-    $('attendance-list').querySelectorAll('[data-att-st]').forEach(b=>b.onclick=()=>{state[`${current}|${b.dataset.attSt}`]=b.dataset.status;draw()});
-    const statuses=data.students.map(st=>state[`${current}|${st.id}`]||'');$('attendance-summary').textContent=`มา ${statuses.filter(x=>x==='present').length} · ขาด ${statuses.filter(x=>x==='absent').length} · ลา ${statuses.filter(x=>x==='leave').length} · ยังไม่เช็ค ${statuses.filter(x=>!x).length}`;
-  }
-  root.querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>{current=b.dataset.day;draw()});
-  $('attendance-all-present').onclick=()=>{data.students.forEach(st=>state[`${current}|${st.id}`]='present');draw()};
-  $('attendance-clear').onclick=()=>{data.students.forEach(st=>delete state[`${current}|${st.id}`]);draw()};
-  $('save-attendance').onclick=async()=>{const records=data.students.map(st=>({studentId:st.id,status:state[`${current}|${st.id}`]})).filter(x=>x.status);if(!records.length)return S.toast('ยังไม่มีสถานะที่จะบันทึก');const btn=$('save-attendance');btn.disabled=true;btn.textContent='กำลังบันทึก…';try{const res=await S.api('saveAttendance',{...auth(),date:current,records},'POST');keepSession(res);S.toast(`บันทึกเช็คชื่อ ${res.saved} คนแล้ว`);await refreshStaff('attendance')}catch(e){S.toast(e.message);btn.disabled=false;btn.textContent='💾 บันทึก'}};draw();
+  const root=$('staff-attendance'),days=data.activityDays||[],saved=data.attendance||[];if(!days.length){root.innerHTML='<div class="empty-state">ยังไม่ได้กำหนดวันกิจกรรม</div>';return}
+  const levels=[...new Set(data.students.map(x=>x.level).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'th',{numeric:true}));
+  root.innerHTML=`<div class="section-head"><div><h2>✅ เช็คชื่อกิจกรรม</h2><p class="muted">กรองตามชั้น/ห้อง และดูแดชบอร์ดสรุปจากทุกวันกิจกรรม</p></div><button class="primary" id="save-attendance">💾 บันทึก</button></div><div class="attendance-filter-bar"><div class="field"><label>ชั้น</label><select id="attendance-level"><option value="">ทั้งหมด</option>${levels.map(x=>`<option>${S.esc(x)}</option>`).join('')}</select></div><div class="field"><label>ห้อง</label><select id="attendance-room"><option value="">ทุกห้อง</option></select></div><div class="field"><label>มุมมอง</label><select id="attendance-mode"><option value="check">เช็คชื่อรายวัน</option><option value="dashboard">แดชบอร์ดสรุปทุกวัน</option></select></div><button class="secondary" id="attendance-print-dashboard">🖨️ พิมพ์แดชบอร์ด</button></div><div class="activity-day-tabs" id="attendance-days">${days.map((d,i)=>`<button class="secondary activity-day-btn ${i===0?'active':''}" data-day="${d.date}">${S.esc(d.label)}</button>`).join('')}</div><div class="attendance-tools" id="attendance-actions"><button class="secondary" id="attendance-all-present">✓ ตั้งที่แสดงทั้งหมดเป็นมา</button><button class="secondary" id="attendance-clear">ล้างสถานะที่แสดง</button><span id="attendance-summary"></span></div><div id="attendance-dashboard" hidden></div><div id="attendance-list"></div>`;
+  let current=days[0].date;const state={};saved.forEach(x=>state[`${x.date}|${x.studentId}`]=x.status);
+  const filtered=()=>{const l=$('attendance-level').value,r=$('attendance-room').value;return data.students.filter(st=>(!l||st.level===l)&&(!r||String(st.room)===r)).sort(sortStudents)};
+  function rooms(){const l=$('attendance-level').value,s=$('attendance-room'),old=s.value,rs=[...new Set(data.students.filter(x=>!l||x.level===l).map(x=>String(x.room)).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'th',{numeric:true}));s.innerHTML='<option value="">ทุกห้อง</option>'+rs.map(r=>`<option>${S.esc(r)}</option>`).join('');if(rs.includes(old))s.value=old}
+  function dashRows(){const m=new Map();filtered().forEach(st=>{const k=keyOf(st);if(!m.has(k))m.set(k,{key:k,students:[]});m.get(k).students.push(st)});return [...m.values()].map(g=>{let present=0,absent=0,leave=0,unchecked=0;g.students.forEach(st=>days.forEach(d=>{const v=state[`${d.date}|${st.id}`];if(v==='present')present++;else if(v==='absent')absent++;else if(v==='leave')leave++;else unchecked++}));return{...g,present,absent,leave,unchecked}})}
+  function drawDash(){const rows=dashRows();$('attendance-dashboard').innerHTML=`<div class="attendance-dashboard-grid">${rows.map(r=>`<article class="attendance-dashboard-card"><h3>${S.esc(r.key.replace('|','/'))}</h3><p>${r.students.length} คน · ${days.length} วัน</p><div class="att-numbers"><span class="present">มา <b>${r.present}</b></span><span class="absent">ขาด <b>${r.absent}</b></span><span class="leave">ลา <b>${r.leave}</b></span><span>ยังไม่เช็ค <b>${r.unchecked}</b></span></div></article>`).join('')||'<div class="empty-state">ไม่มีข้อมูล</div>'}</div>`}
+  function draw(){root.querySelectorAll('[data-day]').forEach(b=>b.classList.toggle('active',b.dataset.day===current));const sts=filtered(),groups={};sts.forEach(st=>(groups[keyOf(st)]??=[]).push(st));$('attendance-list').innerHTML=Object.entries(groups).map(([k,rows])=>`<section class="attendance-room"><h3>${S.esc(k.replace('|','/'))}</h3>${rows.map(st=>{const v=state[`${current}|${st.id}`]||'';return`<div class="attendance-row"><span><b>${S.esc(personName(st))}</b><small>เลขที่ ${S.esc(st.number)}</small></span><div class="attendance-status"><button data-att-st="${S.esc(st.id)}" data-status="present" class="${v==='present'?'selected present':''}">มา</button><button data-att-st="${S.esc(st.id)}" data-status="absent" class="${v==='absent'?'selected absent':''}">ขาด</button><button data-att-st="${S.esc(st.id)}" data-status="leave" class="${v==='leave'?'selected leave':''}">ลา</button></div></div>`}).join('')}</section>`).join('')||'<div class="empty-state">ไม่พบนักเรียน</div>';$('attendance-list').querySelectorAll('[data-att-st]').forEach(b=>b.onclick=()=>{state[`${current}|${b.dataset.attSt}`]=b.dataset.status;draw()});const vals=sts.map(st=>state[`${current}|${st.id}`]||'');$('attendance-summary').textContent=`แสดง ${sts.length} คน · มา ${vals.filter(x=>x==='present').length} · ขาด ${vals.filter(x=>x==='absent').length} · ลา ${vals.filter(x=>x==='leave').length} · ยังไม่เช็ค ${vals.filter(x=>!x).length}`;drawDash()}
+  function mode(){const d=$('attendance-mode').value==='dashboard';$('attendance-dashboard').hidden=!d;$('attendance-list').hidden=d;$('attendance-days').hidden=d;$('attendance-actions').hidden=d;if(d)drawDash();else draw()}
+  root.querySelectorAll('[data-day]').forEach(b=>b.onclick=()=>{current=b.dataset.day;draw()});$('attendance-level').onchange=()=>{rooms();draw();mode()};$('attendance-room').onchange=()=>{draw();mode()};$('attendance-mode').onchange=mode;$('attendance-all-present').onclick=()=>{filtered().forEach(st=>state[`${current}|${st.id}`]='present');draw()};$('attendance-clear').onclick=()=>{filtered().forEach(st=>delete state[`${current}|${st.id}`]);draw()};
+  $('attendance-print-dashboard').onclick=()=>{const rows=dashRows(),l=$('attendance-level').value,r=$('attendance-room').value,title=`สรุปการเข้าร่วมกิจกรรม ${team.th}${l?' '+l:''}${r?'/'+r:''}`,body=`<section class="staff-print-section staff-print-page"><header><h1>${S.esc(title)}</h1><p>สรุปจาก ${days.length} วันกิจกรรม</p></header><table class="staff-print-table"><thead><tr><th>ชั้น/ห้อง</th><th>นักเรียน</th><th>มา</th><th>ขาด</th><th>ลา</th><th>ยังไม่เช็ค</th></tr></thead><tbody>${rows.map(x=>`<tr><td>${S.esc(x.key.replace('|','/'))}</td><td>${x.students.length}</td><td>${x.present}</td><td>${x.absent}</td><td>${x.leave}</td><td>${x.unchecked}</td></tr>`).join('')}</tbody></table></section>`;doPrint(body)};
+  $('save-attendance').onclick=async()=>{const records=filtered().map(st=>({studentId:st.id,status:state[`${current}|${st.id}`]})).filter(x=>x.status);if(!records.length)return S.toast('ยังไม่มีสถานะที่จะบันทึก');const btn=$('save-attendance');btn.disabled=true;btn.textContent='กำลังบันทึก…';try{const res=await S.api('saveAttendance',{...auth(),date:current,records},'POST');keepSession(res);S.toast(`บันทึกเช็คชื่อ ${res.saved} คนแล้ว`);await refreshStaff('attendance')}catch(e){S.toast(e.message);btn.disabled=false;btn.textContent='💾 บันทึก'}};rooms();draw();mode();
 }
 
 async function refreshStaff(view){const result=await S.api('getStaffData',auth(),'POST');keepSession(result);data=result;render();document.querySelector(`[data-view="${view}"]`)?.click()}
-function renderRegister(){const root=$('staff-register');root.innerHTML=`<h2>ลงทะเบียนนักกีฬา</h2><p class="muted">ระบบแสดงเฉพาะนักเรียนที่ตรงกับสี เพศ และระดับชั้นของกีฬา</p><div class="grid grid-2">${data.sports.map(s=>`<button class="sport-choice" data-sport="${s.id}">${sportCard(s)}</button>`).join('')}</div><div id="staff-picker"></div>`;root.querySelectorAll('[data-sport]').forEach(b=>b.onclick=()=>openPicker(b.dataset.sport))}
+function renderRegister(){const root=$('staff-register'),sports=data.sports.slice().sort((a,b)=>String(a.name).localeCompare(String(b.name),'th',{numeric:true}));root.innerHTML=`<div class="section-head"><div><h2>🏃 ลงทะเบียนนักกีฬา</h2><p class="muted">เลือกประเภทกีฬา แล้วจะแสดงเฉพาะรายการนั้น</p></div></div><div class="sport-select-bar"><div class="field"><label>ประเภทกีฬา</label><select id="staff-sport-select"><option value="">— เลือกประเภทกีฬา —</option>${sports.map(s=>`<option value="${S.esc(s.id)}">${S.esc(s.name)} · ${S.esc(s.level)} · ${genderLabel[s.gender]||S.esc(s.gender)}</option>`).join('')}</select></div><div id="selected-sport-mini"></div></div><div id="staff-picker"><div class="empty-state">เลือกประเภทกีฬาด้านบนเพื่อเริ่มลงนักกีฬา</div></div>`;$('staff-sport-select').onchange=()=>{const id=$('staff-sport-select').value;if(!id){$('staff-picker').innerHTML='<div class="empty-state">เลือกประเภทกีฬาด้านบนเพื่อเริ่มลงนักกีฬา</div>';$('selected-sport-mini').innerHTML='';return}const s=data.sports.find(x=>x.id===id);$('selected-sport-mini').innerHTML=`<span class="chip">${S.esc(s.name)} · ${athletesFor(id).length}/${s.athleteLimit} คน</span>`;openPicker(id)}}
+
 function openPicker(id){currentSport=id;const sport=data.sports.find(s=>s.id===id),eligible=data.students.filter(st=>allowed(st,sport)),selected=new Set(athletesFor(id).map(a=>a.studentId)),max=Number(sport.athleteLimit),open=data.staffRegistrationOpen!==false,picker=$('staff-picker');picker.innerHTML=`<article class="sports-card picker"><div class="section-head picker-head"><div><h2>${S.esc(sport.name)}</h2><p>${S.esc(sport.level)} · ${genderLabel[sport.gender]} · รับ ${max} คน</p></div><div class="picker-head-actions"><strong id="picker-count"></strong><button id="staff-save-athletes" class="primary" ${open?'':'disabled'}>💾 บันทึกรายชื่อ</button></div></div><section class="athlete-zone selected-zone"><h3>รายชื่อนักกีฬา <span id="selected-label"></span></h3><div id="selected-athletes" class="athlete-name-grid"></div></section><section class="athlete-zone"><h3>รายชื่อที่ผ่านเงื่อนไข</h3><div id="available-athletes" class="athlete-name-grid"></div></section></article>`;
 const nameButton=(st,isSelected)=>`<button type="button" class="athlete-name ${isSelected?'is-selected':''}" data-student="${S.esc(st.id)}" ${open?'':'disabled'}><span>${isSelected?'✓':'+'}</span><b>${S.esc(personName(st))}</b><small>${S.esc(st.level+'/'+st.room)} · เลขที่ ${S.esc(st.number)}</small></button>`;
 const drawPicker=()=>{const chosen=eligible.filter(st=>selected.has(st.id)),available=eligible.filter(st=>!selected.has(st.id)),full=selected.size>=max;$('picker-count').textContent=`${selected.size}/${max}`;$('selected-label').textContent=`(${selected.size}/${max} คน)`;$('selected-athletes').innerHTML=chosen.map(st=>nameButton(st,true)).join('')||'<div class="empty-state">ยังไม่ได้เลือก</div>';$('available-athletes').innerHTML=available.map(st=>nameButton(st,false)).join('')||'<div class="empty-state">ไม่มีรายชื่อ</div>';picker.querySelectorAll('[data-student]').forEach(button=>{const isSelected=selected.has(button.dataset.student);button.disabled=!open||(!isSelected&&full);button.onclick=()=>{if(isSelected)selected.delete(button.dataset.student);else if(selected.size<max)selected.add(button.dataset.student);else return S.toast(`รับได้ไม่เกิน ${max} คน`);drawPicker()}})};drawPicker();
@@ -222,46 +162,5 @@ function printSports(ids){doPrint(ids.map(id=>{const s=data.sports.find(x=>x.id=
 
 autoLogin();
 
-async function renderProcession(){
-  const root=$('staff-procession');if(!root)return;
-  const students=data.students.slice().sort(sortStudents);
-  const optionList=(selected='')=>`<option value="">— เลือกนักเรียน —</option>${students.map(st=>`<option value="${S.esc(st.id)}" ${st.id===selected?'selected':''}>${S.esc(personName(st))} · ${S.esc(st.level+'/'+st.room)} · เลขที่ ${S.esc(st.number)}</option>`).join('')}`;
-
-  root.innerHTML='<div class="empty-state">กำลังโหลดตำแหน่งขบวน…</div>';
-  let saved=[];
-  try{
-    saved=await sbRpc('staff_get_procession_roles',{p_color:color,p_token:sessionToken});
-  }catch(e){
-    root.innerHTML=`<div class="notice">${S.esc(e.message)}</div>`;return;
-  }
-
-  const find=(role,slot)=>saved.find(x=>x.role_name===role&&Number(x.slot_no)===slot)?.student_id||'';
-  root.innerHTML=`<div class="section-head">
-    <div><h2>🎺 ตำแหน่งขบวน${team.th}</h2><p class="muted">เลือกนักเรียนในสีให้ครบ 5 คน และห้ามซ้ำกัน</p></div>
-    <button class="primary" id="save-procession">💾 บันทึก</button>
-  </div>
-  <div class="sports-card"><div class="fixed-role-grid">
-    <div class="field"><label>คฑากร</label><select data-procession-role="คฑากร" data-slot="1">${optionList(find('คฑากร',1))}</select></div>
-    <div class="field"><label>คนถือป้ายสี 1</label><select data-procession-role="คนถือป้ายสี" data-slot="1">${optionList(find('คนถือป้ายสี',1))}</select></div>
-    <div class="field"><label>คนถือป้ายสี 2</label><select data-procession-role="คนถือป้ายสี" data-slot="2">${optionList(find('คนถือป้ายสี',2))}</select></div>
-    <div class="field"><label>คนถือธงสี 1</label><select data-procession-role="คนถือธงสี" data-slot="1">${optionList(find('คนถือธงสี',1))}</select></div>
-    <div class="field"><label>คนถือธงสี 2</label><select data-procession-role="คนถือธงสี" data-slot="2">${optionList(find('คนถือธงสี',2))}</select></div>
-  </div></div>`;
-
-  $('save-procession').onclick=async()=>{
-    const selects=[...root.querySelectorAll('[data-procession-role]')];
-    if(selects.some(x=>!x.value))return S.toast('กรุณาเลือกตำแหน่งขบวนให้ครบ 5 คน');
-    const ids=selects.map(x=>x.value);
-    if(new Set(ids).size!==5)return S.toast('นักเรียนคนเดียวรับตำแหน่งขบวนซ้ำไม่ได้');
-
-    const roles=selects.map(x=>({studentId:x.value,roleName:x.dataset.processionRole,slotNo:Number(x.dataset.slot)}));
-    const btn=$('save-procession');btn.disabled=true;btn.textContent='กำลังบันทึก…';
-    try{
-      await sbRpc('staff_save_procession_roles',{p_color:color,p_token:sessionToken,p_roles:roles});
-      S.toast('บันทึกตำแหน่งขบวนแล้ว');await renderProcession();
-    }catch(e){
-      S.toast(e.message);btn.disabled=false;btn.textContent='💾 บันทึก';
-    }
-  };
-}
+async function renderProcession(){const root=$('staff-procession');if(!root)return;const students=data.students.slice().sort(sortStudents),sBy=id=>data.students.find(x=>x.id===id),opts=(sel='')=>`<option value="">— เลือกนักเรียน —</option>${students.map(st=>`<option value="${S.esc(st.id)}" ${st.id===sel?'selected':''}>${S.esc(personName(st))} · ${S.esc(st.level+'/'+st.room)} · เลขที่ ${S.esc(st.number)}</option>`).join('')}`;root.innerHTML='<div class="empty-state">กำลังโหลดตำแหน่งขบวน…</div>';let saved=[];try{saved=await sbRpc('staff_get_procession_roles',{p_color:color,p_token:sessionToken})}catch(e){root.innerHTML=`<div class="notice">${S.esc(e.message)}</div>`;return}const find=(r,n)=>saved.find(x=>x.role_name===r&&Number(x.slot_no)===n)?.student_id||'',rows=[['คฑากร',find('คฑากร',1)],['คนถือป้ายสี 1',find('คนถือป้ายสี',1)],['คนถือป้ายสี 2',find('คนถือป้ายสี',2)],['คนถือธงสี 1',find('คนถือธงสี',1)],['คนถือธงสี 2',find('คนถือธงสี',2)]];root.innerHTML=`<div class="section-head"><div><h2>🎺 ตำแหน่งขบวน${team.th}</h2><p class="muted">บันทึกแล้วจะแสดงสรุปด้านบน</p></div><button class="primary" id="save-procession">💾 บันทึก</button></div><section class="role-result-card"><h3>📌 ตำแหน่งขบวนที่บันทึกแล้ว</h3><div class="role-summary-grid">${rows.map(([l,id])=>{const st=sBy(id);return`<div class="role-summary-item"><b>${l}</b><span>${st?S.esc(personName(st))+' · '+S.esc(st.level+'/'+st.room):'— ยังไม่เลือก —'}</span></div>`}).join('')}</div></section><div class="sports-card compact-form-card"><div class="fixed-role-grid"><div class="field"><label>คฑากร</label><select data-procession-role="คฑากร" data-slot="1">${opts(find('คฑากร',1))}</select></div><div class="field"><label>คนถือป้ายสี 1</label><select data-procession-role="คนถือป้ายสี" data-slot="1">${opts(find('คนถือป้ายสี',1))}</select></div><div class="field"><label>คนถือป้ายสี 2</label><select data-procession-role="คนถือป้ายสี" data-slot="2">${opts(find('คนถือป้ายสี',2))}</select></div><div class="field"><label>คนถือธงสี 1</label><select data-procession-role="คนถือธงสี" data-slot="1">${opts(find('คนถือธงสี',1))}</select></div><div class="field"><label>คนถือธงสี 2</label><select data-procession-role="คนถือธงสี" data-slot="2">${opts(find('คนถือธงสี',2))}</select></div></div><div id="procession-live" class="notice" style="margin-top:10px"></div></div>`;function preview(){const x=[...root.querySelectorAll('[data-procession-role]')].map(s=>{const st=sBy(s.value),lab=s.dataset.processionRole+(s.dataset.processionRole==='คฑากร'?'':` ${s.dataset.slot}`);return`${lab}: ${st?personName(st):'—'}`});$('procession-live').innerHTML='<b>กำลังเลือก:</b> '+x.map(S.esc).join(' · ')}root.querySelectorAll('[data-procession-role]').forEach(x=>x.onchange=preview);preview();$('save-procession').onclick=async()=>{const ss=[...root.querySelectorAll('[data-procession-role]')];if(ss.some(x=>!x.value))return S.toast('กรุณาเลือกตำแหน่งขบวนให้ครบ 5 คน');const ids=ss.map(x=>x.value);if(new Set(ids).size!==5)return S.toast('นักเรียนคนเดียวรับตำแหน่งขบวนซ้ำไม่ได้');const roles=ss.map(x=>({studentId:x.value,roleName:x.dataset.processionRole,slotNo:Number(x.dataset.slot)})),btn=$('save-procession');btn.disabled=true;btn.textContent='กำลังบันทึก…';try{await sbRpc('staff_save_procession_roles',{p_color:color,p_token:sessionToken,p_roles:roles});S.toast('บันทึกตำแหน่งขบวนแล้ว');await renderProcession()}catch(e){S.toast(e.message);btn.disabled=false;btn.textContent='💾 บันทึก'}}}
 })();
