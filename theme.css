@@ -131,3 +131,120 @@ body.dashboard-theme .room-bar .title {
     font-size: 15px;
   }
 }
+
+/* Phone layout refinements shared by the whole site. */
+@media (max-width: 760px) {
+  body.sports-page:not(.spc-dashboard) .sports-header-inner {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  body.sports-page:not(.spc-dashboard) .sports-nav {
+    width: 100%;
+    margin-left: 0;
+    justify-content: flex-start;
+  }
+
+  body.sports-page:not(.spc-dashboard) .sports-nav a {
+    flex: 1 1 auto;
+    text-align: center;
+    min-width: 90px;
+  }
+
+  body.sports-page:not(.spc-dashboard) .sports-main {
+    width: 100%;
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  body.sports-page:not(.spc-dashboard) .sports-card,
+  body.sports-page:not(.spc-dashboard) .sport-card {
+    padding: 13px;
+    border-radius: 15px;
+  }
+
+  body.sports-page:not(.spc-dashboard) .grid-2,
+  body.sports-page:not(.spc-dashboard) .grid-3,
+  body.sports-page:not(.spc-dashboard) .recent-results-grid,
+  body.sports-page:not(.spc-dashboard) .winner-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  body.sports-page:not(.spc-dashboard) .field input,
+  body.sports-page:not(.spc-dashboard) .field select,
+  body.sports-page:not(.spc-dashboard) .field textarea {
+    font-size: 16px;
+  }
+
+  body.sports-page:not(.spc-dashboard) .button-row,
+  body.sports-page:not(.spc-dashboard) .btn-row {
+    flex-direction: column;
+  }
+
+  body.sports-page:not(.spc-dashboard) .button-row > *,
+  body.sports-page:not(.spc-dashboard) .btn-row > * {
+    width: 100%;
+  }
+
+  body.sports-page:not(.spc-dashboard) .data-table {
+    min-width: 620px;
+  }
+
+  body.sports-page:not(.spc-dashboard) .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  body.dashboard-theme #app {
+    padding-bottom: calc(var(--bottom-nav) + 14px);
+  }
+
+  body.dashboard-theme .panel {
+    padding: 10px;
+  }
+
+  body.dashboard-theme .stats-grid,
+  body.dashboard-theme .ptype-grid {
+    grid-template-columns: 1fr;
+  }
+
+  body.dashboard-theme .btn-row {
+    flex-direction: column;
+  }
+
+  body.dashboard-theme .btn-row > * {
+    width: 100%;
+  }
+}
+
+@media (max-width: 420px) {
+  body.sports-page:not(.spc-dashboard) .sports-header {
+    padding: 11px 10px;
+  }
+
+  body.sports-page:not(.spc-dashboard) .sports-header-inner > :first-child {
+    font-size: 22px;
+  }
+
+  body.sports-page:not(.spc-dashboard) .sports-header h1 {
+    font-size: 14px;
+  }
+
+  body.sports-page:not(.spc-dashboard) .sports-header p {
+    font-size: 10px;
+  }
+
+  body.sports-page:not(.spc-dashboard) .sports-nav a {
+    min-width: 0;
+    padding: 7px 6px;
+    font-size: 11px;
+  }
+
+  body.dashboard-theme header {
+    padding: 10px 12px;
+  }
+
+  body.dashboard-theme .h-title h1 {
+    font-size: 14px;
+  }
+}
