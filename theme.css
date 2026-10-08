@@ -134,6 +134,11 @@ body.dashboard-theme .room-bar .title {
 
 /* Phone layout refinements shared by the whole site. */
 @media (max-width: 760px) {
+  /* The top navigation is already available on phones; avoid duplicate card menus. */
+  body.spc-dashboard .public-main-tabs {
+    display: none !important;
+  }
+
   body.sports-page:not(.spc-dashboard) .sports-header-inner {
     align-items: flex-start;
     flex-wrap: wrap;
