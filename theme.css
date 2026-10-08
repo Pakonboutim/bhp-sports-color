@@ -1,0 +1,133 @@
+/* Shared SPC visual theme for every page in this project. */
+:root {
+  --theme-navy: #060a35;
+  --theme-indigo: #5e5ce6;
+  --theme-pink: #e74a97;
+  --theme-ink: #1a202c;
+  --theme-muted: #64748b;
+  --theme-line: #d7dee8;
+}
+
+body.sports-page:not(.spc-dashboard),
+body.dashboard-theme {
+  min-height: 100vh;
+  background: radial-gradient(circle at 88% 8%, #27306b 0, #10153e 44%, #17104d 100%) !important;
+  color: var(--theme-ink);
+}
+
+body.sports-page:not(.spc-dashboard) .sports-header {
+  background: #060a35e8;
+  border-bottom: 1px solid #ffffff18;
+  box-shadow: 0 8px 24px #0004;
+}
+
+body.sports-page:not(.spc-dashboard) .sports-header-inner {
+  max-width: 1180px;
+}
+
+body.sports-page:not(.spc-dashboard) .sports-header h1 {
+  color: #fff;
+  font-family: Kanit, Sarabun, sans-serif;
+}
+
+body.sports-page:not(.spc-dashboard) .sports-header p {
+  color: #ffffffb8;
+  opacity: 1;
+}
+
+body.sports-page:not(.spc-dashboard) .sports-nav a {
+  color: #fff;
+  background: #ffffff18;
+  border: 1px solid #ffffff20;
+}
+
+body.sports-page:not(.spc-dashboard) .sports-nav a:hover {
+  background: #ffffff2e;
+}
+
+body.sports-page:not(.spc-dashboard) .sports-main {
+  max-width: 1180px;
+  padding-top: 26px;
+}
+
+body.sports-page:not(.spc-dashboard) .sports-card,
+body.sports-page:not(.spc-dashboard) .sport-card {
+  background: #fffffff2;
+  border-color: #ffffff55;
+  box-shadow: 0 14px 34px #0003;
+}
+
+body.sports-page:not(.spc-dashboard) .team-banner {
+  background: linear-gradient(135deg, #060a35, #5e5ce6 62%, #e74a97) !important;
+  color: #fff !important;
+  box-shadow: 0 12px 28px #0004;
+}
+
+body.sports-page:not(.spc-dashboard) .team-banner h1 {
+  font-family: Kanit, Sarabun, sans-serif;
+}
+
+body.sports-page:not(.spc-dashboard) .section-title {
+  color: #fff;
+}
+
+body.sports-page:not(.spc-dashboard) .empty-state {
+  color: #475569;
+}
+
+body.sports-page:not(.spc-dashboard) .data-table th {
+  background: #e8eef7;
+  color: #243b68;
+}
+
+body.sports-page:not(.spc-dashboard) .data-table td {
+  color: #1a202c;
+}
+
+body.sports-page:not(.spc-dashboard) .bracket-scroll .match,
+body.sports-page:not(.spc-dashboard) .bracket-scroll .champion {
+  background: #fffffff2;
+}
+
+body.sports-page:not(.spc-dashboard) .primary {
+  background: linear-gradient(135deg, #0a84ff, #5e5ce6);
+}
+
+body.sports-page:not(.spc-dashboard) .secondary {
+  background: #e8eef7;
+  color: #243b68;
+}
+
+/* Admin uses its own markup, but keeps the same page/header/card language. */
+body.dashboard-theme header {
+  background: #060a35e8 !important;
+  border-bottom: 1px solid #ffffff18;
+  box-shadow: 0 8px 24px #0004;
+}
+
+body.dashboard-theme nav {
+  background: #080d35e8 !important;
+  border-top-color: #ffffff18 !important;
+}
+
+body.dashboard-theme .card,
+body.dashboard-theme .st-card {
+  background: #fffffff2;
+  border: 1px solid #ffffff55;
+  box-shadow: 0 10px 28px #0002;
+}
+
+body.dashboard-theme .card-title,
+body.dashboard-theme .room-bar .title {
+  color: #243b68;
+}
+
+@media (max-width: 620px) {
+  body.sports-page:not(.spc-dashboard) .sports-main {
+    padding-top: 14px;
+  }
+
+  body.sports-page:not(.spc-dashboard) .sports-header h1 {
+    font-size: 15px;
+  }
+}

@@ -1,4 +1,14 @@
 /** Shared Sports Competition utilities. Direct Supabase reads + Edge Function writes. */
+(function loadSharedTheme(){
+  const link=document.createElement('link');
+  link.rel='stylesheet';
+  link.href='theme.css?v=20261008-theme1';
+  document.head.appendChild(link);
+  if(document.querySelector('#app')&&!document.body.classList.contains('sports-page')){
+    document.body.classList.add('dashboard-theme');
+  }
+})();
+
 (function(){
   'use strict';
 
@@ -19,7 +29,7 @@
     'pink-red':{value:{th:'ทีมชมพู + แดง',en:'PINK + RED'},enumerable:false}
   });
 
-  const url=()=>localStorage.getItem('bhp_api_url')||EDGE_URL;
+  const url=()=>{const saved=localStorage.getItem('bhp_api_url');return saved&&saved.includes('script.google.com')?EDGE_URL:saved||EDGE_URL};
   const esc=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 
   async function rest(table,query=''){

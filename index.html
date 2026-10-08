@@ -1,1 +1,157 @@
-<!doctype html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#1A4D8F"><title>การแข่งขันกีฬาสี — บ้านห้วยผึ้ง</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet"><link rel="stylesheet" href="sports.css?v=20260916-print7"></head><body class="sports-page public-home"><header class="sports-header"><div class="sports-header-inner"><div>🏆</div><div><h1>กีฬาสี ปีการศึกษา 2569</h1><p>โรงเรียนบ้านห้วยผึ้ง</p></div><nav class="sports-nav"><a href="index.html">🏠 กีฬา</a><a href="results.html">📋 ผล</a><a href="bracket.html">🏆 สายแข่ง</a></nav></div></header><main class="sports-main"><section class="hero"><h2>Sports Competition</h2><p>รายการแข่งขัน ผลล่าสุด สายการแข่งขัน และคะแนนรวม</p></section><h2 class="section-title">รายการกีฬา</h2><div id="sports-list" class="grid public-sports-grid"><div class="empty-state">กำลังโหลด…</div></div><h2 class="section-title">ผลการแข่งขันล่าสุด</h2><div id="recent-results" class="recent-results-grid"></div><h2 class="section-title">ตารางคะแนน</h2><div id="scoreboard" class="grid grid-2"></div><section class="public-directory"><h2 class="section-title">ข้อมูลสมาชิกสี</h2><div class="directory-menu"><button class="directory-menu-btn active" data-directory-view="students">👨‍🎓 นักเรียนตามสี</button><button class="directory-menu-btn" data-directory-view="teachers">👩‍🏫 ครูตามสี</button><button class="directory-menu-btn" data-directory-view="print">🖨️ พิมพ์รายชื่อ</button></div><div class="directory-panel active" id="directory-students"><div id="public-students"><div class="empty-state">กำลังโหลด…</div></div></div><div class="directory-panel" id="directory-teachers"><div id="public-teachers" class="grid grid-2"><div class="empty-state">กำลังโหลด…</div></div></div><div class="directory-panel" id="directory-print"><div class="sports-card"><h3>🖨️ พิมพ์รายชื่อ</h3><div class="grid grid-2"><div class="field"><label>รูปแบบเอกสาร</label><select id="public-print-type"><option value="student-list">เฉพาะรายชื่อ — A4 แนวตั้ง</option><option value="student-check">ตารางเช็คชื่อ 10 ช่อง — A4 แนวตั้ง</option><option value="teachers">ครูตามสี</option></select></div><div class="field"><label>สีที่ต้องการพิมพ์</label><select id="public-print-color"><option value="all">ทุกสี</option><option value="red">สีแดง</option><option value="yellow">สีเหลือง</option><option value="blue">สีฟ้า</option><option value="pink">สีชมพู</option></select></div><div class="field public-student-print-filter print-classroom-field"><label>ชั้น/ห้องที่ต้องการพิมพ์ <span class="muted-inline">(เลือกได้หลายห้อง)</span></label><div class="print-check-tools"><button type="button" class="secondary" id="public-print-all">เลือกทั้งหมด</button><button type="button" class="secondary" id="public-print-none">ล้างทั้งหมด</button></div><div id="public-print-classrooms" class="print-classroom-checks"></div></div></div><button id="public-print-button" class="primary" style="width:100%">🖨️ พิมพ์เลย</button></div></div></section></main><script src="sports.js?v=20260916-supabase4"></script><script src="public.js?v=20260916-print6"></script></body></html>
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0a84ff">
+  <title>SPC · ระบบกีฬาสี</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700;800&family=Sarabun:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="sports.css?v=20261008-dashboard2">
+  <style>
+    :root{--spc-blue:#0a84ff;--spc-indigo:#5e5ce6;--spc-pink:#ff375f;--spc-ink:#1d1d1f;--spc-muted:#6e6e73;--spc-line:rgba(0,0,0,.08);--spc-bg:#eef0f4}
+    body.spc-dashboard{margin:0;background:var(--spc-bg);color:var(--spc-ink);font-family:Sarabun,'Noto Sans Thai',sans-serif}
+    .dashboard-sidebar{position:fixed;inset:0 auto 0 0;width:244px;z-index:20;display:flex;flex-direction:column;background:rgba(255,255,255,.82);backdrop-filter:blur(28px) saturate(160%);-webkit-backdrop-filter:blur(28px) saturate(160%);border-right:1px solid var(--spc-line);box-shadow:6px 0 24px rgba(0,0,0,.06)}
+    .sidebar-brand{display:flex;align-items:center;gap:10px;padding:22px 18px 16px;border-bottom:1px solid var(--spc-line)}
+    .sidebar-logo{width:40px;height:40px;display:grid;place-items:center;border-radius:12px;color:#fff;background:linear-gradient(135deg,var(--spc-blue),var(--spc-indigo));box-shadow:0 8px 18px #0a84ff4d;font-size:20px}
+    .sidebar-brand b,.sidebar-brand small{display:block}.sidebar-brand b{font-family:Kanit,Sarabun,sans-serif;font-size:14px}.sidebar-brand small{font-size:10px;color:var(--spc-muted);margin-top:2px}
+    .sidebar-season{margin:14px 16px 8px;padding:9px 11px;border-radius:10px;color:#0758b8;background:#0a84ff1a;font-size:11px;font-weight:700}.sidebar-label{padding:12px 20px 5px;color:#8e8e93;font-size:10px;font-weight:800;letter-spacing:.06em}.sidebar-nav{padding:4px 10px}.sidebar-nav button{display:flex;align-items:center;gap:11px;width:100%;padding:10px 12px;margin-bottom:3px;border:0;border-radius:10px;background:transparent;color:#3a3a3c;text-align:left;font:600 13px Kanit,Sarabun,sans-serif;cursor:pointer}.sidebar-nav button:hover{background:#0000000d}.sidebar-nav button.active{color:#fff;background:linear-gradient(135deg,var(--spc-blue),var(--spc-indigo));box-shadow:0 5px 14px #0a84ff47}.sidebar-foot{margin-top:auto;padding:16px 20px;border-top:1px solid var(--spc-line);color:var(--spc-muted);font-size:11px}.sidebar-foot small{font-size:10px;color:#8e8e93}
+    .spc-dashboard .sports-header{margin-left:244px;background:#ffffffb8;backdrop-filter:blur(22px) saturate(160%);-webkit-backdrop-filter:blur(22px) saturate(160%);color:var(--spc-ink);border-bottom:1px solid var(--spc-line);box-shadow:0 2px 16px #0000000d}.spc-dashboard .sports-header h1{color:var(--spc-ink)}.spc-dashboard .sports-header p{color:var(--spc-muted);opacity:1}.spc-dashboard .sports-nav{display:none}.spc-dashboard .sports-main{max-width:none;margin-left:244px;padding:26px 28px 54px}.spc-dashboard .hero{max-width:1240px;margin:0 auto 18px;padding:30px 26px;background:linear-gradient(135deg,var(--spc-blue),var(--spc-indigo) 62%,var(--spc-pink));box-shadow:0 14px 34px #5e5ce63d}.spc-dashboard .sports-card,.spc-dashboard .sport-card,.spc-dashboard .recent-result-card{box-shadow:0 8px 24px #00000012;border-color:#0000000f}.spc-dashboard .public-main-panel{max-width:1240px;margin-left:auto;margin-right:auto}.public-main-tabs{display:none}.dashboard-results-card,.dashboard-bracket-card{margin-top:0}.dashboard-winners{margin:4px 0 18px;padding:14px 0 2px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}.dashboard-winners h2{margin:0;color:var(--primary);font-size:18px}.dashboard-winners .muted{margin:2px 0 0;color:var(--muted);font-size:12px}.winner-summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}.winner-summary-card{padding:12px;border:1px solid var(--border);border-left:4px solid var(--primary);border-radius:12px;background:#f8fafc}.winner-summary-card h3{margin:0 0 8px;font-size:15px}.winner-summary-card ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}.winner-summary-card li{display:flex;justify-content:space-between;gap:10px;padding:7px 9px;border-radius:8px;background:#fff;border:1px solid var(--border);font-size:13px}.winner-summary-card li span{min-width:0}.winner-summary-card li b{white-space:nowrap;color:var(--green)}.dashboard-result-table{min-width:620px}.dashboard-result-group th{padding:11px 10px;color:var(--primary);background:#e8f0fb;border-top:2px solid var(--primary);font-size:14px}.dashboard-result-group+tr td{border-top:0}
+    @media(max-width:760px){.dashboard-sidebar{display:none}.spc-dashboard .sports-header,.spc-dashboard .sports-main{margin-left:0}.spc-dashboard .sports-main{padding:12px}.public-main-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;position:sticky;top:68px;z-index:8;padding:8px 0;background:var(--spc-bg)}.public-main-tabs button{display:flex;align-items:center;justify-content:center;gap:7px;min-height:48px;color:var(--primary);background:#fff;border:1px solid var(--border);font:700 13px Sarabun,sans-serif}.public-main-tabs button.active{color:#fff;background:var(--primary)}.winner-summary-grid{grid-template-columns:1fr}.dashboard-result-table{min-width:560px}}
+  </style>
+  <style>
+    .spc-dashboard{background:radial-gradient(circle at 85% 12%,#27306b 0,#10153e 42%,#17104d 100%);color:#fff;min-height:100vh}.spc-dashboard .dashboard-sidebar{display:none}.spc-dashboard .sports-header{margin-left:0;background:#060a35e8;color:#fff;border-color:#ffffff18}.spc-dashboard .sports-header h1{color:#fff;font-family:Kanit,Sarabun,sans-serif;font-size:17px}.spc-dashboard .sports-header p{color:#ffffffb8}.header-brand{display:flex;align-items:center;gap:12px}.dashboard-top-nav{margin-left:auto;display:flex;align-items:center;gap:28px}.dashboard-top-nav button{border:0;background:transparent;color:#ffffffc7;font:600 13px Kanit,Sarabun,sans-serif;cursor:pointer}.dashboard-top-nav button:hover,.dashboard-top-nav button.active{color:#fff}.dashboard-top-nav a{padding:10px 18px;border-radius:12px;color:#fff;background:linear-gradient(135deg,#0a84ff,#5e5ce6);font-weight:700;text-decoration:none}.spc-dashboard .sports-main{margin-left:0;max-width:none;padding:0 0 48px}.spc-dashboard .hero{max-width:none;min-height:265px;margin:0;border-radius:0;background:radial-gradient(circle at 76% 30%,#41388b99,transparent 35%),linear-gradient(180deg,#060a35 0,#191b55 70%,#2b1c72 100%);box-shadow:none;padding:40px 28px 0;text-align:center}.spc-dashboard .hero h2{display:none}.spc-dashboard .hero p{display:none}.spc-dashboard #main-overview{max-width:none;margin-top:-1px}.spc-dashboard #main-overview>.section-title{display:none}.spc-dashboard #scoreboard{max-width:1000px;margin:-150px auto 0;position:relative;z-index:2;display:block!important}.score-podium{display:flex;align-items:flex-end;justify-content:center;gap:16px}.podium-card{width:250px;min-height:290px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;border:0!important;border-radius:20px 20px 0 0!important;color:#fff!important;box-shadow:0 18px 35px #0005!important}.podium-card .team{color:#fff;font-size:18px;font-weight:800}.podium-card .team .dot{width:13px;height:13px}.podium-card>strong{font:bold 48px Kanit,Sarabun,sans-serif}.podium-card>b{font-size:17px}.podium-card>small{font-size:12px;color:#ffffffdb}.podium-card.podium-1{background:linear-gradient(180deg,#e74a97,#ae2268)}.podium-card.podium-2{background:linear-gradient(180deg,#5a96ee,#2460b3)}.podium-card.podium-3{background:linear-gradient(180deg,#f7ad28,#ad6b00)}.podium-medal{font-size:23px}.score-list{max-width:980px;margin:32px auto 38px;border:1px solid #ffffff24;border-radius:20px;background:#ffffff12;backdrop-filter:blur(18px);overflow:hidden;box-shadow:0 18px 50px #0003}.score-list-row{display:grid;grid-template-columns:42px 160px minmax(160px,1fr) 115px 100px;align-items:center;gap:14px;padding:15px 22px;border-bottom:1px solid #ffffff18}.score-list-row:last-child{border-bottom:0}.score-list-rank{display:grid;place-items:center;width:36px;height:36px;border-radius:11px;background:#ffffff24;font:800 17px Kanit,Sarabun,sans-serif}.score-list-row .team{color:#fff;font-weight:800}.score-bar{height:9px;border-radius:99px;background:#ffffff25;overflow:hidden}.score-bar i{display:block;height:100%;border-radius:inherit;background:#fff}.score-list-row.color-border-pink .score-bar i{background:#f13c99}.score-list-row.color-border-blue .score-bar i{background:#438ff0}.score-list-row.color-border-yellow .score-bar i{background:#ffad18}.score-list-row.color-border-red .score-bar i{background:#ef5145}.score-list-row small{color:#ffffffb8;white-space:nowrap}.score-list-row>b{color:#fff0ac;text-align:right;white-space:nowrap}.spc-dashboard #recent-results{max-width:1100px;margin:0 auto 24px}.spc-dashboard #main-overview>.section-title+ #recent-results{display:grid}.spc-dashboard .recent-result-card{background:#ffffff12;border-color:#ffffff20;color:#fff}.spc-dashboard .recent-result-card header,.spc-dashboard .recent-result-card footer{background:#ffffff0c;border-color:#ffffff18}.spc-dashboard .recent-result-card h3,.spc-dashboard .result-team,.spc-dashboard .result-winner{color:#fff}.spc-dashboard .result-round{background:#ffffff20;color:#fff}.spc-dashboard .result-score{background:#0003;color:#fff}.spc-dashboard .result-score span,.spc-dashboard .recent-result-card time{color:#ffffffb8}.spc-dashboard .public-main-panel:not(#main-overview){max-width:1180px;padding:26px 20px;margin:0 auto}.spc-dashboard .public-main-panel:not(#main-overview) .sports-card,.spc-dashboard .public-main-panel:not(#main-overview) .sport-card{background:#ffffffee;color:var(--text)}
+    @media(max-width:760px){.dashboard-top-nav{gap:8px}.dashboard-top-nav button{font-size:0}.dashboard-top-nav button::first-letter{font-size:18px}.dashboard-top-nav a{padding:8px 10px;font-size:0}.dashboard-top-nav a:first-letter{font-size:18px}.spc-dashboard .sports-header h1{font-size:13px}.spc-dashboard .sports-header p{font-size:10px}.spc-dashboard .hero{min-height:185px}.spc-dashboard #scoreboard{margin-top:-92px}.score-podium{gap:6px;padding:0 10px}.podium-card{width:31%;min-height:210px;padding:10px 4px}.podium-card>strong{font-size:33px}.podium-card .team{font-size:12px}.podium-card>b{font-size:11px;text-align:center}.podium-card>small{font-size:9px}.score-list{margin:20px 12px 28px}.score-list-row{grid-template-columns:32px 1fr 80px;padding:12px 13px;gap:8px}.score-list-row .score-bar{grid-column:2/4;grid-row:2}.score-list-row small{font-size:9px}.score-list-row>b{font-size:11px}}
+  </style>
+  <style>
+    /* Final readability and podium-order overrides */
+    .spc-dashboard .public-main-panel:not(#main-overview),
+    .spc-dashboard .public-main-panel:not(#main-overview) .sports-card,
+    .spc-dashboard .public-main-panel:not(#main-overview) .sport-card {
+      color: #1a202c;
+    }
+
+    /* Overview result cards use a white surface, so keep their text dark. */
+    .spc-dashboard #main-overview .recent-result-card {
+      color: #1a202c;
+      background: #ffffff;
+      border-color: #d7dee8;
+    }
+    .spc-dashboard #main-overview .recent-result-card header,
+    .spc-dashboard #main-overview .recent-result-card footer {
+      background: #f8fafc;
+      border-color: #d7dee8;
+    }
+    .spc-dashboard #main-overview .recent-result-card h3,
+    .spc-dashboard #main-overview .recent-result-card .result-team {
+      color: #1a202c;
+    }
+    .spc-dashboard #main-overview .recent-result-card .result-round {
+      color: #334155;
+      background: #e8eef7;
+    }
+    .spc-dashboard #main-overview .recent-result-card .result-score {
+      color: #1a202c;
+      background: #eef2f7;
+    }
+    .spc-dashboard #main-overview .recent-result-card .result-score span,
+    .spc-dashboard #main-overview .recent-result-card time {
+      color: #64748b;
+    }
+    .spc-dashboard #main-overview .empty-state {
+      color: #1a202c;
+    }
+
+    /* The leaderboard sits on a light surface in the final dashboard view. */
+    .spc-dashboard #scoreboard .score-list {
+      color: #1a202c;
+      background: rgba(255, 255, 255, 0.94);
+      border-color: #d7dee8;
+    }
+    .spc-dashboard #scoreboard .score-list-row {
+      border-color: #e2e8f0;
+    }
+    .spc-dashboard #scoreboard .score-list-rank {
+      color: #1a202c;
+      background: #eef2f7;
+    }
+    .spc-dashboard #scoreboard .score-list-row .team {
+      color: #1a202c !important;
+    }
+    .spc-dashboard #scoreboard .score-list-row small {
+      color: #475569 !important;
+    }
+    .spc-dashboard #scoreboard .score-list-row > b {
+      color: #8a5a00 !important;
+    }
+
+    .spc-dashboard .podium-card.podium-1 { min-height: 340px; }
+    .spc-dashboard .podium-card.podium-2 { min-height: 300px; }
+    .spc-dashboard .podium-card.podium-3 { min-height: 260px; }
+
+    @media (max-width: 760px) {
+      .spc-dashboard .dashboard-top-nav {
+        gap: 6px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+      .spc-dashboard .dashboard-top-nav button {
+        font-size: 11px;
+        white-space: nowrap;
+      }
+      .spc-dashboard .podium-card.podium-1 { min-height: 230px; }
+      .spc-dashboard .podium-card.podium-2 { min-height: 210px; }
+      .spc-dashboard .podium-card.podium-3 { min-height: 190px; }
+    }
+  </style>
+</head>
+<body class="sports-page public-home spc-dashboard">
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-brand"><div class="sidebar-logo">🏆</div><div><b>SPC · ระบบกีฬาสี</b><small>โรงเรียนบ้านห้วยผึ้ง</small></div></div>
+    <div class="sidebar-season">📅 ปีการศึกษา 2569</div>
+    <div class="sidebar-label">เมนูหลัก</div>
+    <nav class="sidebar-nav" aria-label="เมนูแดชบอร์ด">
+      <button class="active" data-main-view="overview">🏠 <span>ภาพรวม</span></button>
+      <button data-main-view="sports">🏅 <span>รายการกีฬา</span></button>
+      <button data-main-view="results">📋 <span>ผลการแข่งขัน</span></button>
+      <button data-main-view="bracket">🏆 <span>สายการแข่งขัน</span></button>
+      <button data-main-view="directory">👥 <span>สมาชิกสี</span></button>
+    </nav>
+    <div class="sidebar-foot">ข้อมูลการแข่งขัน<br><small>อัปเดตจากระบบกลาง</small></div>
+  </aside>
+
+  <header class="sports-header"><div class="sports-header-inner"><div class="header-brand"><div>🏆</div><div><h1>ระบบจัดการแข่งขันกีฬาสีภายในโรงเรียน</h1><p>โรงเรียนบ้านห้วยผึ้ง · ปีการศึกษา 2569</p></div></div><nav class="dashboard-top-nav" aria-label="เมนูหลัก"><button data-main-view="overview">ภาพรวม</button><button data-main-view="sports">รายการแข่งขัน</button><button data-main-view="results">ผลการแข่งขัน</button><button data-main-view="bracket">ผังการแข่งขัน</button><button data-main-view="directory">สมาชิกสี</button></nav></div></header>
+
+  <main class="sports-main" data-static-dashboard="true">
+    <section class="hero"><h2>Sports Competition</h2><p>รายการแข่งขัน ผลล่าสุด สายการแข่งขัน และคะแนนรวม</p></section>
+    <nav class="public-main-tabs" aria-label="ส่วนข้อมูลหน้าหลัก">
+      <button class="active" data-main-view="overview">🏠<span>ภาพรวม</span></button><button data-main-view="sports">🏅<span>รายการแข่งขัน</span></button><button data-main-view="results">📋<span>ผลการแข่งขัน</span></button><button data-main-view="bracket">🏆<span>ผังการแข่งขัน</span></button><button data-main-view="directory">👥<span>สมาชิกสี</span></button>
+    </nav>
+
+    <section id="main-overview" class="public-main-panel active">
+      <h2 class="section-title">ตารางคะแนน</h2><div id="scoreboard" class="grid grid-2"></div>
+      <h2 class="section-title">ผลการแข่งขันล่าสุด</h2><div id="recent-results" class="recent-results-grid"></div>
+    </section>
+
+    <section id="main-sports" class="public-main-panel">
+      <h2 class="section-title">รายการกีฬา</h2><div id="sports-list" class="grid public-sports-grid"><div class="empty-state">กำลังโหลด…</div></div>
+    </section>
+
+    <section id="main-results" class="public-main-panel">
+      <div class="sports-card dashboard-results-card"><div class="field"><label>กรองตามกีฬา</label><select id="dashboard-sport-filter"></select></div><section class="dashboard-winners"><div class="section-head"><div><h2>🏆 ผู้ชนะและรองชนะเลิศ</h2><p class="muted">สรุปจากผลรอบชิงชนะเลิศที่ยืนยันแล้ว</p></div></div><div id="dashboard-winner-summary" class="winner-summary-grid"></div></section><div class="table-wrap"><table class="data-table dashboard-result-table"><thead><tr><th>รอบการแข่งขัน</th><th>คะแนน</th><th>ผู้ชนะ</th><th>รองชนะเลิศ</th><th>กรรมการ</th><th>เวลา</th></tr></thead><tbody id="dashboard-result-rows"></tbody></table></div></div>
+    </section>
+
+    <section id="main-bracket" class="public-main-panel"><div class="sports-card dashboard-bracket-card"><div class="field"><label>กีฬา Knockout</label><select id="dashboard-bracket-sport"></select></div><div id="dashboard-bracket-view"><div class="empty-state">กำลังโหลด…</div></div></div></section>
+
+    <section id="main-directory" class="public-directory public-main-panel">
+      <h2 class="section-title">ข้อมูลสมาชิกสี</h2>
+      <div class="directory-menu"><button class="directory-menu-btn active" data-directory-view="students">👨‍🎓 นักเรียนตามสี</button><button class="directory-menu-btn" data-directory-view="teachers">👩‍🏫 ครูตามสี</button><button class="directory-menu-btn" data-directory-view="print">🖨️ พิมพ์รายชื่อ</button></div>
+      <div class="directory-panel active" id="directory-students"><div id="public-students"><div class="empty-state">กำลังโหลด…</div></div></div>
+      <div class="directory-panel" id="directory-teachers"><div id="public-teachers" class="grid grid-2"><div class="empty-state">กำลังโหลด…</div></div></div>
+      <div class="directory-panel" id="directory-print"><div class="sports-card"><h3>🖨️ พิมพ์รายชื่อ</h3><div class="grid grid-2"><div class="field"><label>รูปแบบเอกสาร</label><select id="public-print-type"><option value="student-list">เฉพาะรายชื่อ — A4 แนวตั้ง</option><option value="student-check">ตารางเช็คชื่อ 10 ช่อง — A4 แนวตั้ง</option><option value="teachers">ครูตามสี</option></select></div><div class="field"><label>สีที่ต้องการพิมพ์</label><select id="public-print-color"><option value="all">ทุกสี</option><option value="red">สีแดง</option><option value="yellow">สีเหลือง</option><option value="blue">สีฟ้า</option><option value="pink">สีชมพู</option></select></div><div class="field public-student-print-filter print-classroom-field"><label>ชั้น/ห้องที่ต้องการพิมพ์ <span class="muted-inline">(เลือกได้หลายห้อง)</span></label><div class="print-check-tools"><button type="button" class="secondary" id="public-print-all">เลือกทั้งหมด</button><button type="button" class="secondary" id="public-print-none">ล้างทั้งหมด</button></div><div id="public-print-classrooms" class="print-classroom-checks"></div></div></div><button id="public-print-button" class="primary" style="width:100%">🖨️ พิมพ์เลย</button></div></div>
+    </section>
+  </main>
+  <script src="sports.js?v=20261008-supabase5"></script>
+  <script src="public.js?v=20261008-dashboard3"></script>
+</body>
+</html>
