@@ -90,6 +90,10 @@
     .spc-dashboard .podium-card.podium-3 { min-height: 260px; }
 
     @media (max-width: 760px) {
+      .spc-dashboard .public-main-tabs {
+        display: none !important;
+      }
+
       .spc-dashboard .dashboard-top-nav {
         gap: 6px;
         flex-wrap: wrap;
@@ -124,10 +128,6 @@
 
   <main class="sports-main" data-static-dashboard="true">
     <section class="hero"><h2>Sports Competition</h2><p>รายการแข่งขัน ผลล่าสุด สายการแข่งขัน และคะแนนรวม</p></section>
-    <nav class="public-main-tabs" aria-label="ส่วนข้อมูลหน้าหลัก">
-      <button class="active" data-main-view="overview">🏠<span>ภาพรวม</span></button><button data-main-view="sports">🏅<span>รายการแข่งขัน</span></button><button data-main-view="results">📋<span>ผลการแข่งขัน</span></button><button data-main-view="bracket">🏆<span>ผังการแข่งขัน</span></button><button data-main-view="directory">👥<span>สมาชิกสี</span></button>
-    </nav>
-
     <section id="main-overview" class="public-main-panel active">
       <h2 class="section-title">ตารางคะแนน</h2><div id="scoreboard" class="grid grid-2"></div>
       <h2 class="section-title">ผลการแข่งขันล่าสุด</h2><div id="recent-results" class="recent-results-grid"></div>
